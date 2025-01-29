@@ -6,6 +6,25 @@ import { ContentArea } from "@/src/widgets/contentArea";
 
 import { useState } from "react";
 
+interface report {
+  id: string;
+  date: string;
+  title: string;
+  content: string;
+}
+interface reports extends Array<report> {}
+interface month {
+  year: string;
+  month: string;
+  reports: reports;
+}
+
+interface newContent {
+  date: string;
+  title: string;
+  content: string;
+}
+
 // モックデータ
 const mockData = [
   {
@@ -67,23 +86,27 @@ const mockData = [
 
 export const HomePage = () => {
   const [activeIcon, setActiveIcon] = useState("reports");
-  const [selectedReport, setSelectedReport] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState(null);
+  const [selectedReport, setSelectedReport] = useState<report | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<month | null>(null);
   const [reportData, setReportData] = useState(mockData);
 
-  const handleSelectReport = (report) => {
+  const handleSelectReport = (report: report) => {
     setSelectedReport(report);
     setSelectedMonth(null);
     setActiveIcon("reports");
   };
 
-  const handleSelectMonth = (year, month, reports) => {
+  const handleSelectMonth = (year: string, month: string, reports: reports) => {
+    console.log(year);
+    console.log(month);
+    console.log(reports);
     setSelectedMonth({ year, month, reports });
     setSelectedReport(null);
     setActiveIcon("reports");
   };
 
-  const handleCreateReport = (newReport) => {
+  const handleCreateReport = (newReport: newContent) => {
+    console.log(newReport);
     const [year, month] = newReport.date.split("-");
     const yearStr = `${year}年`;
     const monthStr = `${Number.parseInt(month)}月`;
