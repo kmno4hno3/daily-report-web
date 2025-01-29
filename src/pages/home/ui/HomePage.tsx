@@ -2,7 +2,7 @@
 
 import { Sidebar } from "@/src/widgets/sidebar";
 import { Navbar } from "@/src/widgets/navbar";
-import { ContentArea } from "@/src/widgets/contentArea";
+import { ContentArea } from "@/src/widgets/content-area";
 
 import { useState } from "react";
 
@@ -97,16 +97,12 @@ export const HomePage = () => {
   };
 
   const handleSelectMonth = (year: string, month: string, reports: reports) => {
-    console.log(year);
-    console.log(month);
-    console.log(reports);
     setSelectedMonth({ year, month, reports });
     setSelectedReport(null);
     setActiveIcon("reports");
   };
 
   const handleCreateReport = (newReport: newContent) => {
-    console.log(newReport);
     const [year, month] = newReport.date.split("-");
     const yearStr = `${year}年`;
     const monthStr = `${Number.parseInt(month)}月`;
