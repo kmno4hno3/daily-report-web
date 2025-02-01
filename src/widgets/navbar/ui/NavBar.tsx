@@ -1,6 +1,6 @@
 import type React from "react";
 import { FileText, PlusCircle, Settings, HelpCircle } from "lucide-react";
-import { Button } from "@/src/shared/ui/button";
+import Link from "next/link";
 import {
   Tooltip,
   TooltipContent,
@@ -8,37 +8,29 @@ import {
   TooltipTrigger,
 } from "@/src/shared/ui/tooltip";
 
-interface NavbarProps {
-  activeIcon: string;
-  setActiveIcon: (icon: string) => void;
-}
-
-export const Navbar: React.FC<NavbarProps> = ({
-  activeIcon,
-  setActiveIcon,
-}) => {
+export const Navbar: React.FC = () => {
   const icons = [
-    { name: "reports", Icon: FileText, label: "日報" },
-    { name: "new", Icon: PlusCircle, label: "新規作成" },
-    { name: "settings", Icon: Settings, label: "設定" },
-    { name: "help", Icon: HelpCircle, label: "ヘルプ" },
+    { name: "reports", Icon: FileText, label: "日報", src: "/report/list" },
+    {
+      name: "new",
+      Icon: PlusCircle,
+      label: "新規作成",
+      src: "/report/create",
+    },
+    { name: "settings", Icon: Settings, label: "設定", src: "/settings" },
+    { name: "help", Icon: HelpCircle, label: "ヘルプ", src: "/help" },
   ];
 
   return (
     <TooltipProvider>
       <nav className="w-16 bg-gray-800 flex flex-col items-center py-4">
-        {icons.map(({ name, Icon, label }) => (
+        {icons.map(({ name, Icon, label, src }) => (
           <Tooltip key={name}>
             <TooltipTrigger asChild>
-              <Button
-                variant={activeIcon === name ? "secondary" : "ghost"}
-                size="icon"
-                className="mb-4"
-                onClick={() => setActiveIcon(name)}
-              >
+              <Link href={src} className="mb-4">
                 <Icon className="h-5 w-5" />
                 <span className="sr-only">{label}</span>
-              </Button>
+              </Link>
             </TooltipTrigger>
             <TooltipContent side="right">
               <p>{label}</p>
