@@ -2,6 +2,8 @@
 
 import type React from "react";
 import { useState } from "react";
+import { Reports, Report } from "@/src/entities/report/model";
+import { mockData } from "@/src/entities/report/const";
 
 import {
   ChevronDown,
@@ -10,97 +12,18 @@ import {
   ChevronRightIcon,
 } from "lucide-react";
 
-interface report {
-  id: number;
-  date: string;
-  title: string;
-  content: string;
-}
-interface reports extends Array<report> {}
-interface month {
-  year: number;
-  month: number;
-  reports: reports;
-}
-
-interface newContent {
-  date: string;
-  title: string;
-  content: string;
-}
-
-// モックデータ
-const mockData = [
-  {
-    year: 2022,
-    months: [
-      {
-        month: 12,
-        reports: [
-          {
-            id: 5,
-            date: "2022-12-31",
-            title: "12月31日の日報",
-            content: "年末の業務...",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    year: 2023,
-    months: [
-      {
-        month: 5,
-        reports: [
-          {
-            id: 1,
-            date: "2023-05-01",
-            title: "5月1日の日報",
-            content: "今日は...",
-          },
-          {
-            id: 2,
-            date: "2023-05-02",
-            title: "5月2日の日報",
-            content: "本日は...",
-          },
-        ],
-      },
-      {
-        month: 6,
-        reports: [
-          {
-            id: 3,
-            date: "2023-06-01",
-            title: "6月1日の日報",
-            content: "今日から6月...",
-          },
-          {
-            id: 4,
-            date: "2023-06-02",
-            title: "6月2日の日報",
-            content: "梅雨入りしました...",
-          },
-        ],
-      },
-    ],
-  },
-];
-
 export const Sidebar: React.FC = () => {
   const [selectedYearIndex, setSelectedYearIndex] = useState(0);
   const [reportData, setReportData] = useState(mockData);
   const [openMonths, setOpenMonths] = useState<number[]>([]);
   const [activeIcon, setActiveIcon] = useState("reports");
-  const [selectedReport, setSelectedReport] = useState<report | null>(null);
+  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<{
     year: number;
     month: number;
-    reports: reports;
+    reports: Reports;
   } | null>(null);
   const selectedYear = reportData[selectedYearIndex];
-  console.log(selectedYear);
 
   const toggleMonth = (month: number) => {
     setOpenMonths((prev) =>
@@ -117,12 +40,12 @@ export const Sidebar: React.FC = () => {
       return prev;
     });
   };
-  const handleSelectReport = (report: report) => {
+  const handleSelectReport = (report: Report) => {
     setSelectedReport(report);
     setSelectedMonth(null);
     setActiveIcon("reports");
   };
-  const handleSelectMonth = (year: number, month: number, reports: reports) => {
+  const handleSelectMonth = (year: number, month: number, reports: Reports) => {
     setSelectedMonth({ year, month, reports });
     setSelectedReport(null);
     setActiveIcon("reports");

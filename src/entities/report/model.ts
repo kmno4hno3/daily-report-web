@@ -1,9 +1,11 @@
 export interface Report {
-  id: string;
+  id: number;
   date: string;
   title: string;
   content: string;
 }
+
+export interface Reports extends Array<Report> {}
 
 export interface MonthData {
   month: string;
