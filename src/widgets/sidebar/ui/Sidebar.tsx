@@ -4,6 +4,7 @@ import type React from "react";
 import { useState } from "react";
 import { Reports, Report } from "@/src/entities/report/model";
 import { mockData } from "@/src/entities/report/const";
+import Link from "next/link";
 
 import {
   ChevronDown,
@@ -74,38 +75,48 @@ export const Sidebar: React.FC = () => {
         <div className="flex-1 overflow-y-auto">
           {selectedYear.months.map((monthData) => (
             <div key={monthData.month} className="mb-2">
-              <button
-                className="flex items-center w-full px-4 py-2 text-left font-semibold hover:bg-gray-200"
-                onClick={() => {
-                  toggleMonth(monthData.month);
-                  handleSelectMonth(
-                    selectedYear.year,
-                    monthData.month,
-                    monthData.reports
-                  );
-                  setActiveIcon("reports");
-                }}
+              <Link
+                href={`/report/list/${selectedYear.year}/${monthData.month}`}
+                key={`${selectedYear.year}-${monthData.month}`}
               >
-                {openMonths.includes(monthData.month) ? (
-                  <ChevronDown className="mr-2" size={20} />
-                ) : (
-                  <ChevronRight className="mr-2" size={20} />
-                )}
-                {monthData.month}
-              </button>
+                <button
+                  className="flex items-center w-full px-4 py-2 text-left font-semibold hover:bg-gray-200"
+                  onClick={() => {
+                    toggleMonth(monthData.month);
+                    handleSelectMonth(
+                      selectedYear.year,
+                      monthData.month,
+                      monthData.reports
+                    );
+                    setActiveIcon("reports");
+                  }}
+                >
+                  {openMonths.includes(monthData.month) ? (
+                    <ChevronDown className="mr-2" size={20} />
+                  ) : (
+                    <ChevronRight className="mr-2" size={20} />
+                  )}
+                  {monthData.month}
+                </button>
+              </Link>
               {openMonths.includes(monthData.month) && (
                 <div className="ml-6">
                   {monthData.reports.map((report) => (
-                    <button
-                      key={report.id}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-200"
-                      onClick={() => {
-                        handleSelectReport(report);
-                        setActiveIcon("reports");
-                      }}
+                    <Link
+                      href={`/report/list/${selectedYear.year}/${monthData.month}/${report.date}`}
+                      key={`${selectedYear.year}-${monthData.month}`}
                     >
-                      {report.date.split("-")[2]}: {report.title}
-                    </button>
+                      <button
+                        key={report.id}
+                        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-200"
+                        onClick={() => {
+                          handleSelectReport(report);
+                          setActiveIcon("reports");
+                        }}
+                      >
+                        {report.date.split("-")[2]}: {report.title}
+                      </button>
+                    </Link>
                   ))}
                 </div>
               )}
