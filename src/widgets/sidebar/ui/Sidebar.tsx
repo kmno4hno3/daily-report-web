@@ -104,7 +104,7 @@ export const Sidebar: React.FC = () => {
                   {monthData.reports.map((report) => (
                     <Link
                       href={`/report/list/${selectedYear.year}/${monthData.month}/${report.date}`}
-                      key={`${selectedYear.year}-${monthData.month}`}
+                      key={`${report.date}`}
                     >
                       <button
                         key={report.id}

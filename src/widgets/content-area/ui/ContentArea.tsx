@@ -1,84 +1,80 @@
+"use client";
+
 import type React from "react";
-import { NewReportForm } from "./NewReportForm";
-import { Settings } from "./Settings";
-import { Help } from "./Help";
+import { usePathname } from "next/navigation";
+import { mockData } from "@/src/entities/report/const";
+import { useEffect, useState } from "react";
+import { Report } from "@/src/entities/report/model";
 
-interface Report {
-  id: string;
-  date: string;
-  title: string;
-  content: string;
-}
-
-interface ContentAreaProps {
-  activeIcon: string;
-  selectedReport: Report | null;
-  selectedMonth: { year: string; month: string; reports: Report[] } | null;
-  onSelectReport: (report: Report) => void;
-  onCreateReport: (report: {
-    date: string;
-    title: string;
-    content: string;
-  }) => void;
-}
-
-export const ContentArea: React.FC<ContentAreaProps> = ({
-  activeIcon,
-  selectedReport,
-  selectedMonth,
-  onSelectReport,
-  onCreateReport,
-}) => {
-  if (activeIcon === "new") {
+export const ContentArea: React.FC = () => {
+  const pathname = usePathname();
+  if (!pathname?.startsWith("/report/list"))
     return (
-      <div className="flex-1 p-6 overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-4">新規日報作成</h2>
-        <NewReportForm onSubmit={onCreateReport} />
-      </div>
+      <>
+        <div>aaa</div>
+      </>
+    );
+
+  const [selectedYear, setSelectedYear] = useState<string | undefined>(
+    undefined
+  );
+  const [selectedMonth, setSelectedMonth] = useState<string | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    const paths = pathname?.split("/");
+    const [, , , year, month] = paths;
+    setSelectedYear(year);
+    setSelectedMonth(month);
+  }, [pathname]);
+
+  if (selectedYear && selectedMonth) {
+    const selectedYearReports = mockData.find((yearData) => {
+      return yearData.year === Number(selectedYear);
+    });
+
+    const selectedMonthReports = selectedYearReports?.months.find(
+      (monthData) => {
+        return monthData.month === Number(selectedMonth);
+      }
+    );
+
+    return (
+      selectedMonthReports && (
+        <>
+          <div className="flex-1 p-6 overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4">
+              {selectedYear}年 {selectedMonth}月の日報一覧
+            </h2>
+            <div className="grid gap-4">
+              {selectedMonthReports.reports.map((report: Report) => (
+                <button
+                  key={report.id}
+                  className="text-left p-4 border rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <h3 className="font-semibold">
+                    {report.date}: {report.title}
+                  </h3>
+                  <p className="text-gray-600 truncate">{report.content}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )
     );
   }
 
-  if (activeIcon === "settings") {
-    return <Settings />;
-  }
-
-  if (activeIcon === "help") {
-    return <Help />;
-  }
-
-  if (selectedMonth) {
-    return (
-      <div className="flex-1 p-6 overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-4">
-          {selectedMonth.year} {selectedMonth.month}の日報一覧
-        </h2>
-        <div className="grid gap-4">
-          {selectedMonth.reports.map((report) => (
-            <button
-              key={report.id}
-              className="text-left p-4 border rounded-lg hover:bg-gray-100 transition-colors"
-              onClick={() => onSelectReport(report)}
-            >
-              <h3 className="font-semibold">
-                {report.date}: {report.title}
-              </h3>
-              <p className="text-gray-600 truncate">{report.content}</p>
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (selectedReport) {
-    return (
-      <div className="flex-1 p-6 overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-4">{selectedReport.title}</h2>
-        <p className="text-gray-600 mb-4">日付: {selectedReport.date}</p>
-        <div className="whitespace-pre-wrap">{selectedReport.content}</div>
-      </div>
-    );
-  }
+  // if (slectedYear && selectedMonth) {
+  //   return (
+  //     <div className="flex-1 p-6 overflow-y-auto">
+  //       <h2 className="text-2xl font-bold mb-4">{selectedReport.title}</h2>
+  //       <p className="text-gray-600 mb-4">日付: {selectedReport.date}</p>
+  //       <div className="whitespace-pre-wrap">{selectedReport.content}</div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex-1 p-6 flex items-center justify-center">

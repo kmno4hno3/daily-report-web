@@ -1,3 +1,3 @@
-export const DailyReportList = () => {
+export const ReportList = () => {
   return <>list</>;
 };

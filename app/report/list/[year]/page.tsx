@@ -1,5 +1,3 @@
-const DailyReportList = () => {
-  return <>list</>;
-};
+import { YearlyReportList } from "@/src/pages/report/list/yearly";
 
-export default DailyReportList;
+export default YearlyReportList;
