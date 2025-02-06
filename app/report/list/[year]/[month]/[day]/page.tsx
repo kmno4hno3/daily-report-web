@@ -1,6 +1,3 @@
-// ここは日報ファイルを読み込む
-const DailyReportList = () => {
-  return <>list</>;
-};
+import { DailyReport } from "@/src/pages/report/list/daily";
 
-export default DailyReportList;
+export default DailyReport;

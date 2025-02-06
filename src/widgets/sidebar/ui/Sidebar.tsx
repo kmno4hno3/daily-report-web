@@ -55,6 +55,7 @@ export const Sidebar: React.FC = () => {
   return (
     <>
       <div className="w-64 h-screen bg-gray-100 overflow-y-auto flex flex-col">
+        {/* 年単位 */}
         <div className="flex items-center justify-between p-4 bg-gray-200">
           <button
             onClick={() => changeYear("prev")}
@@ -74,6 +75,7 @@ export const Sidebar: React.FC = () => {
         </div>
         <div className="flex-1 overflow-y-auto">
           {selectedYear.months.map((monthData) => (
+            // 月単位
             <div key={monthData.month} className="mb-2">
               <Link
                 href={`/report/list/${selectedYear.year}/${monthData.month}`}
@@ -114,7 +116,7 @@ export const Sidebar: React.FC = () => {
                           setActiveIcon("reports");
                         }}
                       >
-                        {report.date.split("-")[2]}: {report.title}
+                        {report.date}: {report.title}
                       </button>
                     </Link>
                   ))}

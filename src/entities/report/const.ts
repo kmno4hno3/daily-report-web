@@ -8,8 +8,8 @@ export const mockData = [
         reports: [
           {
             id: 5,
-            date: "2022-12-31",
-            title: "12月31日の日報",
+            date: 31,
+            title: "11月31日の日報",
             content: "年末の業務...",
           },
         ],
@@ -19,7 +19,7 @@ export const mockData = [
         reports: [
           {
             id: 5,
-            date: "2022-12-31",
+            date: 31,
             title: "12月31日の日報",
             content: "年末の業務...",
           },
@@ -35,13 +35,13 @@ export const mockData = [
         reports: [
           {
             id: 1,
-            date: "2023-05-01",
+            date: 1,
             title: "5月1日の日報",
             content: "今日は...",
           },
           {
             id: 2,
-            date: "2023-05-02",
+            date: 2,
             title: "5月2日の日報",
             content: "本日は...",
           },
@@ -52,13 +52,13 @@ export const mockData = [
         reports: [
           {
             id: 3,
-            date: "2023-06-01",
+            date: 1,
             title: "6月1日の日報",
             content: "今日から6月...",
           },
           {
             id: 4,
-            date: "2023-06-02",
+            date: 2,
             title: "6月2日の日報",
             content: "梅雨入りしました...",
           },

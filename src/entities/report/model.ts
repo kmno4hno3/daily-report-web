@@ -1,6 +1,6 @@
 export interface Report {
   id: number;
-  date: string;
+  date: number;
   title: string;
   content: string;
 }

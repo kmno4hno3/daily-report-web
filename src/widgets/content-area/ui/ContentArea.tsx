@@ -21,12 +21,16 @@ export const ContentArea: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string | undefined>(
     undefined
   );
+  const [selectedDate, setSelectedDate] = useState<string | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const paths = pathname?.split("/");
-    const [, , , year, month] = paths;
+    const [, , , year, month, date] = paths;
     setSelectedYear(year);
     setSelectedMonth(month);
+    setSelectedDate(date);
   }, [pathname]);
 
   if (selectedYear && selectedMonth) {
@@ -39,6 +43,36 @@ export const ContentArea: React.FC = () => {
         return monthData.month === Number(selectedMonth);
       }
     );
+
+    if (selectedDate) {
+      const selectedDateReport = selectedMonthReports?.reports.find(
+        (report) => {
+          return report.date === Number(selectedDate);
+        }
+      );
+
+      if (selectedDateReport) {
+        return (
+          <div className="flex-1 p-6 overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4">
+              {selectedDateReport.title}
+            </h2>
+            <p className="text-gray-600 mb-4">
+              日付: {selectedDateReport.date}
+            </p>
+            <div className="whitespace-pre-wrap">
+              {selectedDateReport.content}
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <>
+            <div>日報がありません</div>
+          </>
+        );
+      }
+    }
 
     return (
       selectedMonthReports && (
@@ -65,16 +99,6 @@ export const ContentArea: React.FC = () => {
       )
     );
   }
-
-  // if (slectedYear && selectedMonth) {
-  //   return (
-  //     <div className="flex-1 p-6 overflow-y-auto">
-  //       <h2 className="text-2xl font-bold mb-4">{selectedReport.title}</h2>
-  //       <p className="text-gray-600 mb-4">日付: {selectedReport.date}</p>
-  //       <div className="whitespace-pre-wrap">{selectedReport.content}</div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="flex-1 p-6 flex items-center justify-center">
