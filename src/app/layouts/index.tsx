@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/src/app/globals.css";
 import { Navbar } from "@/src/widgets/navbar";
@@ -27,6 +28,7 @@ export const RootLayout = ({
 }>) => {
   return (
     <html lang="en">
+      <Script src="http://localhost:8097" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
