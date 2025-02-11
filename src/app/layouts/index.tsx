@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "@/src/app/globals.css";
 import { Navbar } from "@/src/widgets/navbar";
 import { Sidebar } from "@/src/widgets/sidebar";
+import { Devtools } from "@/src/app/layouts/Devtools";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,10 +28,12 @@ export const RootLayout = ({
 }>) => {
   return (
     <html lang="en">
-      <Script src="http://localhost:8097" />
+      {/* TODO: react-devtoolsが機能しないので一時退避 */}
+      {/* <Script src="http://localhost:8097" /> */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Devtools />
         <div className="flex h-screen">
           <Navbar />
           <Sidebar />
