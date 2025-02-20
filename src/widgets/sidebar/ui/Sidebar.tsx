@@ -15,11 +15,11 @@ import {
 
 export const Sidebar: React.FC = () => {
   const [selectedYearIndex, setSelectedYearIndex] = useState(0);
-  const [reportData, setReportData] = useState(mockData);
+  const [reportData] = useState(mockData);
   const [openMonths, setOpenMonths] = useState<number[]>([]);
-  const [activeIcon, setActiveIcon] = useState("reports");
-  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
-  const [selectedMonth, setSelectedMonth] = useState<{
+  const [, setActiveIcon] = useState("reports");
+  const [, setSelectedReport] = useState<Report | null>(null);
+  const [, setSelectedMonth] = useState<{
     year: number;
     month: number;
     reports: Reports;
