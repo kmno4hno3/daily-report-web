@@ -2,10 +2,10 @@
 
 import type React from "react";
 import { useState } from "react";
-import { Reports, Report } from "@/src/entities/report/model";
-import { mockData } from "@/src/entities/report/const";
+import { Report } from "@/src/entities/files/type";
+import { useAtom } from "jotai";
 import Link from "next/link";
-
+import { fileListAtom } from "@/src/entities/files/model";
 import {
   ChevronDown,
   ChevronRight,
@@ -15,16 +15,20 @@ import {
 
 export const Sidebar: React.FC = () => {
   const [selectedYearIndex, setSelectedYearIndex] = useState(0);
-  const [reportData] = useState(mockData);
+  const [reportData] = useAtom(fileListAtom);
   const [openMonths, setOpenMonths] = useState<number[]>([]);
   const [, setActiveIcon] = useState("reports");
   const [, setSelectedReport] = useState<Report | null>(null);
   const [, setSelectedMonth] = useState<{
     year: number;
     month: number;
-    reports: Reports;
+    reports: Report[];
   } | null>(null);
   const selectedYear = reportData[selectedYearIndex];
+
+  if (!reportData.length) {
+    return <div>データがありません</div>;
+  }
 
   const toggleMonth = (month: number) => {
     setOpenMonths((prev) =>
@@ -46,7 +50,11 @@ export const Sidebar: React.FC = () => {
     setSelectedMonth(null);
     setActiveIcon("reports");
   };
-  const handleSelectMonth = (year: number, month: number, reports: Reports) => {
+  const handleSelectMonth = (
+    year: number,
+    month: number,
+    reports: Report[]
+  ) => {
     setSelectedMonth({ year, month, reports });
     setSelectedReport(null);
     setActiveIcon("reports");
@@ -109,14 +117,14 @@ export const Sidebar: React.FC = () => {
                       key={`${report.date}`}
                     >
                       <button
-                        key={report.id}
+                        key={report.date}
                         className="w-full px-4 py-2 text-left text-sm hover:bg-gray-200"
                         onClick={() => {
                           handleSelectReport(report);
                           setActiveIcon("reports");
                         }}
                       >
-                        {report.date}: {report.title}
+                        {report.date}
                       </button>
                     </Link>
                   ))}

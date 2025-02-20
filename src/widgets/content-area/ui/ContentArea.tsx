@@ -2,19 +2,13 @@
 
 import type React from "react";
 import { usePathname } from "next/navigation";
-import { mockData } from "@/src/entities/report/const";
+import { fileListAtom } from "@/src/entities/files/model";
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Report } from "@/src/entities/report/model";
 
 export const ContentArea: React.FC = () => {
   const pathname = usePathname();
-  if (!pathname?.startsWith("/report/list"))
-    return (
-      <>
-        <div>aaa</div>
-      </>
-    );
-
   const [selectedYear, setSelectedYear] = useState<string | undefined>(
     undefined
   );
@@ -24,17 +18,20 @@ export const ContentArea: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string | undefined>(
     undefined
   );
+  const [reportData] = useAtom(fileListAtom);
 
   useEffect(() => {
-    const paths = pathname?.split("/");
-    const [, , , year, month, date] = paths;
-    setSelectedYear(year);
-    setSelectedMonth(month);
-    setSelectedDate(date);
+    if (pathname?.startsWith("/report/list")) {
+      const paths = pathname?.split("/");
+      const [, , , year, month, date] = paths;
+      setSelectedYear(year);
+      setSelectedMonth(month);
+      setSelectedDate(date);
+    }
   }, [pathname]);
 
-  if (selectedYear && selectedMonth) {
-    const selectedYearReports = mockData.find((yearData) => {
+  if (selectedYear && selectedMonth && reportData.length > 0) {
+    const selectedYearReports = reportData.find((yearData) => {
       return yearData.year === Number(selectedYear);
     });
 
@@ -55,14 +52,12 @@ export const ContentArea: React.FC = () => {
         return (
           <div className="flex-1 p-6 overflow-y-auto">
             <h2 className="text-2xl font-bold mb-4">
-              {selectedDateReport.title}
+              {selectedDateReport.date}
             </h2>
             <p className="text-gray-600 mb-4">
               日付: {selectedDateReport.date}
             </p>
-            <div className="whitespace-pre-wrap">
-              {selectedDateReport.content}
-            </div>
+            <div className="whitespace-pre-wrap">{selectedDateReport.date}</div>
           </div>
         );
       } else {
@@ -84,13 +79,11 @@ export const ContentArea: React.FC = () => {
             <div className="grid gap-4">
               {selectedMonthReports.reports.map((report: Report) => (
                 <button
-                  key={report.id}
+                  key={report.date}
                   className="text-left p-4 border rounded-lg hover:bg-gray-100 transition-colors"
                 >
-                  <h3 className="font-semibold">
-                    {report.date}: {report.title}
-                  </h3>
-                  <p className="text-gray-600 truncate">{report.content}</p>
+                  <h3 className="font-semibold">{report.date}</h3>
+                  <p className="text-gray-600 truncate">{report.date}</p>
                 </button>
               ))}
             </div>

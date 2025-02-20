@@ -1,12 +1,12 @@
-export type fileList = year[];
-interface year {
+export type fileList = Year[];
+export interface Year {
   year: number;
-  months: month[];
+  months: Month[];
 }
-interface month {
+export interface Month {
   month: number;
-  reports: report[];
+  reports: Report[];
 }
-interface report {
+export interface Report {
   date: number;
 }
