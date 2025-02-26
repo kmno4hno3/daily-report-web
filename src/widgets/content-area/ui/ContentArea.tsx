@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { fileListAtom } from "@/src/entities/files/model";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { Report } from "@/src/entities/report/model";
+import { Report } from "@/src/entities/files/type";
 
 export const ContentArea: React.FC = () => {
   const pathname = usePathname();
