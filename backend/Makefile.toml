@@ -1,0 +1,8 @@
+[config]
+default_to_workspace = false
+
+# TODO: 環境変数でうまくいかない
+[tasks.db-shell]
+description = "Open PostgreSQL shell inside the report-db container"
+command = "docker"
+args = ["exec", "-it", "report-db", "psql", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]

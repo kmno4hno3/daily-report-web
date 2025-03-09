@@ -7,3 +7,5 @@ edition = "2021"
 axum = "0.8.1"
 tokio = {version = "1.43.0", features = ["full"]}
 serde = {version = "1.0", features = ["derive"]}
+sqlx={version="0.8.3", features=["postgres", "runtime-tokio-rustls", "uuid", "chrono"]}
+dotenvy="0.15"
