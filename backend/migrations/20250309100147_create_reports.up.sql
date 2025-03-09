@@ -1,6 +1,6 @@
 -- Add migration script here
 CREATE TABLE reports (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id BIGSERIAL PRIMARY KEY,
   -- user_id UUID REFERENCES users(id) NOT NULL,
   date DATE NOT NULL,
   content TEXT,
