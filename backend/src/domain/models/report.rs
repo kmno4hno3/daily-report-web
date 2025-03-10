@@ -18,7 +18,6 @@ impl Report {
         let now_utc = now_jst.with_timezone(&Utc);
         let today = now_jst.date_naive();
         Self {
-            id: 0,
             date: today,
             content: Some(content),
             created_at: now_utc,
