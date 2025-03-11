@@ -71,7 +71,48 @@ async fn get_all_reports<T: ReportService>(State(state): State<AppState<T>>) -> 
         Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch reports").into_response(),
     }
 }
-async fn get_report_find_by_id(&self, id: i64) -> Result<Option<Report>, sqlx::Error> {}
-async fn create_report(&self, content: String) -> Result<Report, sqlx::Error> {}
-async fn update_report(&self, id: i64, content: String) -> Result<Report, sqlx::Error> {}
-async fn delete_report(&self, id: i64) -> Result<Report, sqlx::Error> {}
+async fn get_report_find_by_id(
+    State(state): State<AppState<T>>,
+    Path(id): Path<id>,
+) -> impl IntoResponse {
+    match state.report_service.get_report_by_id(id).await {
+        Ok(Some(report)) => Json(ReportResponse::from(report).into_response()),
+        Ok(None) => (StatusCode::NOT_FOUND, "Report not found").into_response(),
+        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch report").into_response(),
+    }
+}
+async fn create_report(
+    State(state): State<AppState<T>>,
+    Json(payload): Json<CreateReportRequest>,
+) -> impl IntoResponse {
+    match state.report_service.create_report(payload.content).await {
+        Ok(report) => (StatusCode::CREATED, Json(ReportResponse::from(report))).into_response,
+        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to create report"),
+    }
+}
+async fn update_report(
+    State(state): State<AppState<T>>,
+    Path(id): Path<id>,
+    Json(payload): Json<UpdateResponse>,
+) -> impl IntoResponse {
+    match state
+        .report_service
+        .update_response(id, payload.content)
+        .await
+    {
+        Ok(report) => Json(ReportResponse::from(report).into_response()),
+        Err(sqlx::Error::RowNotFound) => {
+            (StatusCode::INTERNAL_SERVER_ERROR, "Report not found").into_response()
+        }
+        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed update report").into_response(),
+    }
+}
+async fn delete_report(State(state): State<AppState<T>, Path(id): Path<id>>) -> impl IntoResponse {
+    match state.report_service.delete_report(id).await {
+        Ok(report) => StatusCode::NO_CONTENT.into_response(),
+        Err(sqlx::Error::RowNotFound) => {
+            (StatusCode::INTERNAL_SERVER_ERROR, "Report not found").into_response()
+        }
+        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed delete report").into_response(),
+    }
+}
