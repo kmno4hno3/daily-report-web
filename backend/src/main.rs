@@ -1,9 +1,23 @@
 use axum::{routing::get, Router};
-use tower_http::trace::TraceLayer;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+use dotenvy::dotenv;
+use sqlx::PgPool;
+use std::env;
+use std::net::SocketAddr;
+use tokio::net::TcpListener;
+use tracing::{info, Level};
+use tracing_subscriber::FmtSubscriber;
+
+mod domain;
+mod infrastructure;
+mod presentation;
+
+use crate::infrastructure::report_repository::ReportRepositoryImpl;
+use crate::presentation::handlers::report_handler;
 
 #[tokio::main]
 async fn main() {
+    dotenv().ok();
+
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
