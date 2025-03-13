@@ -1,6 +1,7 @@
 use crate::domain::models::report::Report;
 use crate::domain::repositories::report_repository::ReportRepository;
 use crate::infrastructure::db::DbPool;
+use async_trait::async_trait;
 
 #[derive(Clone)]
 pub struct ReportRepositoryImpl {
@@ -8,7 +9,7 @@ pub struct ReportRepositoryImpl {
 }
 
 impl ReportRepositoryImpl {
-    pub fn new(pool: DbPool) {
+    pub fn new(pool: DbPool) -> Self {
         Self { pool }
     }
 }
@@ -33,7 +34,7 @@ impl ReportRepository for ReportRepositoryImpl {
         Ok(report)
     }
     async fn create(&self, report: Report) -> Result<Report, sqlx::Error> {
-        let created_report = sqlx::query_as::<_, report>(
+        let created_report = sqlx::query_as::<_, Report>(
             "INSERT INTO reports (date, content, created_at, updated_at)
             VALUES ($1, $2, $3, $4)
             RETURNING id, date, content, created_at, updated_at",
@@ -47,7 +48,7 @@ impl ReportRepository for ReportRepositoryImpl {
         Ok(created_report)
     }
     async fn update(&self, report: Report) -> Result<Report, sqlx::Error> {
-        let updated_report = sqlx::query_as::<_, report>(
+        let updated_report = sqlx::query_as::<_, Report>(
             "UPDATE reports SET content = $1, updated_at = (NOW() AT TIME ZONE 'Asia/Tokyo')
             where id = $2",
         )
@@ -57,9 +58,9 @@ impl ReportRepository for ReportRepositoryImpl {
         .await?;
         Ok(updated_report)
     }
-    async fn delete(&self, id: i64) -> Result<Report, sqlx::Error> {
+    async fn delete(&self, id: i64) -> Result<(), sqlx::Error> {
         sqlx::query("DELETE FROM reports where id = $1")
-            .bind(report.id)
+            .bind(id)
             .execute(&self.pool)
             .await?;
         Ok(())

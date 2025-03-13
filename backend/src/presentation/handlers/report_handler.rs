@@ -6,8 +6,11 @@ use axum::{
 };
 use chrono::NaiveDate;
 use http::StatusCode;
-use serde::{Deserialize, Serealize};
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+
+use crate::domain::models::report::Report;
+use crate::usecase::report_usecase::ReportService;
 
 #[derive(Clone)]
 pub struct AppState<T: ReportService> {
@@ -22,8 +25,10 @@ pub fn create_report_router<T: ReportService + Send + Sync + 'static + Clone>(
     };
 
     Router::new()
-        .route("/reports", get(get_all_reports::<T>))
-        .post(create_report::<T>)
+        .route(
+            "/reports",
+            get(get_all_reports::<T>).post(create_report::<T>),
+        )
         .route(
             "/report/{id}",
             get(get_report_by_id::<T>)
@@ -45,9 +50,9 @@ struct UpdateReportRequest {
 
 #[derive(Serialize)]
 struct ReportResponse {
-    id: i64,
+    id: Option<i64>,
     date: NaiveDate,
-    content: String,
+    content: Option<String>,
 }
 
 impl From<Report> for ReportResponse {
@@ -67,49 +72,53 @@ async fn get_all_reports<T: ReportService>(State(state): State<AppState<T>>) -> 
                 .into_iter()
                 .map(ReportResponse::from)
                 .collect::<Vec<_>>(),
-        ),
+        )
+        .into_response(),
         Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch reports").into_response(),
     }
 }
-async fn get_report_find_by_id(
+async fn get_report_by_id<T: ReportService>(
     State(state): State<AppState<T>>,
-    Path(id): Path<id>,
+    Path(id): Path<i64>,
 ) -> impl IntoResponse {
     match state.report_service.get_report_by_id(id).await {
-        Ok(Some(report)) => Json(ReportResponse::from(report).into_response()),
+        Ok(Some(report)) => Json(ReportResponse::from(report)).into_response(),
         Ok(None) => (StatusCode::NOT_FOUND, "Report not found").into_response(),
         Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch report").into_response(),
     }
 }
-async fn create_report(
+async fn create_report<T: ReportService>(
     State(state): State<AppState<T>>,
     Json(payload): Json<CreateReportRequest>,
 ) -> impl IntoResponse {
     match state.report_service.create_report(payload.content).await {
-        Ok(report) => (StatusCode::CREATED, Json(ReportResponse::from(report))).into_response,
-        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to create report"),
+        Ok(report) => (StatusCode::CREATED, Json(ReportResponse::from(report))).into_response(),
+        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to create report").into_response(),
     }
 }
-async fn update_report(
+async fn update_report<T: ReportService>(
     State(state): State<AppState<T>>,
-    Path(id): Path<id>,
-    Json(payload): Json<UpdateResponse>,
+    Path(id): Path<i64>,
+    Json(payload): Json<UpdateReportRequest>,
 ) -> impl IntoResponse {
     match state
         .report_service
-        .update_response(id, payload.content)
+        .update_report(id, payload.content)
         .await
     {
-        Ok(report) => Json(ReportResponse::from(report).into_response()),
+        Ok(report) => Json(ReportResponse::from(report)).into_response(),
         Err(sqlx::Error::RowNotFound) => {
             (StatusCode::INTERNAL_SERVER_ERROR, "Report not found").into_response()
         }
         Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed update report").into_response(),
     }
 }
-async fn delete_report(State(state): State<AppState<T>, Path(id): Path<id>>) -> impl IntoResponse {
+async fn delete_report<T: ReportService>(
+    State(state): State<AppState<T>>,
+    Path(id): Path<i64>,
+) -> impl IntoResponse {
     match state.report_service.delete_report(id).await {
-        Ok(report) => StatusCode::NO_CONTENT.into_response(),
+        Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(sqlx::Error::RowNotFound) => {
             (StatusCode::INTERNAL_SERVER_ERROR, "Report not found").into_response()
         }

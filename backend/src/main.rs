@@ -10,28 +10,35 @@ use tracing_subscriber::FmtSubscriber;
 mod domain;
 mod infrastructure;
 mod presentation;
+mod usecase;
 
 use crate::infrastructure::report_repository::ReportRepositoryImpl;
-use crate::presentation::handlers::report_handler;
+use crate::presentation::handlers::report_handler::create_report_router;
+use crate::usecase::report_usecase::ReportUsecase;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
 
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-                format!("{}=debug,tower_http=debug,", env!("CARGO_CRATE_NAME")).into()
-            }),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
+    let subscriber = FmtSubscriber::builder()
+        .with_max_level(Level::INFO)
+        .finish();
+    tracing::subscriber::set_global_default(subscriber)?;
+
+    let database_url = env::var("DATABASE_URL")?;
+    let pool = PgPool::connect(&database_url).await?;
+
+    let report_repository = ReportRepositoryImpl::new(pool.clone());
+    let report_service = ReportUsecase::new(report_repository);
 
     let app = Router::new()
         .route("/", get(|| async { "Hello, Axum!!!" }))
-        .layer(TraceLayer::new_for_http());
+        .nest("/api", create_report_router(report_service));
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    tracing::debug!("listening on {}", listener.local_addr().unwrap());
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    info!("🚀 Server running at http://{}", addr);
+    let listener = TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
+
+    Ok(())
 }

@@ -1,2 +1,2 @@
 use sqlx::PgPool;
-pub type DbPoll = PgPool;
+pub type DbPool = PgPool;
