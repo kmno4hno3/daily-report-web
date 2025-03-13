@@ -50,7 +50,8 @@ impl ReportRepository for ReportRepositoryImpl {
     async fn update(&self, report: Report) -> Result<Report, sqlx::Error> {
         let updated_report = sqlx::query_as::<_, Report>(
             "UPDATE reports SET content = $1, updated_at = (NOW() AT TIME ZONE 'Asia/Tokyo')
-            where id = $2",
+            where id = $2
+            RETURNING id, date, content, created_at, updated_at",
         )
         .bind(&report.content)
         .bind(report.id)
@@ -59,7 +60,7 @@ impl ReportRepository for ReportRepositoryImpl {
         Ok(updated_report)
     }
     async fn delete(&self, id: i64) -> Result<(), sqlx::Error> {
-        sqlx::query("DELETE FROM reports where id = $1")
+        sqlx::query("DELETE FROM reports WHERE id = $1")
             .bind(id)
             .execute(&self.pool)
             .await?;

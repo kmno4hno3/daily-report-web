@@ -101,14 +101,14 @@ async fn update_report<T: ReportService>(
     Path(id): Path<i64>,
     Json(payload): Json<UpdateReportRequest>,
 ) -> impl IntoResponse {
-    match state
+    let result = state
         .report_service
         .update_report(id, payload.content)
-        .await
-    {
+        .await;
+    match result {
         Ok(report) => Json(ReportResponse::from(report)).into_response(),
         Err(sqlx::Error::RowNotFound) => {
-            (StatusCode::INTERNAL_SERVER_ERROR, "Report not found").into_response()
+            (StatusCode::NOT_FOUND, "Report not found").into_response()
         }
         Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed update report").into_response(),
     }
