@@ -16,10 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set working directory
-      run: cd backend
-    - name: Set working directory
-      run: ls & pwd
+    - name: test
+      run: ls
     - name: Build
       run: cargo build --verbose
     - name: Run tests
