@@ -16,15 +16,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: test1
-      run: ls
-    - name: test2
-      run: cd backend
-    - name: test3
-      run: pwd
-    - name: test4
-      run: ls
     - name: Build
+      working-directory: ./backend
       run: cargo build --verbose
     - name: Run tests
+      working-directory: ./backend
       run: cargo test --verbose
