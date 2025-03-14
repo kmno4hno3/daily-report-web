@@ -15,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Set working directory
-      run: cd backend
     - uses: actions/checkout@v4
     - name: Build
+    - name: Set working directory
+      run: cd backend
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose
