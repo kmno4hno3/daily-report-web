@@ -1,9 +1,10 @@
-use axum::{routing::get, Router};
+use axum::{http::HeaderValue, routing::get, Router};
 use dotenvy::dotenv;
 use sqlx::PgPool;
 use std::env;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
+use tower_http::cors::CorsLayer;
 use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
 
@@ -21,7 +22,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
 
     let subscriber = FmtSubscriber::builder()
-        .with_max_level(Level::INFO)
+        .with_max_level(Level::DEBUG)
         .finish();
     tracing::subscriber::set_global_default(subscriber)?;
 
@@ -31,13 +32,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let report_repository = ReportRepositoryImpl::new(pool.clone());
     let report_service = ReportUsecase::new(report_repository);
 
+    let cors =
+        CorsLayer::new().allow_origin(["http://localhost:3000".parse::<HeaderValue>().unwrap()]);
+
     let app = Router::new()
         .route("/", get(|| async { "Hello, Axum!!!" }))
-        .nest("/api", create_report_router(report_service));
+        .nest("/api", create_report_router(report_service))
+        .layer(cors);
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let addr = SocketAddr::from(([127, 0, 0, 1], 8000));
     info!("🚀 Server running at http://{}", addr);
-    let listener = TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let listener = TcpListener::bind("0.0.0.0:8000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 
     Ok(())
