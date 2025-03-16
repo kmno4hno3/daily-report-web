@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { usePathname } from "next/navigation";
-import { fileListAtom } from "@/src/entities/files/model";
+import { yearDatesAtom } from "@/src/entities/files/model";
 import { useAtom } from "jotai";
 import { useEffect, useState, useMemo } from "react";
 import { ReportLayout } from "./ReportLayout";
@@ -20,7 +20,7 @@ export const ReportWrapper = () => {
   const [selectedDate, setSelectedDate] = useState<string | undefined>(
     undefined
   );
-  const [reportData] = useAtom(fileListAtom);
+  const [reportData] = useAtom(yearDatesAtom);
 
   useEffect(() => {
     if (pathname?.startsWith("/report/list")) {

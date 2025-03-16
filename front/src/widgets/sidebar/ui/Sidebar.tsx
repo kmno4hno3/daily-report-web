@@ -1,11 +1,11 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
-import { Report } from "@/src/entities/files/type";
+import { useState, useEffect } from "react";
+import { Year } from "@/src/entities/files/type";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { fileListAtom } from "@/src/entities/files/model";
+import { yearDatesAtom } from "@/src/entities/files/model";
 import {
   ChevronDown,
   ChevronRight,
@@ -13,20 +13,33 @@ import {
   ChevronRightIcon,
 } from "lucide-react";
 
+interface Date {
+  year: number;
+  month: number | undefined;
+  day: number | undefined;
+}
+
 export const Sidebar: React.FC = () => {
-  const [selectedYearIndex, setSelectedYearIndex] = useState(0);
-  const [reportData] = useAtom(fileListAtom);
+  const [yearDates] = useAtom(yearDatesAtom);
   const [openMonths, setOpenMonths] = useState<number[]>([]);
   const [, setActiveIcon] = useState("reports");
-  const [, setSelectedReport] = useState<Report | null>(null);
-  const [, setSelectedMonth] = useState<{
-    year: number;
-    month: number;
-    reports: Report[];
-  } | null>(null);
-  const selectedYear = reportData[selectedYearIndex];
+  const today = new Date();
+  const [selectedDate, setSelectedDate] = useState<Date>({
+    year: today.getFullYear(),
+    month: today.getMonth(),
+    day: today.getDay(),
+  });
 
-  if (!reportData.length) {
+  useEffect(() => {
+    if (yearDates?.year) {
+      setSelectedDate({
+        ...selectedDate,
+        year: yearDates?.year,
+      });
+    }
+  }, [yearDates?.year]);
+
+  if (!yearDates?.year) {
     return <div>データがありません</div>;
   }
 
@@ -35,29 +48,26 @@ export const Sidebar: React.FC = () => {
       prev.includes(month) ? prev.filter((m) => m !== month) : [...prev, month]
     );
   };
-  const changeYear = (direction: "prev" | "next") => {
-    setSelectedYearIndex((prev) => {
-      if (direction === "prev" && prev > 0) {
-        return prev - 1;
-      } else if (direction === "next" && prev < reportData.length - 1) {
-        return prev + 1;
-      }
-      return prev;
-    });
-  };
-  const handleSelectReport = (report: Report) => {
-    setSelectedReport(report);
-    setSelectedMonth(null);
-    setActiveIcon("reports");
-  };
-  const handleSelectMonth = (
+  const handleSelectDate = (
     year: number,
-    month: number,
-    reports: Report[]
+    month: number | undefined = undefined,
+    day: number | undefined = undefined
   ) => {
-    setSelectedMonth({ year, month, reports });
-    setSelectedReport(null);
+    setSelectedDate({
+      year: year,
+      month: month,
+      day: day,
+    });
     setActiveIcon("reports");
+  };
+  const changeYear = (direction: "prev" | "next") => {
+    const year =
+      direction === "prev" ? selectedDate.year - 1 : selectedDate.year + 1;
+    setSelectedDate({
+      year,
+      month: undefined,
+      day: undefined,
+    });
   };
 
   return (
@@ -67,64 +77,60 @@ export const Sidebar: React.FC = () => {
         <div className="flex items-center justify-between p-4 bg-gray-200">
           <button
             onClick={() => changeYear("prev")}
-            disabled={selectedYearIndex === 0}
+            // disabled={selectedYearIndex === 0}
             className="p-1 rounded hover:bg-gray-300 disabled:opacity-50"
           >
             <ChevronLeft size={20} />
           </button>
-          <span className="font-bold">{selectedYear.year}</span>
+          <span className="font-bold">{selectedDate.year}</span>
           <button
             onClick={() => changeYear("next")}
-            disabled={selectedYearIndex === reportData.length - 1}
+            // disabled={selectedYearIndex === yearDates.length - 1}
             className="p-1 rounded hover:bg-gray-300 disabled:opacity-50"
           >
             <ChevronRightIcon size={20} />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto">
-          {selectedYear.months.map((monthData) => (
+          {yearDates.months.map((month) => (
             // 月単位
-            <div key={monthData.month} className="mb-2">
+            <div key={month.month} className="mb-2">
               <Link
-                href={`/report/list/${selectedYear.year}/${monthData.month}`}
-                key={`${selectedYear.year}-${monthData.month}`}
+                href={`/report/list/${selectedDate.year}/${month.month}`}
+                key={`${selectedDate.year}-${month.month}`}
               >
                 <button
                   className="flex items-center w-full px-4 py-2 text-left font-semibold hover:bg-gray-200"
                   onClick={() => {
-                    toggleMonth(monthData.month);
-                    handleSelectMonth(
-                      selectedYear.year,
-                      monthData.month,
-                      monthData.reports
-                    );
+                    toggleMonth(month.month);
+                    handleSelectDate(selectedDate.year, month.month);
                     setActiveIcon("reports");
                   }}
                 >
-                  {openMonths.includes(monthData.month) ? (
+                  {openMonths.includes(month.month) ? (
                     <ChevronDown className="mr-2" size={20} />
                   ) : (
                     <ChevronRight className="mr-2" size={20} />
                   )}
-                  {monthData.month}
+                  {month.month}
                 </button>
               </Link>
-              {openMonths.includes(monthData.month) && (
+              {openMonths.includes(month.month) && (
                 <div className="ml-6">
-                  {monthData.reports.map((report) => (
+                  {month.days.map((day) => (
                     <Link
-                      href={`/report/list/${selectedYear.year}/${monthData.month}/${report.date}`}
-                      key={`${report.date}`}
+                      href={`/report/list/${selectedDate.year}/${month.month}/${day}`}
+                      key={`${day}`}
                     >
                       <button
-                        key={report.date}
+                        key={day}
                         className="w-full px-4 py-2 text-left text-sm hover:bg-gray-200"
                         onClick={() => {
-                          handleSelectReport(report);
+                          handleSelectDate(selectedDate.year, month.month, day);
                           setActiveIcon("reports");
                         }}
                       >
-                        {report.date}
+                        {day}
                       </button>
                     </Link>
                   ))}

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 
 type FileEntry = {
   name: string;
@@ -16,10 +15,8 @@ const Home = () => {
   const fetchFiles = async () => {
     try {
       setError("");
-      const result = await invoke<FileEntry[]>("list_directory", {
-        path: directoryPath,
-      });
-      setFiles(result);
+      // const result = await list_directory();
+      // setFiles(result);
     } catch (err) {
       setError("ディレクトリの読み込みに失敗しました");
       console.error("Error", err);

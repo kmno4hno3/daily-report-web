@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { fileList } from "@/src/entities/files/type";
+import { Year } from "@/src/entities/files/type";
 
-export const fileListAtom = atom<fileList>([]);
-fileListAtom.debugLabel = "fileListAtom";
+export const yearDatesAtom = atom<Year>();
+yearDatesAtom.debugLabel = "yearDatesAtom";
