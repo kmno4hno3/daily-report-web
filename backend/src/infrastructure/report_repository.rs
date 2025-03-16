@@ -34,34 +34,6 @@ impl ReportRepository for ReportRepositoryImpl {
         .await?;
         Ok(report)
     }
-    async fn find_available_dates_by_year(&self, year: i64) -> Result<Year, sqlx::Error> {
-        let rows = sqlx::query!(
-            "SELECT DISTINCT 
-                CAST(EXTRACT(YEAR FROM date) AS INTEGER) AS year, 
-                CAST(EXTRACT(MONTH FROM date) AS INTEGER) AS month, 
-                CAST(EXTRACT(DAY FROM date) AS INTEGER) AS day 
-            FROM reports 
-            WHERE EXTRACT(YEAR FROM date) = $1;",
-            year as i64
-        )
-        .fetch_all(&self.pool)
-        .await?;
-
-        let mut month_map: HashMap<i64, Vec<i64>> = HashMap::new();
-        for row in rows {
-            month_map
-                .entry(row.month.unwrap() as i64)
-                .or_insert_with(Vec::new)
-                .push(row.day.unwrap() as i64);
-        }
-
-        let months = month_map
-            .into_iter()
-            .map(|(month, dates)| Month { month, dates })
-            .collect();
-
-        Ok(Year { year, months })
-    }
     async fn create(&self, report: Report) -> Result<Report, sqlx::Error> {
         let created_report = sqlx::query_as::<_, Report>(
             "INSERT INTO reports (date, content, created_at, updated_at)
@@ -94,5 +66,33 @@ impl ReportRepository for ReportRepositoryImpl {
             .execute(&self.pool)
             .await?;
         Ok(())
+    }
+    async fn find_available_dates_by_year(&self, year: i64) -> Result<Year, sqlx::Error> {
+        let rows = sqlx::query!(
+            "SELECT DISTINCT 
+                CAST(EXTRACT(YEAR FROM date) AS INTEGER) AS year, 
+                CAST(EXTRACT(MONTH FROM date) AS INTEGER) AS month, 
+                CAST(EXTRACT(DAY FROM date) AS INTEGER) AS day 
+            FROM reports 
+            WHERE EXTRACT(YEAR FROM date) = $1;",
+            year as i64
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        let mut month_map: HashMap<i64, Vec<i64>> = HashMap::new();
+        for row in rows {
+            month_map
+                .entry(row.month.unwrap() as i64)
+                .or_insert_with(Vec::new)
+                .push(row.day.unwrap() as i64);
+        }
+
+        let months = month_map
+            .into_iter()
+            .map(|(month, days)| Month { month, days })
+            .collect();
+
+        Ok(Year { year, months })
     }
 }

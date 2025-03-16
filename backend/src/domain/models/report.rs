@@ -20,7 +20,7 @@ pub struct Year {
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, Type)]
 pub struct Month {
     pub month: i64,
-    pub dates: Vec<i64>,
+    pub days: Vec<i64>,
 }
 
 impl Report {
