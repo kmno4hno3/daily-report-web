@@ -1,6 +1,6 @@
 use chrono::{DateTime, FixedOffset, NaiveDate, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
+use sqlx::{Decode, FromRow, Type};
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Report {
@@ -9,6 +9,18 @@ pub struct Report {
     pub content: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, Decode)]
+pub struct Year {
+    pub year: i64,
+    pub months: Vec<Month>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, Type)]
+pub struct Month {
+    pub month: i64,
+    pub dates: Vec<i64>,
 }
 
 impl Report {

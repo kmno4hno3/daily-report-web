@@ -1,7 +1,8 @@
-use crate::domain::models::report::Report;
+use crate::domain::models::report::{Month, Report, Year};
 use crate::domain::repositories::report_repository::ReportRepository;
 use crate::infrastructure::db::DbPool;
 use async_trait::async_trait;
+use std::collections::HashMap;
 
 #[derive(Clone)]
 pub struct ReportRepositoryImpl {
@@ -32,6 +33,34 @@ impl ReportRepository for ReportRepositoryImpl {
         .fetch_optional(&self.pool)
         .await?;
         Ok(report)
+    }
+    async fn find_available_dates_by_year(&self, year: i64) -> Result<Year, sqlx::Error> {
+        let rows = sqlx::query!(
+            "SELECT DISTINCT 
+                CAST(EXTRACT(YEAR FROM date) AS INTEGER) AS year, 
+                CAST(EXTRACT(MONTH FROM date) AS INTEGER) AS month, 
+                CAST(EXTRACT(DAY FROM date) AS INTEGER) AS day 
+            FROM reports 
+            WHERE EXTRACT(YEAR FROM date) = $1;",
+            year as i64
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        let mut month_map: HashMap<i64, Vec<i64>> = HashMap::new();
+        for row in rows {
+            month_map
+                .entry(row.month.unwrap() as i64)
+                .or_insert_with(Vec::new)
+                .push(row.day.unwrap() as i64);
+        }
+
+        let months = month_map
+            .into_iter()
+            .map(|(month, dates)| Month { month, dates })
+            .collect();
+
+        Ok(Year { year, months })
     }
     async fn create(&self, report: Report) -> Result<Report, sqlx::Error> {
         let created_report = sqlx::query_as::<_, Report>(

@@ -9,7 +9,7 @@ use http::StatusCode;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-use crate::domain::models::report::Report;
+use crate::domain::models::report::{Month, Report, Year};
 use crate::usecase::report_usecase::ReportService;
 
 #[derive(Clone)]
@@ -34,6 +34,10 @@ pub fn create_report_router<T: ReportService + Send + Sync + 'static + Clone>(
             get(get_report_by_id::<T>)
                 .put(update_report::<T>)
                 .delete(delete_report::<T>),
+        )
+        .route(
+            "/report/dates/{year}",
+            get(get_available_dates_by_year::<T>),
         )
         .with_state(state)
 }
@@ -61,6 +65,20 @@ impl From<Report> for ReportResponse {
             id: report.id,
             date: report.date,
             content: report.content,
+        }
+    }
+}
+#[derive(Serialize)]
+struct YearResponse {
+    year: i64,
+    months: Vec<Month>,
+}
+
+impl From<Year> for YearResponse {
+    fn from(year_data: Year) -> Self {
+        Self {
+            year: year_data.year,
+            months: year_data.months,
         }
     }
 }
@@ -123,5 +141,14 @@ async fn delete_report<T: ReportService>(
             (StatusCode::INTERNAL_SERVER_ERROR, "Report not found").into_response()
         }
         Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed delete report").into_response(),
+    }
+}
+async fn get_available_dates_by_year<T: ReportService>(
+    State(state): State<AppState<T>>,
+    Path(year): Path<i64>,
+) -> impl IntoResponse {
+    match state.report_service.get_available_dates_by_year(year).await {
+        Ok(dates) => Json(YearResponse::from(dates)).into_response(),
+        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch dates").into_response(),
     }
 }

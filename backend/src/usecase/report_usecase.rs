@@ -1,4 +1,4 @@
-use crate::domain::models::report::Report;
+use crate::domain::models::report::{Report, Year};
 use crate::domain::repositories::report_repository::ReportRepository;
 use async_trait::async_trait;
 
@@ -20,6 +20,7 @@ pub trait ReportService {
     async fn create_report(&self, content: String) -> Result<Report, sqlx::Error>;
     async fn update_report(&self, id: i64, content: String) -> Result<Report, sqlx::Error>;
     async fn delete_report(&self, id: i64) -> Result<(), sqlx::Error>;
+    async fn get_available_dates_by_year(&self, id: i64) -> Result<Year, sqlx::Error>;
 }
 
 #[async_trait]
@@ -45,5 +46,8 @@ impl<T: ReportRepository + Send + Sync + Clone> ReportService for ReportUsecase<
     }
     async fn delete_report(&self, id: i64) -> Result<(), sqlx::Error> {
         self.repository.delete(id).await
+    }
+    async fn get_available_dates_by_year(&self, year: i64) -> Result<Year, sqlx::Error> {
+        self.repository.find_available_dates_by_year(year).await
     }
 }
