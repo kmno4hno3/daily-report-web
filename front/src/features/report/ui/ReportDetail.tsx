@@ -1,44 +1,40 @@
 "use client";
-import { Report } from "@/src/entities/files/type";
+
 import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import markdownit from "markdown-it";
 import TurndownService from "turndown";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { all, createLowlight } from "lowlight";
+import type { Date } from "@/src/features/model/type";
+import type { Report } from "@/src/entities/files/type";
+import axios from "axios";
+
 interface Props {
-  selectedDateReport?: Report;
-  selectedYear?: string;
-  selectedMonth?: string;
+  selectedDate: Date;
 }
 
-export const ReportDetail = ({
-  selectedDateReport,
-  selectedYear,
-  selectedMonth,
-}: Props) => {
-  const [file, setFile] = useState<string>();
+export const ReportDetail = ({ selectedDate }: Props) => {
+  const [report, setFile] = useState<string>();
 
   useEffect(() => {
-    const fetchFile = async (path: string) => {
+    const fetchFile = async () => {
       try {
-        const result = await invoke<string>("get_file_content", {
-          path,
+        await axios.get("").then((res) => {
+          const report: Report = res.data;
+          setFile(report.content);
         });
-        setFile(result);
       } catch (err) {
         console.error("Error", err);
       }
     };
 
-    if (selectedDateReport?.date) {
-      fetchFile(
-        `/Users/tatsuya/Workspace/個人開発/daily-report-files/${selectedYear}/${selectedMonth}/${selectedDateReport.date}.md`
-      );
+    if (selectedDate?.day) {
+      // TODO: 日報本文取得API自走
+      fetchFile();
     }
-  }, [selectedYear, selectedMonth]);
+  }, [selectedDate]);
 
   const md = markdownit();
   const lowlight = createLowlight(all);
@@ -50,10 +46,10 @@ export const ReportDetail = ({
           lowlight,
         }),
       ],
-      content: file ? md.render(file) : "",
+      content: report ? md.render(report) : "",
       immediatelyRender: false,
     },
-    [file]
+    [report]
   );
 
   const saveContent = async (path: string) => {
@@ -64,34 +60,34 @@ export const ReportDetail = ({
         preformattedCode: true,
       });
       try {
-        await invoke<string>("save_content", {
-          path,
-          mdText: turndownService.turndown(editor.getHTML()),
-        });
+        // await invoke<string>("save_content", {
+        //   path,
+        //   mdText: turndownService.turndown(editor.getHTML()),
+        // });
       } catch (e) {
         console.log(e);
       }
     }
   };
   useEffect(() => {
-    if (editor && selectedDateReport) {
-      const path = `/Users/tatsuya/Workspace/個人開発/daily-report-files/${selectedYear}/${selectedMonth}/${selectedDateReport.date}.md`;
-      editor.on("blur", () => saveContent(path));
-      return () => {
-        editor.off("blur", () => saveContent(path));
-      };
+    if (editor) {
+      // const path = `/Users/tatsuya/Workspace/個人開発/daily-report-files/${selectedYear}/${selectedMonth}/${selectedDateReport.date}.md`;
+      // editor.on("blur", () => saveContent(path));
+      // return () => {
+      //   editor.off("blur", () => saveContent(path));
+      // };
     }
   }, [editor]);
 
   // TODO: 一瞬ちらつきが起きるのを改善したい
-  if (!selectedDateReport || !file) {
+  if (!report) {
     return <div>日報がありません</div>;
   }
 
   return (
     <div className="flex-1 p-6 overflow-y-auto">
       <h2 className="text-2xl font-bold mb-4">
-        {selectedYear}/{selectedMonth}/{selectedDateReport.date}
+        {selectedDate.year}/{selectedDate.month}/{selectedDate.day}
       </h2>
       {editor && <EditorContent editor={editor} />}
     </div>

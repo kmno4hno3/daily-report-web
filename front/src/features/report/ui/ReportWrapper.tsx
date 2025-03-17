@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import type { Date } from "@/src/features/model/type";
 import { usePathname } from "next/navigation";
 import { yearDatesAtom } from "@/src/entities/files/model";
 import { useAtom } from "jotai";
@@ -11,60 +12,34 @@ import { ReportList } from "./ReportList";
 
 export const ReportWrapper = () => {
   const pathname = usePathname();
-  const [selectedYear, setSelectedYear] = useState<string | undefined>(
-    undefined
-  );
-  const [selectedMonth, setSelectedMonth] = useState<string | undefined>(
-    undefined
-  );
-  const [selectedDate, setSelectedDate] = useState<string | undefined>(
-    undefined
-  );
-  const [reportData] = useAtom(yearDatesAtom);
+  const today = new Date();
+  const [selectedDate, setSelectedDate] = useState<Date>({
+    year: today.getFullYear(),
+    month: today.getMonth(),
+    day: today.getDay(),
+  });
+  const [yearDates] = useAtom(yearDatesAtom);
+  const selectedMonthDays = yearDates?.months.find((month) => {
+    month.month === selectedDate.month;
+  });
 
   useEffect(() => {
     if (pathname?.startsWith("/report/list")) {
       const paths = pathname?.split("/");
-      const [, , , year, month, date] = paths;
-      setSelectedYear(year);
-      setSelectedMonth(month);
-      setSelectedDate(date);
+      const [, , , year, month, day] = paths;
+      setSelectedDate({
+        year: Number(year),
+        month: Number(month),
+        day: Number(day),
+      });
     }
   }, [pathname]);
 
-  const selectedYearReports = useMemo(() => {
-    return reportData.find((yearData) => {
-      return yearData.year === Number(selectedYear);
-    });
-  }, [selectedYear]);
-  const selectedMonthReports = useMemo(() => {
-    return selectedYearReports?.months.find((monthData) => {
-      return monthData.month === Number(selectedMonth);
-    });
-  }, [selectedMonth]);
-  const selectedDateReport = useMemo(() => {
-    return selectedMonthReports?.reports.find((report) => {
-      return report.date === Number(selectedDate);
-    });
-  }, [selectedDate]);
-
   const renderChildren = () => {
-    if (selectedDateReport) {
-      return (
-        <ReportDetail
-          selectedDateReport={selectedDateReport}
-          selectedYear={selectedYear}
-          selectedMonth={selectedMonth}
-        />
-      );
-    } else {
-      return (
-        <ReportList
-          selectedMonthReports={selectedMonthReports}
-          selectedYear={selectedYear}
-          selectedMonth={selectedMonth}
-        />
-      );
+    if (selectedDate) {
+      return <ReportDetail selectedDate={selectedDate} />;
+    } else if (yearDates?.months && selectedMonthDays) {
+      return <ReportList selectedDate={selectedDate} />;
     }
   };
 

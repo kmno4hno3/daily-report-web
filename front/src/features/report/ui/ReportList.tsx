@@ -1,42 +1,46 @@
 "use client";
 
-import { Month, Report } from "@/src/entities/files/type";
 import Link from "next/link";
+import { yearDatesAtom } from "@/src/entities/files/model";
+import type { Date } from "@/src/features/model/type";
+import { useAtom } from "jotai";
 
 interface props {
-  selectedMonthReports?: Month;
-  selectedYear?: string;
-  selectedMonth?: string;
+  selectedDate: Date;
 }
 
-export const ReportList = ({
-  selectedMonthReports,
-  selectedYear,
-  selectedMonth,
-}: props) => {
+export const ReportList = ({ selectedDate }: props) => {
+  const [yearDates] = useAtom(yearDatesAtom);
+
+  if (!yearDates?.year || !selectedDate?.month)
+    return <div>表示する日報がありません</div>;
+
+  const selectedDays = yearDates.months.find((month) => {
+    month.month === selectedDate.month;
+  });
+
   return (
-    selectedMonthReports &&
-    selectedYear &&
-    selectedMonth && (
+    selectedDate && (
       <div className="flex-1 p-6 overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">
-          {selectedYear}年 {selectedMonth}月の日報一覧
+          {selectedDate.year}年 {selectedDate.month}月の日報一覧
         </h2>
         <div className="grid gap-4">
-          {selectedMonthReports.reports.map((report: Report) => (
-            <Link
-              href={`/report/list/${selectedYear}/${selectedMonth}/${report.date}`}
-              key={`${report.date}`}
-            >
-              <button
-                key={report.date}
-                className="text-left p-4 border rounded-lg hover:bg-gray-100 transition-colors"
+          {selectedDays &&
+            selectedDays.days.map((day: number) => (
+              <Link
+                href={`/report/list/${selectedDate.year}/${selectedDate.month}/${selectedDate.day}`}
+                key={`${day}`}
               >
-                <h3 className="font-semibold">{report.date}</h3>
-                <p className="text-gray-600 truncate">{report.date}</p>
-              </button>
-            </Link>
-          ))}
+                <button
+                  key={day}
+                  className="text-left p-4 border rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <h3 className="font-semibold">{day}</h3>
+                  <p className="text-gray-600 truncate">{day}</p>
+                </button>
+              </Link>
+            ))}
         </div>
       </div>
     )
