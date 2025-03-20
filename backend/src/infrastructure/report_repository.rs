@@ -34,6 +34,22 @@ impl ReportRepository for ReportRepositoryImpl {
         .await?;
         Ok(report)
     }
+    async fn find_by_date(
+        &self,
+        year: i64,
+        month: i64,
+        day: i64,
+    ) -> Result<Option<Report>, sqlx::Error> {
+        let report = sqlx::query_as::<_, Report>(
+            "SELECT id, date, content, created_at, updated_at FROM reports WHERE EXTRACT(YEAR FROM date) = $1 AND EXTRACT(MONTH FROM date) = $2 AND EXTRACT(DAY FROM date) = $3;",
+        )
+        .bind(year)
+        .bind(month)
+        .bind(day)
+        .fetch_optional(&self.pool)
+        .await?;
+        Ok(report)
+    }
     async fn create(&self, report: Report) -> Result<Report, sqlx::Error> {
         let created_report = sqlx::query_as::<_, Report>(
             "INSERT INTO reports (date, content, created_at, updated_at)

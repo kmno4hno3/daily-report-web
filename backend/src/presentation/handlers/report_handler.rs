@@ -35,6 +35,7 @@ pub fn create_report_router<T: ReportService + Send + Sync + 'static + Clone>(
                 .put(update_report::<T>)
                 .delete(delete_report::<T>),
         )
+        .route("/report/{year}/{month}/{day}", get(get_report_by_date::<T>))
         .route(
             "/report/dates/{year}",
             get(get_available_dates_by_year::<T>),
@@ -100,6 +101,20 @@ async fn get_report_by_id<T: ReportService>(
     Path(id): Path<i64>,
 ) -> impl IntoResponse {
     match state.report_service.get_report_by_id(id).await {
+        Ok(Some(report)) => Json(ReportResponse::from(report)).into_response(),
+        Ok(None) => (StatusCode::NOT_FOUND, "Report not found").into_response(),
+        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch report").into_response(),
+    }
+}
+async fn get_report_by_date<T: ReportService>(
+    State(state): State<AppState<T>>,
+    Path((year, month, day)): Path<(i64, i64, i64)>,
+) -> impl IntoResponse {
+    match state
+        .report_service
+        .get_report_by_date(year, month, day)
+        .await
+    {
         Ok(Some(report)) => Json(ReportResponse::from(report)).into_response(),
         Ok(None) => (StatusCode::NOT_FOUND, "Report not found").into_response(),
         Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch report").into_response(),

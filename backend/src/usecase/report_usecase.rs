@@ -17,6 +17,12 @@ impl<T: ReportRepository + Clone> ReportUsecase<T> {
 pub trait ReportService {
     async fn get_all_reports(&self) -> Result<Vec<Report>, sqlx::Error>;
     async fn get_report_by_id(&self, id: i64) -> Result<Option<Report>, sqlx::Error>;
+    async fn get_report_by_date(
+        &self,
+        year: i64,
+        month: i64,
+        day: i64,
+    ) -> Result<Option<Report>, sqlx::Error>;
     async fn create_report(&self, content: String) -> Result<Report, sqlx::Error>;
     async fn update_report(&self, id: i64, content: String) -> Result<Report, sqlx::Error>;
     async fn delete_report(&self, id: i64) -> Result<(), sqlx::Error>;
@@ -30,6 +36,14 @@ impl<T: ReportRepository + Send + Sync + Clone> ReportService for ReportUsecase<
     }
     async fn get_report_by_id(&self, id: i64) -> Result<Option<Report>, sqlx::Error> {
         self.repository.find_by_id(id).await
+    }
+    async fn get_report_by_date(
+        &self,
+        year: i64,
+        month: i64,
+        day: i64,
+    ) -> Result<Option<Report>, sqlx::Error> {
+        self.repository.find_by_date(year, month, day).await
     }
     async fn create_report(&self, content: String) -> Result<Report, sqlx::Error> {
         let new_report = Report::new(content);
