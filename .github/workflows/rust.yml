@@ -18,6 +18,8 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build
       working-directory: ./backend
+      env:
+        SQLX_OFFLINE: true
       run: cargo build --verbose
     - name: Run tests
       working-directory: ./backend
