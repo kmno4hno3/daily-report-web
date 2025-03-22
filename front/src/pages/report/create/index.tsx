@@ -1,3 +1,5 @@
+import { ReportCreateForm } from "@/src/features/report";
+
 export const DailyReportCreate = () => {
-  return <>create</>;
+  return <ReportCreateForm />;
 };

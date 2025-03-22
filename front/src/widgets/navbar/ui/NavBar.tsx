@@ -29,7 +29,6 @@ export const Navbar: React.FC = () => {
           <Tooltip key={name}>
             <TooltipTrigger asChild>
               <Link href={src} className="mb-4">
-                {/* <Button className={buttonVariants({ variant: "ghost" })}> */}
                 <Button className={buttonVariants({ variant: "ghost" })}>
                   <Icon className="h-5 w-5 text-white" />
                   <span className="sr-only">{label}</span>
