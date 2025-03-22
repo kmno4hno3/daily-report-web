@@ -20,7 +20,7 @@ export const ReportWrapper = () => {
   });
   const [yearDates] = useAtom(yearDatesAtom);
   const selectedMonthDays = yearDates?.months.find((month) => {
-    month.month === selectedDate.month;
+    return month.month === selectedDate.month;
   });
 
   useEffect(() => {

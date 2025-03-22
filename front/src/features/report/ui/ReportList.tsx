@@ -16,7 +16,7 @@ export const ReportList = ({ selectedDate }: props) => {
     return <div>表示する日報がありません</div>;
 
   const selectedDays = yearDates.months.find((month) => {
-    month.month === selectedDate.month;
+    return month.month === selectedDate.month;
   });
 
   return (

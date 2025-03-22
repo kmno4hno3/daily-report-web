@@ -21,17 +21,21 @@ export const ReportDetail = ({ selectedDate }: Props) => {
   useEffect(() => {
     const fetchFile = async () => {
       try {
-        await axios.get("").then((res) => {
+        const url = `http://localhost:8000/api/report/${selectedDate.year}/${selectedDate.month}/${selectedDate.day}`;
+        await axios.get(url).then((res) => {
           const report: Report = res.data;
-          setFile(report.content);
+          if (report) setFile(report.content);
         });
       } catch (err) {
-        console.error("Error", err);
+        if (axios.isAxiosError(err) && err.response?.status === 404) {
+          console.log("日報が見つかりません");
+        } else {
+          console.error("Error", err);
+        }
       }
     };
 
     if (selectedDate?.day) {
-      // TODO: 日報本文取得API自走
       fetchFile();
     }
   }, [selectedDate]);
