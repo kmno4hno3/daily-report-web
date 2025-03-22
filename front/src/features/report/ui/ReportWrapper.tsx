@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import type { Date } from "@/src/features/model/type";
+import type { Date } from "@/src/features/report/model/type";
 import { usePathname } from "next/navigation";
 import { yearDatesAtom } from "@/src/entities/files/model";
 import { useAtom } from "jotai";

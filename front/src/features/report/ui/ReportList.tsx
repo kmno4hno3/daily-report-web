@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { yearDatesAtom } from "@/src/entities/files/model";
-import type { Date } from "@/src/features/model/type";
+import type { Date } from "@/src/features/report/model/type";
 import { useAtom } from "jotai";
 
 interface props {

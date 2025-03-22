@@ -7,7 +7,7 @@ import markdownit from "markdown-it";
 import TurndownService from "turndown";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { all, createLowlight } from "lowlight";
-import type { Date } from "@/src/features/model/type";
+import type { Date } from "@/src/features/report/model/type";
 import type { Report } from "@/src/entities/files/type";
 import axios from "axios";
 
