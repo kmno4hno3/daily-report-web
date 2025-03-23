@@ -5,6 +5,7 @@ import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import axios from "axios";
+import { useState } from "react";
 
 import { Button } from "@/src/shared/ui/button";
 import {
@@ -22,13 +23,23 @@ import {
 } from "@/src/shared/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/src/shared/ui/calendar";
+import { ErrorDialog } from "@/src/shared/ui/error-dialog";
 
-const formSchema = z.object({
-  date: z.date(),
-  content: z.string(),
-});
+interface Error {
+  hasError: boolean;
+  errorMessage: string;
+}
 
 export const ReportCreateForm = () => {
+  const [error, setError] = useState<Error>({
+    hasError: false,
+    errorMessage: "",
+  });
+
+  const formSchema = z.object({
+    date: z.date(),
+    content: z.string(),
+  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,7 +54,10 @@ export const ReportCreateForm = () => {
     try {
       await axios.post(url, { date: formatDate, content });
     } catch (error) {
-      console.error(error);
+      setError({
+        hasError: true,
+        errorMessage: "エラーが発生しました",
+      });
     }
   };
 
@@ -111,6 +125,17 @@ export const ReportCreateForm = () => {
           <Button type="submit">新規作成</Button>
         </form>
       </Form>
+
+      <ErrorDialog
+        isOpen={error.hasError}
+        errorMessage={error.errorMessage}
+        callback={() =>
+          setError({
+            hasError: false,
+            errorMessage: "",
+          })
+        }
+      />
     </div>
   );
 };
