@@ -31,11 +31,12 @@ pub fn create_report_router<T: ReportService + Send + Sync + 'static + Clone>(
         )
         .route(
             "/report/{id}",
-            get(get_report_by_id::<T>)
-                .put(update_report::<T>)
-                .delete(delete_report::<T>),
+            get(get_report_by_id::<T>).delete(delete_report::<T>),
         )
-        .route("/report/{year}/{month}/{day}", get(get_report_by_date::<T>))
+        .route(
+            "/report/{year}/{month}/{day}",
+            get(get_report_by_date::<T>).put(update_report::<T>),
+        )
         .route(
             "/report/dates/{year}",
             get(get_available_dates_by_year::<T>),
@@ -136,12 +137,12 @@ async fn create_report<T: ReportService>(
 }
 async fn update_report<T: ReportService>(
     State(state): State<AppState<T>>,
-    Path(id): Path<i64>,
+    Path((year, month, day)): Path<(i64, i64, i64)>,
     Json(payload): Json<UpdateReportRequest>,
 ) -> impl IntoResponse {
     let result = state
         .report_service
-        .update_report(id, payload.content)
+        .update_report(year, month, day, payload.content)
         .await;
     match result {
         Ok(report) => Json(ReportResponse::from(report)).into_response(),

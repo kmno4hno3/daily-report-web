@@ -56,7 +56,7 @@ export const ReportDetail = ({ selectedDate }: Props) => {
     [report]
   );
 
-  const saveContent = async (path: string) => {
+  const saveContent = async () => {
     if (editor) {
       let turndownService = new TurndownService({
         headingStyle: "atx",
@@ -64,10 +64,10 @@ export const ReportDetail = ({ selectedDate }: Props) => {
         preformattedCode: true,
       });
       try {
-        // await invoke<string>("save_content", {
-        //   path,
-        //   mdText: turndownService.turndown(editor.getHTML()),
-        // });
+        const url = `http://localhost:8000/api/report/${selectedDate.year}/${selectedDate.month}/${selectedDate.day}`;
+        await axios.put(url, {
+          content: turndownService.turndown(editor.getHTML()),
+        });
       } catch (e) {
         console.log(e);
       }
@@ -75,11 +75,10 @@ export const ReportDetail = ({ selectedDate }: Props) => {
   };
   useEffect(() => {
     if (editor) {
-      // const path = `/Users/tatsuya/Workspace/個人開発/daily-report-files/${selectedYear}/${selectedMonth}/${selectedDateReport.date}.md`;
-      // editor.on("blur", () => saveContent(path));
-      // return () => {
-      //   editor.off("blur", () => saveContent(path));
-      // };
+      editor.on("blur", () => saveContent());
+      return () => {
+        editor.off("blur", () => saveContent());
+      };
     }
   }, [editor]);
 
