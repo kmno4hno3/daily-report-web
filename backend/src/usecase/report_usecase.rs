@@ -23,7 +23,7 @@ pub trait ReportService {
         month: i64,
         day: i64,
     ) -> Result<Option<Report>, sqlx::Error>;
-    async fn create_report(&self, content: String) -> Result<Report, sqlx::Error>;
+    async fn create_report(&self, date: String, content: String) -> Result<Report, sqlx::Error>;
     async fn update_report(&self, id: i64, content: String) -> Result<Report, sqlx::Error>;
     async fn delete_report(&self, id: i64) -> Result<(), sqlx::Error>;
     async fn get_available_dates_by_year(&self, id: i64) -> Result<Year, sqlx::Error>;
@@ -45,8 +45,8 @@ impl<T: ReportRepository + Send + Sync + Clone> ReportService for ReportUsecase<
     ) -> Result<Option<Report>, sqlx::Error> {
         self.repository.find_by_date(year, month, day).await
     }
-    async fn create_report(&self, content: String) -> Result<Report, sqlx::Error> {
-        let new_report = Report::new(content);
+    async fn create_report(&self, date: String, content: String) -> Result<Report, sqlx::Error> {
+        let new_report = Report::new(date, content);
         self.repository.create(new_report).await
     }
     async fn update_report(&self, id: i64, content: String) -> Result<Report, sqlx::Error> {

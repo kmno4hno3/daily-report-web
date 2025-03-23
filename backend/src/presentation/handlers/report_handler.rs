@@ -45,6 +45,7 @@ pub fn create_report_router<T: ReportService + Send + Sync + 'static + Clone>(
 
 #[derive(Deserialize)]
 struct CreateReportRequest {
+    date: String,
     content: String,
 }
 
@@ -124,7 +125,11 @@ async fn create_report<T: ReportService>(
     State(state): State<AppState<T>>,
     Json(payload): Json<CreateReportRequest>,
 ) -> impl IntoResponse {
-    match state.report_service.create_report(payload.content).await {
+    match state
+        .report_service
+        .create_report(payload.date, payload.content)
+        .await
+    {
         Ok(report) => (StatusCode::CREATED, Json(ReportResponse::from(report))).into_response(),
         Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to create report").into_response(),
     }

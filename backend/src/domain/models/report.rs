@@ -24,14 +24,15 @@ pub struct Month {
 }
 
 impl Report {
-    pub fn new(content: String) -> Self {
+    pub fn new(date: String, content: String) -> Self {
         let jst = FixedOffset::east_opt(9 * 3600).unwrap();
         let now_jst = jst.from_utc_datetime(&Utc::now().naive_utc());
         let now_utc = now_jst.with_timezone(&Utc);
         let today = now_jst.date_naive();
+        let date_parsed = NaiveDate::parse_from_str(&date, "%Y-%m-%d").unwrap_or(today);
         Self {
             id: None,
-            date: today,
+            date: date_parsed,
             content: Some(content),
             created_at: now_utc,
             updated_at: now_utc,

@@ -32,8 +32,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let report_repository = ReportRepositoryImpl::new(pool.clone());
     let report_service = ReportUsecase::new(report_repository);
 
-    let cors =
-        CorsLayer::new().allow_origin(["http://localhost:3000".parse::<HeaderValue>().unwrap()]);
+    let cors = CorsLayer::new()
+        .allow_origin(["http://localhost:3000".parse::<HeaderValue>().unwrap()])
+        .allow_methods([
+            http::Method::GET,
+            http::Method::POST,
+            http::Method::PUT,
+            http::Method::DELETE,
+        ])
+        .allow_headers([http::header::CONTENT_TYPE]);
 
     let app = Router::new()
         .route("/", get(|| async { "Hello, Axum!!!" }))
