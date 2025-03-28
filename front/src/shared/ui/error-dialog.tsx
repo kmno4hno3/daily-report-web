@@ -17,7 +17,7 @@ interface Props {
 export const ErrorDialog = ({ isOpen, errorMessage, callback }: Props) => {
   return (
     <AlertDialog open={isOpen}>
-      <AlertDialogContent>
+      <AlertDialogContent className="bg-white">
         <AlertDialogHeader>
           <AlertDialogTitle>エラー</AlertDialogTitle>
           <AlertDialogDescription>{errorMessage}</AlertDialogDescription>

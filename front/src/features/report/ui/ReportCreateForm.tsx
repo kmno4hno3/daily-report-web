@@ -30,6 +30,11 @@ interface Error {
   errorMessage: string;
 }
 
+interface ErrorResponse {
+  status: number;
+  message: string;
+}
+
 export const ReportCreateForm = () => {
   const [error, setError] = useState<Error>({
     hasError: false,
@@ -53,16 +58,23 @@ export const ReportCreateForm = () => {
     const url = `http://localhost:8000/api/reports`;
     try {
       await axios.post(url, { date: formatDate, content });
-    } catch (error) {
+    } catch (error: unknown) {
+      let errorMessage = "不明なエラーが発生しました";
+      if (
+        axios.isAxiosError(error) &&
+        error.response &&
+        error.response.status !== 500
+      ) {
+        errorMessage = error.response.data.message;
+      }
       setError({
         hasError: true,
-        errorMessage: "エラーが発生しました",
+        errorMessage: errorMessage,
       });
     }
   };
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     await createReport(data.date, data.content);
   };
 

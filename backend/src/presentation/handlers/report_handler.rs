@@ -86,6 +86,24 @@ impl From<Year> for YearResponse {
     }
 }
 
+#[derive(Serialize, Debug)]
+struct ErrorResponse {
+    code: u16,
+    message: String,
+}
+
+impl ErrorResponse {
+    fn from(error: sqlx::Error) -> Self {
+        let (code, message) = match error {
+            sqlx::Error::RowNotFound => (404, "リソースが見つかりません".to_string()),
+            sqlx::Error::Database(e) if e.is_unique_violation() => (409, "重複エラー".to_string()),
+            _ => (500, "サーバーエラー".to_string()),
+        };
+
+        Self { code, message }
+    }
+}
+
 async fn get_all_reports<T: ReportService>(State(state): State<AppState<T>>) -> impl IntoResponse {
     match state.report_service.get_all_reports().await {
         Ok(reports) => Json(
@@ -132,7 +150,15 @@ async fn create_report<T: ReportService>(
         .await
     {
         Ok(report) => (StatusCode::CREATED, Json(ReportResponse::from(report))).into_response(),
-        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to create report").into_response(),
+        Err(e) => {
+            let error_response = ErrorResponse::from(e);
+            (
+                StatusCode::from_u16(error_response.code)
+                    .unwrap_or(StatusCode::INTERNAL_SERVER_ERROR),
+                Json(error_response),
+            )
+                .into_response()
+        }
     }
 }
 async fn update_report<T: ReportService>(
