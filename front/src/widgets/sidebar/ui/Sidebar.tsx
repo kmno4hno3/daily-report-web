@@ -2,10 +2,9 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import { Year } from "@/src/entities/files/type";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { yearDatesAtom } from "@/src/entities/files/model";
+import { yearDatesAtom, currentYearAtom } from "@/src/entities/files/model";
 import {
   ChevronDown,
   ChevronRight,
@@ -21,6 +20,7 @@ interface Date {
 
 export const Sidebar: React.FC = () => {
   const [yearDates] = useAtom(yearDatesAtom);
+  const [, setCurrentYear] = useAtom(currentYearAtom);
   const [openMonths, setOpenMonths] = useState<number[]>([]);
   const [, setActiveIcon] = useState("reports");
   const today = new Date();
@@ -63,6 +63,7 @@ export const Sidebar: React.FC = () => {
   const changeYear = (direction: "prev" | "next") => {
     const year =
       direction === "prev" ? selectedDate.year - 1 : selectedDate.year + 1;
+    setCurrentYear(year);
     setSelectedDate({
       year,
       month: undefined,
