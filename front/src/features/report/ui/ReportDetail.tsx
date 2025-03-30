@@ -81,11 +81,6 @@ export const ReportDetail = () => {
     }
   }, [editor]);
 
-  // TODO: 一瞬ちらつきが起きるのを改善したい
-  if (!(report instanceof Object)) {
-    return <div>日報がありません</div>;
-  }
-
   return (
     <div className="flex-1 p-6 overflow-y-auto">
       <h2 className="text-2xl font-bold mb-4">
