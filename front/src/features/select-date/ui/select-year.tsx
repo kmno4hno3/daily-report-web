@@ -1,31 +1,17 @@
 import { useAtom } from "jotai";
-import { useState } from "react";
-import { currentYearAtom } from "@/src/entities/files/model";
+import { currentYearAtom, currentDateAtom } from "@/src/entities/files/model";
 
 import { ChevronLeft, ChevronRightIcon } from "lucide-react";
 
-interface SelectYearProps {
-  selectedDate: Date;
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
-}
-
-interface Date {
-  year: number;
-  month: number | undefined;
-  day: number | undefined;
-}
-
-export const SelectYear = ({
-  selectedDate,
-  setSelectedDate,
-}: SelectYearProps) => {
+export const SelectYear = () => {
   const [, setCurrentYear] = useAtom(currentYearAtom);
+  const [currentDate, setCurrentDateAtom] = useAtom(currentDateAtom);
 
   const changeYear = (direction: "prev" | "next") => {
     const year =
-      direction === "prev" ? selectedDate.year - 1 : selectedDate.year + 1;
+      direction === "prev" ? currentDate.year - 1 : currentDate.year + 1;
     setCurrentYear(year);
-    setSelectedDate({
+    setCurrentDateAtom({
       year,
       month: undefined,
       day: undefined,
@@ -41,7 +27,7 @@ export const SelectYear = ({
       >
         <ChevronLeft size={20} />
       </button>
-      <span className="font-bold">{selectedDate.year}</span>
+      <span className="font-bold">{currentDate.year}</span>
       <button
         onClick={() => changeYear("next")}
         // disabled={selectedYearIndex === yearDates.length - 1}
