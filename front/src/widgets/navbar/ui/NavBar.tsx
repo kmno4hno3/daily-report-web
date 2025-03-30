@@ -1,5 +1,11 @@
 import type React from "react";
-import { FileText, PlusCircle, Settings, HelpCircle } from "lucide-react";
+import {
+  FileText,
+  PlusCircle,
+  Settings,
+  HelpCircle,
+  CircleUser,
+} from "lucide-react";
 import Link from "next/link";
 import {
   Tooltip,
@@ -11,15 +17,16 @@ import { Button, buttonVariants } from "@/src/shared/ui/button";
 
 export const Navbar: React.FC = () => {
   const icons = [
-    { name: "reports", Icon: FileText, label: "日報", src: "/report/list" },
+    // { name: "reports", Icon: FileText, label: "日報", src: "/report/list" },
     {
       name: "new",
       Icon: PlusCircle,
       label: "新規作成",
       src: "/report/create",
     },
-    { name: "settings", Icon: Settings, label: "設定", src: "/settings" },
-    { name: "help", Icon: HelpCircle, label: "ヘルプ", src: "/help" },
+    // { name: "settings", Icon: Settings, label: "設定", src: "/settings" },
+    // { name: "help", Icon: HelpCircle, label: "ヘルプ", src: "/help" },
+    { name: "account", Icon: CircleUser, label: "アカウント", src: "/account" },
   ];
 
   return (
