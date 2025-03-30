@@ -31,7 +31,7 @@ pub trait ReportService {
         day: i64,
         content: String,
     ) -> Result<Report, sqlx::Error>;
-    async fn delete_report(&self, id: i64) -> Result<(), sqlx::Error>;
+    async fn delete_report(&self, year: i64, month: i64, day: i64) -> Result<(), sqlx::Error>;
     async fn get_available_dates_by_year(&self, id: i64) -> Result<Year, sqlx::Error>;
 }
 
@@ -70,8 +70,14 @@ impl<T: ReportRepository + Send + Sync + Clone> ReportService for ReportUsecase<
 
         Err(sqlx::Error::RowNotFound)
     }
-    async fn delete_report(&self, id: i64) -> Result<(), sqlx::Error> {
-        self.repository.delete(id).await
+    async fn delete_report(&self, year: i64, month: i64, day: i64) -> Result<(), sqlx::Error> {
+        let existing_report = self.repository.find_by_date(year, month, day).await?;
+        if let Some(report) = existing_report {
+            self.repository.delete(report).await?;
+            Ok(())
+        } else {
+            Err(sqlx::Error::RowNotFound)
+        }
     }
     async fn get_available_dates_by_year(&self, year: i64) -> Result<Year, sqlx::Error> {
         self.repository.find_available_dates_by_year(year).await

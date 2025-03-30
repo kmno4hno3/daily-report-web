@@ -14,5 +14,5 @@ pub trait ReportRepository {
     async fn find_available_dates_by_year(&self, year: i64) -> Result<Year, sqlx::Error>;
     async fn create(&self, report: Report) -> Result<Report, sqlx::Error>;
     async fn update(&self, report: Report) -> Result<Report, sqlx::Error>;
-    async fn delete(&self, id: i64) -> Result<(), sqlx::Error>;
+    async fn delete(&self, report: Report) -> Result<(), sqlx::Error>;
 }

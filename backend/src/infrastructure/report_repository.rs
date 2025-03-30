@@ -76,9 +76,9 @@ impl ReportRepository for ReportRepositoryImpl {
         .await?;
         Ok(updated_report)
     }
-    async fn delete(&self, id: i64) -> Result<(), sqlx::Error> {
+    async fn delete(&self, report: Report) -> Result<(), sqlx::Error> {
         sqlx::query("DELETE FROM reports WHERE id = $1")
-            .bind(id)
+            .bind(report.id)
             .execute(&self.pool)
             .await?;
         Ok(())

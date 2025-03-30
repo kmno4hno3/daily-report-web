@@ -29,13 +29,12 @@ pub fn create_report_router<T: ReportService + Send + Sync + 'static + Clone>(
             "/reports",
             get(get_all_reports::<T>).post(create_report::<T>),
         )
-        .route(
-            "/report/{id}",
-            get(get_report_by_id::<T>).delete(delete_report::<T>),
-        )
+        .route("/report/{id}", get(get_report_by_id::<T>))
         .route(
             "/report/{year}/{month}/{day}",
-            get(get_report_by_date::<T>).put(update_report::<T>),
+            get(get_report_by_date::<T>)
+                .put(update_report::<T>)
+                .delete(delete_report::<T>),
         )
         .route(
             "/report/dates/{year}",
@@ -180,9 +179,9 @@ async fn update_report<T: ReportService>(
 }
 async fn delete_report<T: ReportService>(
     State(state): State<AppState<T>>,
-    Path(id): Path<i64>,
+    Path((year, month, day)): Path<(i64, i64, i64)>,
 ) -> impl IntoResponse {
-    match state.report_service.delete_report(id).await {
+    match state.report_service.delete_report(year, month, day).await {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(sqlx::Error::RowNotFound) => {
             (StatusCode::INTERNAL_SERVER_ERROR, "Report not found").into_response()
