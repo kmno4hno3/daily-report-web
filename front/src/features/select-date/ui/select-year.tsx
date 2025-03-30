@@ -1,16 +1,14 @@
 import { useAtom } from "jotai";
-import { currentYearAtom, currentDateAtom } from "@/src/entities/files/model";
+import { currentDateAtom } from "@/src/entities/files/model";
 
 import { ChevronLeft, ChevronRightIcon } from "lucide-react";
 
 export const SelectYear = () => {
-  const [, setCurrentYear] = useAtom(currentYearAtom);
   const [currentDate, setCurrentDateAtom] = useAtom(currentDateAtom);
 
   const changeYear = (direction: "prev" | "next") => {
     const year =
       direction === "prev" ? currentDate.year - 1 : currentDate.year + 1;
-    setCurrentYear(year);
     setCurrentDateAtom({
       year,
       month: undefined,

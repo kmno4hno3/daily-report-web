@@ -2,27 +2,22 @@
 
 import { useEffect } from "react";
 import { useAtom } from "jotai";
-import { yearDatesAtom, currentYearAtom } from "@/src/entities/files/model";
+import { yearDatesAtom, currentDateAtom } from "@/src/entities/files/model";
 import { getLocalFiles } from "@/src/features/report/api/getLocalFiles";
 
 export const useFetchFiles = () => {
   const [, setYearDatesAtom] = useAtom(yearDatesAtom);
-  const [currentYear, setCurrentYear] = useAtom(currentYearAtom);
-
-  useEffect(() => {
-    const today = new Date();
-    setCurrentYear(today.getFullYear());
-  }, []);
+  const [currentDate] = useAtom(currentDateAtom);
 
   useEffect(() => {
     const fetchFiles = async () => {
-      if (currentYear) {
-        const result = await getLocalFiles(currentYear);
+      if (currentDate.year) {
+        const result = await getLocalFiles(currentDate.year);
         if (result) {
           setYearDatesAtom(result);
         }
       }
     };
     fetchFiles();
-  }, [setYearDatesAtom, currentYear]);
+  }, [setYearDatesAtom, currentDate.year]);
 };
