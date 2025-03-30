@@ -39,10 +39,6 @@ export const Sidebar: React.FC = () => {
     }
   }, [yearDates?.year]);
 
-  if (!yearDates?.year) {
-    return <div>データがありません</div>;
-  }
-
   const toggleMonth = (month: number) => {
     setOpenMonths((prev) =>
       prev.includes(month) ? prev.filter((m) => m !== month) : [...prev, month]
@@ -93,7 +89,7 @@ export const Sidebar: React.FC = () => {
           </button>
         </div>
         <div className="flex-1 overflow-y-auto">
-          {yearDates.months.map((month) => (
+          {yearDates?.months?.map((month) => (
             // 月単位
             <div key={month.month} className="mb-2">
               <Link

@@ -10,21 +10,23 @@ import { all, createLowlight } from "lowlight";
 import type { Date } from "@/src/features/report/model/type";
 import type { Report } from "@/src/entities/files/type";
 import axios from "axios";
+import { object } from "zod";
 
 interface Props {
   selectedDate: Date;
 }
 
 export const ReportDetail = ({ selectedDate }: Props) => {
-  const [report, setFile] = useState<string>();
+  const [report, setFile] = useState<Report>();
 
   useEffect(() => {
     const fetchFile = async () => {
       try {
         const url = `http://localhost:8000/api/report/${selectedDate.year}/${selectedDate.month}/${selectedDate.day}`;
         await axios.get(url).then((res) => {
+          console.log(res);
           const report: Report = res.data;
-          if (report) setFile(report.content);
+          if (report) setFile(report);
         });
       } catch (err) {
         if (axios.isAxiosError(err) && err.response?.status === 404) {
@@ -50,7 +52,7 @@ export const ReportDetail = ({ selectedDate }: Props) => {
           lowlight,
         }),
       ],
-      content: report ? md.render(report) : "",
+      content: report ? md.render(report.content) : "",
       immediatelyRender: false,
     },
     [report]
@@ -83,7 +85,7 @@ export const ReportDetail = ({ selectedDate }: Props) => {
   }, [editor]);
 
   // TODO: 一瞬ちらつきが起きるのを改善したい
-  if (!report) {
+  if (!(report instanceof Object)) {
     return <div>日報がありません</div>;
   }
 
