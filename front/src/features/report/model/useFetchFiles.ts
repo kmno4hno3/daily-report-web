@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useAtom } from "jotai";
 import { yearDatesAtom, currentDateAtom } from "@/src/entities/files/model";
-import { getDates } from "@/src/features/report/api/getLocalFiles";
+import { getDates } from "@/src/features/report/api/getDates";
 
 export const useFetchFiles = () => {
   const [, setYearDatesAtom] = useAtom(yearDatesAtom);
