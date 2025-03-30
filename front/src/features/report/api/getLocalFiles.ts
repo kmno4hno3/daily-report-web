@@ -1,7 +1,7 @@
 import { Year } from "@/src/entities/files/type";
 import axios from "axios";
 
-export const getLocalFiles = async (
+export const getDates = async (
   currentYear: number
 ): Promise<Year | undefined> => {
   try {
