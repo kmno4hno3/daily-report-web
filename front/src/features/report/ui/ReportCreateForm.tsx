@@ -5,7 +5,8 @@ import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import axios from "axios";
-import { useState } from "react";
+import { useAtom } from "jotai";
+import { messageDialogAtom, errorDialogAtom } from "@/src/features/alert/model";
 
 import { Button } from "@/src/shared/ui/button";
 import {
@@ -23,24 +24,10 @@ import {
 } from "@/src/shared/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/src/shared/ui/calendar";
-import { ErrorDialog } from "@/src/shared/ui/error-dialog";
-
-interface Error {
-  hasError: boolean;
-  errorMessage: string;
-}
-
-interface ErrorResponse {
-  status: number;
-  message: string;
-}
 
 export const ReportCreateForm = () => {
-  const [error, setError] = useState<Error>({
-    hasError: false,
-    errorMessage: "",
-  });
-
+  const [, setMessageDialog] = useAtom(messageDialogAtom);
+  const [, setErrorDialog] = useAtom(errorDialogAtom);
   const formSchema = z.object({
     date: z.date(),
     content: z.string(),
@@ -58,6 +45,11 @@ export const ReportCreateForm = () => {
     const url = `http://localhost:8000/api/reports`;
     try {
       await axios.post(url, { date: formatDate, content });
+      setMessageDialog({
+        title: "レポート作成",
+        message: `${formatDate}のレポートを作成しました`,
+        isOpen: true,
+      });
     } catch (error: unknown) {
       let errorMessage = "不明なエラーが発生しました";
       if (
@@ -67,9 +59,10 @@ export const ReportCreateForm = () => {
       ) {
         errorMessage = error.response.data.message;
       }
-      setError({
-        hasError: true,
-        errorMessage: errorMessage,
+      setErrorDialog({
+        title: "レポート作成",
+        message: errorMessage,
+        isOpen: true,
       });
     }
   };
@@ -137,17 +130,6 @@ export const ReportCreateForm = () => {
           <Button type="submit">新規作成</Button>
         </form>
       </Form>
-
-      <ErrorDialog
-        isOpen={error.hasError}
-        errorMessage={error.errorMessage}
-        callback={() =>
-          setError({
-            hasError: false,
-            errorMessage: "",
-          })
-        }
-      />
     </div>
   );
 };

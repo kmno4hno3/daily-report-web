@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import type { Year, Date } from "@/src/entities/files/type";
+import type { Year, Date } from "@/src/entities/report/type";
 
 export const yearDatesAtom = atom<Year>();
 yearDatesAtom.debugLabel = "yearDatesAtom";

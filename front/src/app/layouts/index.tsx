@@ -5,6 +5,7 @@ import { Navbar } from "@/src/widgets/navbar";
 import { Sidebar } from "@/src/widgets/sidebar";
 import { Devtools } from "@/src/app/layouts/Devtools";
 import { Provider } from "@/src/app/provider";
+import { MessageDialog, ErrorDialog } from "@/src/features/alert";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,9 @@ export const RootLayout = ({
             {children}
           </div>
         </Provider>
+
+        <MessageDialog />
+        <ErrorDialog />
       </body>
     </html>
   );

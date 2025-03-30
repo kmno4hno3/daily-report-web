@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { currentDateAtom } from "@/src/entities/files/model";
+import { currentDateAtom } from "@/src/entities/report/model";
 
 import { ChevronLeft, ChevronRightIcon } from "lucide-react";
 

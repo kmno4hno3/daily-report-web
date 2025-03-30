@@ -1,4 +1,4 @@
-import { Year } from "@/src/entities/files/type";
+import { Year } from "@/src/entities/report/type";
 import axios from "axios";
 
 export const getDates = async (

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useAtom } from "jotai";
-import { yearDatesAtom, currentDateAtom } from "@/src/entities/files/model";
+import { yearDatesAtom, currentDateAtom } from "@/src/entities/report/model";
 import { getDates } from "@/src/features/report/api/getDates";
 
 export const useFetchReportDetail = () => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { yearDatesAtom, currentDateAtom } from "@/src/entities/files/model";
+import { yearDatesAtom, currentDateAtom } from "@/src/entities/report/model";
 
 import { ChevronDown, ChevronRight } from "lucide-react";
 

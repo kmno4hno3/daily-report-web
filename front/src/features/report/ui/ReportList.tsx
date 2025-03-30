@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { yearDatesAtom } from "@/src/entities/files/model";
+import { yearDatesAtom } from "@/src/entities/report/model";
 import { useAtom } from "jotai";
-import { currentDateAtom } from "@/src/entities/files/model";
+import { currentDateAtom } from "@/src/entities/report/model";
 
 export const ReportList = () => {
   const [yearDates] = useAtom(yearDatesAtom);

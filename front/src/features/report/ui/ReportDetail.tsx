@@ -7,9 +7,9 @@ import markdownit from "markdown-it";
 import TurndownService from "turndown";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { all, createLowlight } from "lowlight";
-import type { Report } from "@/src/entities/files/type";
+import type { Report } from "@/src/entities/report/type";
 import axios from "axios";
-import { currentDateAtom } from "@/src/entities/files/model";
+import { currentDateAtom } from "@/src/entities/report/model";
 import { useAtom } from "jotai";
 
 export const ReportDetail = () => {
