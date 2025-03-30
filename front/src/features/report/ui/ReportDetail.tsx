@@ -7,22 +7,19 @@ import markdownit from "markdown-it";
 import TurndownService from "turndown";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { all, createLowlight } from "lowlight";
-import type { Date } from "@/src/features/report/model/type";
 import type { Report } from "@/src/entities/files/type";
 import axios from "axios";
-import { object } from "zod";
+import { currentDateAtom } from "@/src/entities/files/model";
+import { useAtom } from "jotai";
 
-interface Props {
-  selectedDate: Date;
-}
-
-export const ReportDetail = ({ selectedDate }: Props) => {
+export const ReportDetail = () => {
+  const [currentDate] = useAtom(currentDateAtom);
   const [report, setFile] = useState<Report>();
 
   useEffect(() => {
     const fetchFile = async () => {
       try {
-        const url = `http://localhost:8000/api/report/${selectedDate.year}/${selectedDate.month}/${selectedDate.day}`;
+        const url = `http://localhost:8000/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`;
         await axios.get(url).then((res) => {
           console.log(res);
           const report: Report = res.data;
@@ -37,10 +34,10 @@ export const ReportDetail = ({ selectedDate }: Props) => {
       }
     };
 
-    if (selectedDate?.day) {
+    if (currentDate?.day) {
       fetchFile();
     }
-  }, [selectedDate]);
+  }, [currentDate]);
 
   const md = markdownit();
   const lowlight = createLowlight(all);
@@ -66,7 +63,7 @@ export const ReportDetail = ({ selectedDate }: Props) => {
         preformattedCode: true,
       });
       try {
-        const url = `http://localhost:8000/api/report/${selectedDate.year}/${selectedDate.month}/${selectedDate.day}`;
+        const url = `http://localhost:8000/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`;
         await axios.put(url, {
           content: turndownService.turndown(editor.getHTML()),
         });
@@ -92,7 +89,7 @@ export const ReportDetail = ({ selectedDate }: Props) => {
   return (
     <div className="flex-1 p-6 overflow-y-auto">
       <h2 className="text-2xl font-bold mb-4">
-        {selectedDate.year}/{selectedDate.month}/{selectedDate.day}
+        {currentDate.year}/{currentDate.month}/{currentDate.day}
       </h2>
       {editor && <EditorContent editor={editor} />}
     </div>

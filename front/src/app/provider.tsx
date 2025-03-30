@@ -1,9 +1,9 @@
 "use client";
 
-import { useFetchFiles } from "@/src/features/report/model/useFetchFiles";
+import { useFetchReportDetail } from "@/src/features/report/model/useFetchReportDetail";
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
-  useFetchFiles();
+  useFetchReportDetail();
 
   return <>{children}</>;
 };

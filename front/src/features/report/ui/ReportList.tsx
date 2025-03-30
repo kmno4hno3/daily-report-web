@@ -2,34 +2,31 @@
 
 import Link from "next/link";
 import { yearDatesAtom } from "@/src/entities/files/model";
-import type { Date } from "@/src/features/report/model/type";
 import { useAtom } from "jotai";
+import { currentDateAtom } from "@/src/entities/files/model";
 
-interface props {
-  selectedDate: Date;
-}
-
-export const ReportList = ({ selectedDate }: props) => {
+export const ReportList = () => {
   const [yearDates] = useAtom(yearDatesAtom);
+  const [currentDate] = useAtom(currentDateAtom);
 
-  if (!yearDates?.year || !selectedDate?.month)
+  if (!yearDates?.year || !currentDate?.month)
     return <div>表示する日報がありません</div>;
 
   const selectedDays = yearDates.months.find((month) => {
-    return month.month === selectedDate.month;
+    return month.month === currentDate.month;
   });
 
   return (
-    selectedDate && (
+    currentDate && (
       <div className="flex-1 p-6 overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">
-          {selectedDate.year}年 {selectedDate.month}月の日報一覧
+          {currentDate.year}年 {currentDate.month}月の日報一覧
         </h2>
         <div className="grid gap-4">
           {selectedDays &&
             selectedDays.days.map((day: number) => (
               <Link
-                href={`/report/list/${selectedDate.year}/${selectedDate.month}/${selectedDate.day}`}
+                href={`/report/list/${currentDate.year}/${currentDate.month}/${day}`}
                 key={`${day}`}
               >
                 <button
@@ -37,7 +34,8 @@ export const ReportList = ({ selectedDate }: props) => {
                   className="text-left p-4 border rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <h3 className="font-semibold">{day}</h3>
-                  <p className="text-gray-600 truncate">{day}</p>
+                  {/* TODO: タイトルを入れたい */}
+                  <p className="text-gray-600 truncate">タイトルを入れたい</p>
                 </button>
               </Link>
             ))}

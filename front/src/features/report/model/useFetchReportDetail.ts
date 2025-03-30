@@ -5,12 +5,12 @@ import { useAtom } from "jotai";
 import { yearDatesAtom, currentDateAtom } from "@/src/entities/files/model";
 import { getDates } from "@/src/features/report/api/getDates";
 
-export const useFetchFiles = () => {
+export const useFetchReportDetail = () => {
   const [, setYearDatesAtom] = useAtom(yearDatesAtom);
   const [currentDate] = useAtom(currentDateAtom);
 
   useEffect(() => {
-    const fetchFiles = async () => {
+    const fetchReport = async () => {
       if (currentDate.year) {
         const result = await getDates(currentDate.year);
         if (result) {
@@ -18,6 +18,6 @@ export const useFetchFiles = () => {
         }
       }
     };
-    fetchFiles();
+    fetchReport();
   }, [setYearDatesAtom, currentDate.year]);
 };
