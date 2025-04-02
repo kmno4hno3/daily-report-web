@@ -9,7 +9,9 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { all, createLowlight } from "lowlight";
 import type { Report } from "@/src/entities/report/type";
 import axios from "axios";
-import { currentDateAtom } from "@/src/entities/report/model";
+import { currentDateAtom, yearDatesAtom } from "@/src/entities/report/model";
+import { Year } from "@/src/entities/report/type";
+
 import { useAtom } from "jotai";
 
 import { Trash2 } from "lucide-react";
@@ -20,6 +22,7 @@ import { messageDialogAtom } from "@/src/features/alert/model";
 export const ReportDetail = () => {
   const [currentDate] = useAtom(currentDateAtom);
   const [, setMessageDialog] = useAtom(messageDialogAtom);
+  const [yearDates, setYearDates] = useAtom<Year>(yearDatesAtom);
   const [report, setFile] = useState<Report>();
 
   useEffect(() => {
@@ -96,6 +99,19 @@ export const ReportDetail = () => {
           message: `${currentDate.year}-${currentDate.month}-${currentDate.day}のレポートを削除しました`,
           isOpen: true,
         });
+        const filteredYearDates = {
+          ...yearDates,
+          months: yearDates?.months.map((month) => {
+            if (month.month === currentDate.month) {
+              return {
+                ...month,
+                days: month.days.filter((day) => day !== currentDate.day),
+              };
+            }
+            return month;
+          }),
+        };
+        setYearDates(filteredYearDates);
       });
     } catch (err) {
       if (axios.isAxiosError(err) && err.response?.status === 404) {
