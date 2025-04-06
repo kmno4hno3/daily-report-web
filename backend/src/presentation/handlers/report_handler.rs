@@ -78,9 +78,12 @@ struct YearResponse {
 
 impl From<Year> for YearResponse {
     fn from(year_data: Year) -> Self {
+        let mut months = year_data.months;
+        months.sort_by_key(|m| m.month);
+
         Self {
             year: year_data.year,
-            months: year_data.months,
+            months: months,
         }
     }
 }
