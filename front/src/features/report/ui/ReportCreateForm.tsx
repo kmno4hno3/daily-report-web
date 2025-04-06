@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import axios from "axios";
 import { useAtom } from "jotai";
+import { yearDatesAtom } from "@/src/entities/report/model";
 import { messageDialogAtom, errorDialogAtom } from "@/src/features/alert/model";
+import { Year } from "@/src/entities/report/type";
 
 import { Button } from "@/src/shared/ui/button";
 import {
@@ -26,6 +28,7 @@ import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/src/shared/ui/calendar";
 
 export const ReportCreateForm = () => {
+  const [yearDates, setYearDates] = useAtom<Year>(yearDatesAtom);
   const [, setMessageDialog] = useAtom(messageDialogAtom);
   const [, setErrorDialog] = useAtom(errorDialogAtom);
   const formSchema = z.object({
@@ -50,6 +53,20 @@ export const ReportCreateForm = () => {
         message: `${formatDate}のレポートを作成しました`,
         isOpen: true,
       });
+      const filteredYearDates = {
+        ...yearDates,
+        months: yearDates?.months.map((month) => {
+          if (month.month === date.getMonth() + 1) {
+            const tmpDays = [...month.days, date.getDate()];
+            return {
+              ...month,
+              days: tmpDays.sort(),
+            };
+          }
+          return month;
+        }),
+      };
+      setYearDates(filteredYearDates);
     } catch (error: unknown) {
       let errorMessage = "不明なエラーが発生しました";
       if (
@@ -67,7 +84,7 @@ export const ReportCreateForm = () => {
     }
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     await createReport(data.date, data.content);
   };
 
