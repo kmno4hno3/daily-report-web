@@ -1,4 +1,4 @@
-use chrono::{DateTime, FixedOffset, NaiveDate, TimeZone, Utc};
+use chrono::{DateTime, FixedOffset, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
