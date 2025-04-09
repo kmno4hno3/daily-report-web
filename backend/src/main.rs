@@ -14,8 +14,11 @@ mod presentation;
 mod usecase;
 
 use crate::infrastructure::report_repository::ReportRepositoryImpl;
+use crate::infrastructure::user_repository::UserRepositoryImpl;
 use crate::presentation::handlers::report_handler::create_report_router;
+use crate::presentation::handlers::user_handler::create_user_router;
 use crate::usecase::report_usecase::ReportUsecase;
+use crate::usecase::user_usecase::UserUsecase;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -31,6 +34,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let report_repository = ReportRepositoryImpl::new(pool.clone());
     let report_service = ReportUsecase::new(report_repository);
+    let user_repository = UserRepositoryImpl::new(pool.clone());
+    let user_service = UserUsecase::new(user_repository);
 
     let cors = CorsLayer::new()
         .allow_origin(["http://localhost:3000".parse::<HeaderValue>().unwrap()])
@@ -45,6 +50,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let app = Router::new()
         .route("/", get(|| async { "Hello, Axum!!!" }))
         .nest("/api", create_report_router(report_service))
+        .nest("/api", create_user_router(user_service))
         .layer(cors);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8000));

@@ -33,6 +33,15 @@ impl UserRepository for UserRepositoryImpl {
         .await?;
         Ok(user)
     }
+    async fn find_by_email(&self, email: &String) -> Result<Option<User>, sqlx::Error> {
+        let user = sqlx::query_as::<_, User>(
+            "SELECT id, name, email, password, created_at, updated_at FROM users where email = $1",
+        )
+        .bind(email)
+        .fetch_optional(&self.pool)
+        .await?;
+        Ok(user)
+    }
     async fn create(&self, user: User) -> Result<User, sqlx::Error> {
         let created_user = sqlx::query_as::<_, User>(
             "INSERT INTO users (name, email, password, created_at, updated_at)
