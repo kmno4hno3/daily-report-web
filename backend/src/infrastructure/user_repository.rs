@@ -45,7 +45,7 @@ impl UserRepository for UserRepositoryImpl {
     async fn create(&self, user: User) -> Result<User, sqlx::Error> {
         let created_user = sqlx::query_as::<_, User>(
             "INSERT INTO users (name, email, password, created_at, updated_at)
-            VALUES ($1, $2, $3, $4)
+            VALUES ($1, $2, $3, $4, $5)
             RETURNING id, name, email, password, created_at, updated_at",
         )
         .bind(user.name)
@@ -55,6 +55,8 @@ impl UserRepository for UserRepositoryImpl {
         .bind(user.updated_at)
         .fetch_one(&self.pool)
         .await?;
+
+        println!("{:?}", created_user);
         Ok(created_user)
     }
     async fn update(&self, user: User) -> Result<User, sqlx::Error> {
