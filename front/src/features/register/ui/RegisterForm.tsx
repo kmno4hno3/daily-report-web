@@ -1,7 +1,10 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { errorDialogAtom, messageDialogAtom } from "@/src/features/alert/model"
 import { zodResolver } from "@hookform/resolvers/zod"
+import axios from "axios"
+import { useAtom } from "jotai"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -9,7 +12,6 @@ import { Button } from "@/src/shared/ui/button"
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -21,6 +23,8 @@ export function RegisterForm({
 	className,
 	...props
 }: React.ComponentProps<"div">) {
+	const [, setMessageDialog] = useAtom(messageDialogAtom)
+	const [, setErrorDialog] = useAtom(errorDialogAtom)
 	const formSchema = z.object({
 		name: z.string(),
 		email: z.string(),
@@ -34,8 +38,30 @@ export function RegisterForm({
 			password: "",
 		},
 	})
-	const createUser = (name: string, email: string, password: string) => {
-		console.log(name, email, password)
+	const createUser = async (name: string, email: string, password: string) => {
+		const url = "http://localhost:8000/api/users"
+		try {
+			await axios.post(url, { name, email, password })
+			setMessageDialog({
+				title: "新規登録",
+				message: "登録が完了しました",
+				isOpen: true,
+			})
+		} catch (error: unknown) {
+			let errorMessage = "不明なエラーが発生しました"
+			if (
+				axios.isAxiosError(error) &&
+				error.response &&
+				error.response.status !== 500
+			) {
+				errorMessage = error.response.data.message
+			}
+			setErrorDialog({
+				title: "新規登録",
+				message: errorMessage,
+				isOpen: true,
+			})
+		}
 	}
 	const onSubmit = async (data: z.infer<typeof formSchema>) => {
 		await createUser(data.name, data.email, data.password)
@@ -52,11 +78,8 @@ export function RegisterForm({
 							<FormItem>
 								<FormLabel>Username</FormLabel>
 								<FormControl>
-									<Input placeholder="shadcn" {...field} />
+									<Input {...field} />
 								</FormControl>
-								<FormDescription>
-									This is your public display name.
-								</FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
@@ -68,11 +91,8 @@ export function RegisterForm({
 							<FormItem>
 								<FormLabel>Email</FormLabel>
 								<FormControl>
-									<Input placeholder="shadcn" {...field} />
+									<Input placeholder="test@example.com" {...field} />
 								</FormControl>
-								<FormDescription>
-									This is your public display name.
-								</FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
@@ -84,11 +104,8 @@ export function RegisterForm({
 							<FormItem>
 								<FormLabel>Password</FormLabel>
 								<FormControl>
-									<Input placeholder="shadcn" {...field} />
+									<Input placeholder="半角英数字8文字以上" {...field} />
 								</FormControl>
-								<FormDescription>
-									This is your public display name.
-								</FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
