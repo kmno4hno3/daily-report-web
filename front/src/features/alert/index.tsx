@@ -1,4 +1,4 @@
-import { ErrorDialog } from "./ui/error-dialog";
-import { MessageDialog } from "./ui/message-dialog";
+import { ErrorDialog } from "./ui/error-dialog"
+import { MessageDialog } from "./ui/message-dialog"
 
-export { MessageDialog, ErrorDialog };
+export { MessageDialog, ErrorDialog }

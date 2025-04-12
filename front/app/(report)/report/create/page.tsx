@@ -1,3 +1,3 @@
-import { DailyReportCreate } from "@/src/pages/report/create";
+import { DailyReportCreate } from "@/src/pages/report/create"
 
-export default DailyReportCreate;
+export default DailyReportCreate

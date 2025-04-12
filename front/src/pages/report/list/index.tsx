@@ -1,3 +1,3 @@
 export const ReportList = () => {
-  return <>list</>;
-};
+	return <>list</>
+}

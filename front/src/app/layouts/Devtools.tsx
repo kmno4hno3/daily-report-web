@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { DevTools } from "jotai-devtools";
+import { DevTools } from "jotai-devtools"
 
 export const Devtools = () => {
-  return <DevTools />;
-};
+	return <DevTools />
+}

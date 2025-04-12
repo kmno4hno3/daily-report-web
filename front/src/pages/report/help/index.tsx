@@ -1,3 +1,3 @@
 export const Help = () => {
-  return <>help</>;
-};
+	return <>help</>
+}

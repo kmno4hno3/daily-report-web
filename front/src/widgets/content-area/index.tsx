@@ -1,3 +1,3 @@
-import { ContentArea } from "./ui/ContentArea";
+import { ContentArea } from "./ui/ContentArea"
 
-export { ContentArea };
+export { ContentArea }

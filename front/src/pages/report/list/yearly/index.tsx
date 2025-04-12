@@ -1,5 +1,5 @@
-import { ContentArea } from "@/src/widgets/content-area";
+import { ContentArea } from "@/src/widgets/content-area"
 
 export const YearlyReportList = () => {
-  return <ContentArea />;
-};
+	return <ContentArea />
+}

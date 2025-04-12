@@ -1,4 +1,4 @@
 export {
-  RootLayout as default,
-  metadata,
-} from "@/src/app/layouts/ui/RootLayout";
+	RootLayout as default,
+	metadata,
+} from "@/src/app/layouts/ui/RootLayout"

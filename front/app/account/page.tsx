@@ -1,5 +1,5 @@
 const Account = () => {
-  <>account</>;
-};
+	;<>account</>
+}
 
-export default Account;
+export default Account

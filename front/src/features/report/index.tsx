@@ -1,4 +1,4 @@
-import { ReportWrapper } from "./ui/ReportWrapper";
-import { ReportCreateForm } from "./ui/ReportCreateForm";
+import { ReportWrapper } from "./ui/ReportWrapper"
+import { ReportCreateForm } from "./ui/ReportCreateForm"
 
-export { ReportWrapper, ReportCreateForm };
+export { ReportWrapper, ReportCreateForm }

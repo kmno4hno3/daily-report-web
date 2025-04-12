@@ -1,5 +1,5 @@
 export interface Date {
-  year: number;
-  month: number | undefined;
-  day: number | undefined;
+	year: number
+	month: number | undefined
+	day: number | undefined
 }

@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { ReportWrapper } from "@/src/features/report";
+import { ReportWrapper } from "@/src/features/report"
 
 export const ContentArea: React.FC = () => {
-  return <ReportWrapper />;
-};
+	return <ReportWrapper />
+}

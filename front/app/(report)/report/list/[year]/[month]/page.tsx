@@ -1,3 +1,3 @@
-import { MonthlyReportList } from "@/src/pages/report/list/monthly";
+import { MonthlyReportList } from "@/src/pages/report/list/monthly"
 
-export default MonthlyReportList;
+export default MonthlyReportList
