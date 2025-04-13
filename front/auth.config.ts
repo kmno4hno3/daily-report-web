@@ -1,4 +1,37 @@
+import { getUserByEmail } from "@/data/user"
+import axios from "axios"
 import type { NextAuthConfig } from "next-auth"
+import Credentials from "next-auth/providers/credentials"
 import github from "next-auth/providers/github"
+import { z } from "zod"
 
-export default { providers: [github] } satisfies NextAuthConfig
+const credentialsSchema = z.object({
+	email: z.string().email(),
+	password: z.string(),
+})
+
+export default {
+	providers: [
+		github,
+		Credentials({
+			async authorize(credentials) {
+				const result = credentialsSchema.safeParse(credentials)
+				if (!result.success) return null
+				const { email, password } = result.data
+				const user = await getUserByEmail(email)
+				if (!user || !user.password) {
+					return null
+				}
+				const passwordMatch = user.password === password
+				if (passwordMatch) {
+					return {
+						...user,
+						id: user.id.toString(),
+					}
+				}
+
+				return null
+			},
+		}),
+	],
+} satisfies NextAuthConfig

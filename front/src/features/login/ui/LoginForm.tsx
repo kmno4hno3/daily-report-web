@@ -2,10 +2,10 @@
 
 import { cn } from "@/lib/utils"
 import { errorDialogAtom, messageDialogAtom } from "@/src/features/alert/model"
-import axios from "axios"
 import { useAtom } from "jotai"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { authenticateUser } from "../model/action"
 
 import { Button } from "@/src/shared/ui/button"
 import {
@@ -30,8 +30,6 @@ export function LoginForm({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"div">) {
-	const [, setMessageDialog] = useAtom(messageDialogAtom)
-	const [, setErrorDialog] = useAtom(errorDialogAtom)
 	const formSchema = z.object({
 		email: z.string(),
 		password: z.string(),
@@ -43,31 +41,6 @@ export function LoginForm({
 			password: "",
 		},
 	})
-	const authenticateUser = async (email: string, password: string) => {
-		const url = " https:localhost:8000/api/user"
-		try {
-			await axios.post(url, { email, password })
-			setMessageDialog({
-				title: "ログイン",
-				message: "ログイン完了しました",
-				isOpen: true,
-			})
-		} catch (error: unknown) {
-			let errorMessage = "不明なエラーが発生しました"
-			if (
-				axios.isAxiosError(error) &&
-				error.response &&
-				error.response.status !== 500
-			) {
-				errorMessage = error.response.data.message
-			}
-			setErrorDialog({
-				title: "ログイン",
-				message: errorMessage,
-				isOpen: true,
-			})
-		}
-	}
 	const onSubmit = async (data: z.infer<typeof formSchema>) => {
 		await authenticateUser(data.email, data.password)
 	}
