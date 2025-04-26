@@ -1,5 +1,7 @@
+import { Account as AccountComponent } from "@/src/app/page"
+
 const Account = () => {
-	return <div>account</div>
+	return <AccountComponent />
 }
 
 export default Account
