@@ -1,8 +1,9 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { errorDialogAtom, messageDialogAtom } from "@/src/features/alert/model"
-import { useAtom } from "jotai"
+import { DEFAULT_LOGIN_REDIRECT } from "@/route"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { authenticateUser } from "../model/action"
@@ -24,15 +25,18 @@ import {
 	FormMessage,
 } from "@/src/shared/ui/form"
 import { Input } from "@/src/shared/ui/input"
-import { zodResolver } from "@hookform/resolvers/zod"
+
+const ErrorSchema = z.object({ isSuccess: z.boolean().optional() })
 
 export function LoginForm({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"div">) {
 	const formSchema = z.object({
-		email: z.string(),
-		password: z.string(),
+		email: z
+			.string()
+			.email({ message: "正しいメールアドレスを入力してください" }),
+		password: z.string().min(1, { message: "パスワードが正しくありません" }),
 	})
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -41,8 +45,28 @@ export function LoginForm({
 			password: "",
 		},
 	})
+	const router = useRouter()
 	const onSubmit = async (data: z.infer<typeof formSchema>) => {
-		await authenticateUser(data.email, data.password)
+		const result = ErrorSchema.safeParse(
+			await authenticateUser(data.email, data.password),
+		)
+
+		if (result.success) {
+			if (result.data.isSuccess) {
+				router.push(DEFAULT_LOGIN_REDIRECT)
+			} else {
+				form.setError("email", {
+					type: "manual",
+					message: "正しいメールアドレスを入力してください",
+				})
+				form.setError("password", {
+					type: "manual",
+					message: "パスワードが正しくありません",
+				})
+			}
+		} else {
+			console.log(result)
+		}
 	}
 
 	return (
