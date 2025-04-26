@@ -11,7 +11,7 @@ export const Settings: React.FC = async () => {
 	if (!session) return null
 	const onSubmit = async () => {
 		"use server"
-		await signOut()
+		await signOut({ redirectTo: "/auth/login" })
 	}
 
 	return (
@@ -35,7 +35,7 @@ export const Settings: React.FC = async () => {
 				</div>
 
 				<Button>設定を保存</Button> */}
-				<pre>{JSON.stringify(session, null, 2)}</pre>
+				{/* <pre>{JSON.stringify(session, null, 2)}</pre> */}
 				<form action={onSubmit}>
 					<Button type="submit" className="w-full" variant="secondary">
 						ログアウト
