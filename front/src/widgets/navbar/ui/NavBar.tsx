@@ -21,14 +21,14 @@ export const Navbar: React.FC = async () => {
 	const session = await auth()
 	const icons = [
 		// { name: "reports", Icon: FileText, label: "日報", src: "/report/list" },
-		{
-			name: "new",
-			Icon: PlusCircle,
-			label: "新規作成",
-			src: "/report/create",
-		},
 		...(session?.user
 			? [
+					{
+						name: "new",
+						Icon: PlusCircle,
+						label: "新規作成",
+						src: "/report/create",
+					},
 					{
 						name: "settings",
 						Icon: Settings,
