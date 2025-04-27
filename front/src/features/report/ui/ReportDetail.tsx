@@ -1,23 +1,23 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useEditor, EditorContent } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
-import markdownit from "markdown-it"
-import TurndownService from "turndown"
-import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight"
-import { all, createLowlight } from "lowlight"
-import type { Report } from "@/src/entities/report/type"
-import axios from "axios"
 import { currentDateAtom, yearDatesAtom } from "@/src/entities/report/model"
-import { Year } from "@/src/entities/report/type"
+import type { Report } from "@/src/entities/report/type"
+import type { Year } from "@/src/entities/report/type"
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight"
+import { EditorContent, useEditor } from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
+import axios from "axios"
+import { all, createLowlight } from "lowlight"
+import markdownit from "markdown-it"
+import { useCallback, useEffect, useState } from "react"
+import TurndownService from "turndown"
 
 import { useAtom } from "jotai"
 
-import { Trash2 } from "lucide-react"
-import { Button, buttonVariants } from "@/src/shared/ui/button"
 import { cn } from "@/lib/utils"
 import { messageDialogAtom } from "@/src/features/alert/model"
+import { Button, buttonVariants } from "@/src/shared/ui/button"
+import { Trash2 } from "lucide-react"
 
 export const ReportDetail = () => {
 	const [currentDate] = useAtom(currentDateAtom)
@@ -28,7 +28,7 @@ export const ReportDetail = () => {
 	useEffect(() => {
 		const fetchFile = async () => {
 			try {
-				const url = `http://localhost:8000/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
+				const url = `http://${process.env.NEXT_PUBLIC_HOST || "localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
 				await axios.get(url).then((res) => {
 					console.log(res)
 					const report: Report = res.data
@@ -64,15 +64,15 @@ export const ReportDetail = () => {
 		[report],
 	)
 
-	const saveContent = async () => {
+	const saveContent = useCallback(async () => {
 		if (editor) {
-			let turndownService = new TurndownService({
+			const turndownService = new TurndownService({
 				headingStyle: "atx",
 				codeBlockStyle: "fenced",
 				preformattedCode: true,
 			})
 			try {
-				const url = `http://localhost:8000/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
+				const url = `http://${process.env.NEXT_PUBLIC_HOST || "localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
 				await axios.put(url, {
 					content: turndownService.turndown(editor.getHTML()),
 				})
@@ -80,7 +80,7 @@ export const ReportDetail = () => {
 				console.log(e)
 			}
 		}
-	}
+	}, [editor, currentDate])
 	useEffect(() => {
 		if (editor) {
 			editor.on("blur", () => saveContent())
@@ -88,11 +88,11 @@ export const ReportDetail = () => {
 				editor.off("blur", () => saveContent())
 			}
 		}
-	}, [editor])
+	}, [editor, saveContent])
 
 	const deleteReport = async () => {
 		try {
-			const url = `http://localhost:8000/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
+			const url = `http://${process.env.NEXT_PUBLIC_HOST || "localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
 			await axios.delete(url).then(() => {
 				setMessageDialog({
 					title: "レポート削除",
