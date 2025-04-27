@@ -159,6 +159,10 @@ const config = {
         "fromEnvVar": null,
         "value": "darwin-arm64",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "rhel-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -166,7 +170,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma",
@@ -185,8 +189,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel sqlx_migrations {\n  version        BigInt   @id\n  description    String\n  installed_on   DateTime @default(now()) @db.Timestamptz(6)\n  success        Boolean\n  checksum       Bytes\n  execution_time BigInt\n\n  @@map(\"_sqlx_migrations\")\n}\n\nmodel reports {\n  id         BigInt   @id @default(autoincrement())\n  date       DateTime @unique(map: \"idx_reports_date\") @db.Date\n  content    String?\n  created_at DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @db.Timestamptz(6)\n  updated_at DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @db.Timestamptz(6)\n}\n\nmodel users {\n  id         BigInt   @id @default(autoincrement())\n  name       String?  @db.VarChar(100)\n  email      String   @unique @db.VarChar(255)\n  password   String   @unique @db.VarChar(255)\n  created_at DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @db.Timestamptz(6)\n  updated_at DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @db.Timestamptz(6)\n}\n",
-  "inlineSchemaHash": "b52e09fbd6810ed6eeec9c1330968123056a712fb89f8c8571e4e4d71bc24db3",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../generated/prisma\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel sqlx_migrations {\n  version        BigInt   @id\n  description    String\n  installed_on   DateTime @default(now()) @db.Timestamptz(6)\n  success        Boolean\n  checksum       Bytes\n  execution_time BigInt\n\n  @@map(\"_sqlx_migrations\")\n}\n\nmodel reports {\n  id         BigInt   @id @default(autoincrement())\n  date       DateTime @unique(map: \"idx_reports_date\") @db.Date\n  content    String?\n  created_at DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @db.Timestamptz(6)\n  updated_at DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @db.Timestamptz(6)\n}\n\nmodel users {\n  id         BigInt   @id @default(autoincrement())\n  name       String?  @db.VarChar(100)\n  email      String   @unique @db.VarChar(255)\n  password   String   @unique @db.VarChar(255)\n  created_at DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @db.Timestamptz(6)\n  updated_at DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @db.Timestamptz(6)\n}\n",
+  "inlineSchemaHash": "4a49aebbe2eb0488789b1dfcfbd2d24237e8853823a9b835862dd7dc34de61ac",
   "copyEngine": true
 }
 
@@ -227,6 +231,10 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
 path.join(process.cwd(), "generated/prisma/libquery_engine-darwin-arm64.dylib.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-rhel-openssl-3.0.x.so.node");
+path.join(process.cwd(), "generated/prisma/libquery_engine-rhel-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "generated/prisma/schema.prisma")
