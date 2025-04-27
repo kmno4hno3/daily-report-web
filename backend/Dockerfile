@@ -3,9 +3,8 @@ FROM rust:1.84.1
 WORKDIR /usr/src/myapp
 COPY . .
 
-RUN cargo install --path .
+RUN cargo build --release
 
 ENV PORT 8000
 
-# Run the web service on container startup.
-ENTRYPOINT ["target/release/daily-report"]
+ENTRYPOINT ["./target/release/daily-report"]

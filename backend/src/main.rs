@@ -57,9 +57,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap_or_else(|_| "8000".to_string())
         .parse::<u16>()
         .unwrap();
-    let addr = SocketAddr::from(([127, 0, 0, 1], port));
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
     info!("🚀 Server running at http://{}", addr);
-    let listener = TcpListener::bind("127.0.0.1:8000").await.unwrap();
+    let listener = TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 
     Ok(())

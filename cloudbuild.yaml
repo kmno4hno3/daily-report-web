@@ -2,8 +2,9 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
+  # Step1: Docker build
   - name: 'gcr.io/cloud-builders/docker'
-    dir: './backend'
+    dir: 'backend'
     args:
       - build
       - '-t'
@@ -11,5 +12,25 @@ steps:
       - '-f'
       - 'Dockerfile'
       - '.'
+
+  # Step2: Docker push
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - push
+      - 'gcr.io/$PROJECT_ID/daily-report'
+
+  # Step3: Cloud Run deploy
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - daily-report
+      - --image=gcr.io/$PROJECT_ID/daily-report
+      - --region=asia-northeast1
+      - --platform=managed
+      - --allow-unauthenticated
+      - --project=$PROJECT_ID
+
 images:
   - 'gcr.io/$PROJECT_ID/daily-report'
