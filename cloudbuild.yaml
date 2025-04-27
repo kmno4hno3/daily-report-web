@@ -1,11 +1,15 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
   - name: 'gcr.io/cloud-builders/docker'
+    dir: './backend'
     args:
       - build
       - '-t'
       - 'gcr.io/$PROJECT_ID/daily-report'
       - '-f'
-      - 'backend/Dockerfile'
-      - 'backend'
+      - 'Dockerfile'
+      - '.'
 images:
   - 'gcr.io/$PROJECT_ID/daily-report'
