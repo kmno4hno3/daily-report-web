@@ -1,7 +1,11 @@
-
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/daily-report', '.' ]
-    dir: 'backend'
+    args:
+      - build
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/daily-report'
+      - '-f'
+      - 'backend/Dockerfile'
+      - 'backend'
 images:
   - 'gcr.io/$PROJECT_ID/daily-report'
