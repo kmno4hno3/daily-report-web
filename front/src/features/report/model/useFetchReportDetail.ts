@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect } from "react"
-import { useAtom } from "jotai"
-import { yearDatesAtom, currentDateAtom } from "@/src/entities/report/model"
+import { currentDateAtom, yearDatesAtom } from "@/src/entities/report/model"
 import { getDates } from "@/src/features/report/api/getDates"
+import { useAtom } from "jotai"
+import { useEffect } from "react"
 
 export const useFetchReportDetail = () => {
 	const [, setYearDatesAtom] = useAtom(yearDatesAtom)
