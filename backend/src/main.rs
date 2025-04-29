@@ -38,7 +38,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let user_service = UserUsecase::new(user_repository);
 
     let cors = CorsLayer::new()
-        .allow_origin(["http://localhost:3000".parse::<HeaderValue>().unwrap()])
+        .allow_origin([env::var("FRONT_URL")
+            .unwrap_or_else(|_| "http://localhost:3000".to_string())
+            .parse::<HeaderValue>()
+            .unwrap()])
         .allow_methods([
             http::Method::GET,
             http::Method::POST,
