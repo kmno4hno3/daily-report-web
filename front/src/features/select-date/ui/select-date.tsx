@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react"
+import { currentDateAtom, yearDatesAtom } from "@/src/entities/report/model"
 import { useAtom } from "jotai"
 import Link from "next/link"
-import { yearDatesAtom, currentDateAtom } from "@/src/entities/report/model"
+import { useEffect, useState } from "react"
 
 import { ChevronDown, ChevronRight } from "lucide-react"
 
@@ -12,14 +12,17 @@ export const SelectDate = () => {
 	const [, setActiveIcon] = useState("reports")
 
 	useEffect(() => {
-		if (yearDates?.year) {
+		if (
+			yearDates?.year &&
+			(!currentDate?.year || currentDate.year !== yearDates.year)
+		) {
 			setCurrentDateAtom({
 				year: yearDates.year,
 				month: currentDate?.month,
 				day: currentDate?.day,
 			})
 		}
-	}, [yearDates?.year])
+	}, [yearDates?.year, currentDate, setCurrentDateAtom])
 
 	const toggleMonth = (month: number) => {
 		setOpenMonths((prev) =>
@@ -50,6 +53,7 @@ export const SelectDate = () => {
 							key={`${currentDate.year}-${month.month}`}
 						>
 							<button
+								type="button"
 								className="flex items-center w-full px-4 py-2 text-left font-semibold hover:bg-gray-200"
 								onClick={() => {
 									toggleMonth(month.month)
@@ -73,6 +77,7 @@ export const SelectDate = () => {
 										key={`${day}`}
 									>
 										<button
+											type="button"
 											key={day}
 											className="w-full px-4 py-2 text-left text-sm hover:bg-gray-200"
 											onClick={() => {
