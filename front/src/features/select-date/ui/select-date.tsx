@@ -1,7 +1,7 @@
 import { currentDateAtom, yearDatesAtom } from "@/src/entities/report/model"
 import { useAtom } from "jotai"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { ChevronDown, ChevronRight } from "lucide-react"
 
@@ -11,18 +11,18 @@ export const SelectDate = () => {
 	const [openMonths, setOpenMonths] = useState<number[]>([])
 	const [, setActiveIcon] = useState("reports")
 
+	const isInitialMount = useRef(true)
+
 	useEffect(() => {
-		if (
-			yearDates?.year &&
-			(!currentDate?.year || currentDate.year !== yearDates.year)
-		) {
+		if (isInitialMount.current && yearDates?.year) {
+			isInitialMount.current = false
 			setCurrentDateAtom({
 				year: yearDates.year,
-				month: currentDate?.month,
-				day: currentDate?.day,
+				month: undefined,
+				day: undefined,
 			})
 		}
-	}, [yearDates?.year, currentDate, setCurrentDateAtom])
+	}, [yearDates?.year, setCurrentDateAtom])
 
 	const toggleMonth = (month: number) => {
 		setOpenMonths((prev) =>
