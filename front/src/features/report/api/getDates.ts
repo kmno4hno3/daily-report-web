@@ -10,7 +10,7 @@ export const getDates = async (
 	const session = await auth()
 	if (!session?.user) return
 	try {
-		const url = `http://${process.env.NEXT_PUBLIC_HOST || "localhost:8000"}/api/report/dates/${currentYear}`
+		const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/report/dates/${currentYear}`
 		return await axios.get(url).then((res) => res.data)
 	} catch (error) {
 		console.error(error)

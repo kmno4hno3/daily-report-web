@@ -39,7 +39,7 @@ export function RegisterForm({
 		},
 	})
 	const createUser = async (name: string, email: string, password: string) => {
-		const url = `http://${process.env.NEXT_PUBLIC_HOST || "localhost:8000"}/api/users`
+		const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/users`
 		try {
 			await axios.post(url, { name, email, password })
 			setMessageDialog({

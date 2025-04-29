@@ -45,7 +45,7 @@ export const ReportCreateForm = () => {
 
 	const createReport = async (date: Date, content: string) => {
 		const formatDate = format(date, "yyyy-MM-dd")
-		const url = `http://${process.env.NEXT_PUBLIC_HOST || "localhost:8000"}/api/reports`
+		const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/reports`
 		try {
 			await axios.post(url, { date: formatDate, content })
 			setMessageDialog({

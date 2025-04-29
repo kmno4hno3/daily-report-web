@@ -28,7 +28,7 @@ export const ReportDetail = () => {
 	useEffect(() => {
 		const fetchFile = async () => {
 			try {
-				const url = `http://${process.env.NEXT_PUBLIC_HOST || "localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
+				const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
 				await axios.get(url).then((res) => {
 					console.log(res)
 					const report: Report = res.data
@@ -72,7 +72,7 @@ export const ReportDetail = () => {
 				preformattedCode: true,
 			})
 			try {
-				const url = `http://${process.env.NEXT_PUBLIC_HOST || "localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
+				const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
 				await axios.put(url, {
 					content: turndownService.turndown(editor.getHTML()),
 				})
@@ -92,7 +92,7 @@ export const ReportDetail = () => {
 
 	const deleteReport = async () => {
 		try {
-			const url = `http://${process.env.NEXT_PUBLIC_HOST || "localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
+			const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
 			await axios.delete(url).then(() => {
 				setMessageDialog({
 					title: "レポート削除",
