@@ -131,7 +131,8 @@ exports.Prisma.ReportsScalarFieldEnum = {
   date: 'date',
   content: 'content',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  user_id: 'user_id'
 };
 
 exports.Prisma.UsersScalarFieldEnum = {

@@ -1046,6 +1046,36 @@ export namespace Prisma {
    */
 
 
+  /**
+   * Count Type UsersCountOutputType
+   */
+
+  export type UsersCountOutputType = {
+    reports: number
+  }
+
+  export type UsersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reports?: boolean | UsersCountOutputTypeCountReportsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsersCountOutputType
+     */
+    select?: UsersCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: reportsWhereInput
+  }
+
 
   /**
    * Models
@@ -2111,10 +2141,12 @@ export namespace Prisma {
 
   export type ReportsAvgAggregateOutputType = {
     id: number | null
+    user_id: number | null
   }
 
   export type ReportsSumAggregateOutputType = {
     id: bigint | null
+    user_id: bigint | null
   }
 
   export type ReportsMinAggregateOutputType = {
@@ -2123,6 +2155,7 @@ export namespace Prisma {
     content: string | null
     created_at: Date | null
     updated_at: Date | null
+    user_id: bigint | null
   }
 
   export type ReportsMaxAggregateOutputType = {
@@ -2131,6 +2164,7 @@ export namespace Prisma {
     content: string | null
     created_at: Date | null
     updated_at: Date | null
+    user_id: bigint | null
   }
 
   export type ReportsCountAggregateOutputType = {
@@ -2139,16 +2173,19 @@ export namespace Prisma {
     content: number
     created_at: number
     updated_at: number
+    user_id: number
     _all: number
   }
 
 
   export type ReportsAvgAggregateInputType = {
     id?: true
+    user_id?: true
   }
 
   export type ReportsSumAggregateInputType = {
     id?: true
+    user_id?: true
   }
 
   export type ReportsMinAggregateInputType = {
@@ -2157,6 +2194,7 @@ export namespace Prisma {
     content?: true
     created_at?: true
     updated_at?: true
+    user_id?: true
   }
 
   export type ReportsMaxAggregateInputType = {
@@ -2165,6 +2203,7 @@ export namespace Prisma {
     content?: true
     created_at?: true
     updated_at?: true
+    user_id?: true
   }
 
   export type ReportsCountAggregateInputType = {
@@ -2173,6 +2212,7 @@ export namespace Prisma {
     content?: true
     created_at?: true
     updated_at?: true
+    user_id?: true
     _all?: true
   }
 
@@ -2268,6 +2308,7 @@ export namespace Prisma {
     content: string | null
     created_at: Date
     updated_at: Date
+    user_id: bigint | null
     _count: ReportsCountAggregateOutputType | null
     _avg: ReportsAvgAggregateOutputType | null
     _sum: ReportsSumAggregateOutputType | null
@@ -2295,6 +2336,8 @@ export namespace Prisma {
     content?: boolean
     created_at?: boolean
     updated_at?: boolean
+    user_id?: boolean
+    users?: boolean | reports$usersArgs<ExtArgs>
   }, ExtArgs["result"]["reports"]>
 
   export type reportsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2303,6 +2346,8 @@ export namespace Prisma {
     content?: boolean
     created_at?: boolean
     updated_at?: boolean
+    user_id?: boolean
+    users?: boolean | reports$usersArgs<ExtArgs>
   }, ExtArgs["result"]["reports"]>
 
   export type reportsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2311,6 +2356,8 @@ export namespace Prisma {
     content?: boolean
     created_at?: boolean
     updated_at?: boolean
+    user_id?: boolean
+    users?: boolean | reports$usersArgs<ExtArgs>
   }, ExtArgs["result"]["reports"]>
 
   export type reportsSelectScalar = {
@@ -2319,19 +2366,32 @@ export namespace Prisma {
     content?: boolean
     created_at?: boolean
     updated_at?: boolean
+    user_id?: boolean
   }
 
-  export type reportsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "content" | "created_at" | "updated_at", ExtArgs["result"]["reports"]>
+  export type reportsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "content" | "created_at" | "updated_at" | "user_id", ExtArgs["result"]["reports"]>
+  export type reportsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    users?: boolean | reports$usersArgs<ExtArgs>
+  }
+  export type reportsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    users?: boolean | reports$usersArgs<ExtArgs>
+  }
+  export type reportsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    users?: boolean | reports$usersArgs<ExtArgs>
+  }
 
   export type $reportsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "reports"
-    objects: {}
+    objects: {
+      users: Prisma.$usersPayload<ExtArgs> | null
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
       date: Date
       content: string | null
       created_at: Date
       updated_at: Date
+      user_id: bigint | null
     }, ExtArgs["result"]["reports"]>
     composites: {}
   }
@@ -2726,6 +2786,7 @@ export namespace Prisma {
    */
   export interface Prisma__reportsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    users<T extends reports$usersArgs<ExtArgs> = {}>(args?: Subset<T, reports$usersArgs<ExtArgs>>): Prisma__usersClient<$Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2760,6 +2821,7 @@ export namespace Prisma {
     readonly content: FieldRef<"reports", 'String'>
     readonly created_at: FieldRef<"reports", 'DateTime'>
     readonly updated_at: FieldRef<"reports", 'DateTime'>
+    readonly user_id: FieldRef<"reports", 'BigInt'>
   }
     
 
@@ -2776,6 +2838,10 @@ export namespace Prisma {
      * Omit specific fields from the reports
      */
     omit?: reportsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsInclude<ExtArgs> | null
     /**
      * Filter, which reports to fetch.
      */
@@ -2795,6 +2861,10 @@ export namespace Prisma {
      */
     omit?: reportsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsInclude<ExtArgs> | null
+    /**
      * Filter, which reports to fetch.
      */
     where: reportsWhereUniqueInput
@@ -2812,6 +2882,10 @@ export namespace Prisma {
      * Omit specific fields from the reports
      */
     omit?: reportsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsInclude<ExtArgs> | null
     /**
      * Filter, which reports to fetch.
      */
@@ -2861,6 +2935,10 @@ export namespace Prisma {
      */
     omit?: reportsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsInclude<ExtArgs> | null
+    /**
      * Filter, which reports to fetch.
      */
     where?: reportsWhereInput
@@ -2909,6 +2987,10 @@ export namespace Prisma {
      */
     omit?: reportsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsInclude<ExtArgs> | null
+    /**
      * Filter, which reports to fetch.
      */
     where?: reportsWhereInput
@@ -2952,6 +3034,10 @@ export namespace Prisma {
      */
     omit?: reportsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsInclude<ExtArgs> | null
+    /**
      * The data needed to create a reports.
      */
     data: XOR<reportsCreateInput, reportsUncheckedCreateInput>
@@ -2985,6 +3071,10 @@ export namespace Prisma {
      */
     data: reportsCreateManyInput | reportsCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -2999,6 +3089,10 @@ export namespace Prisma {
      * Omit specific fields from the reports
      */
     omit?: reportsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsInclude<ExtArgs> | null
     /**
      * The data needed to update a reports.
      */
@@ -3051,6 +3145,10 @@ export namespace Prisma {
      * Limit how many reports to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3065,6 +3163,10 @@ export namespace Prisma {
      * Omit specific fields from the reports
      */
     omit?: reportsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsInclude<ExtArgs> | null
     /**
      * The filter to search for the reports to update in case it exists.
      */
@@ -3092,6 +3194,10 @@ export namespace Prisma {
      */
     omit?: reportsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsInclude<ExtArgs> | null
+    /**
      * Filter which reports to delete.
      */
     where: reportsWhereUniqueInput
@@ -3112,6 +3218,25 @@ export namespace Prisma {
   }
 
   /**
+   * reports.users
+   */
+  export type reports$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the users
+     */
+    select?: usersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the users
+     */
+    omit?: usersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
+    where?: usersWhereInput
+  }
+
+  /**
    * reports without action
    */
   export type reportsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3123,6 +3248,10 @@ export namespace Prisma {
      * Omit specific fields from the reports
      */
     omit?: reportsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsInclude<ExtArgs> | null
   }
 
 
@@ -3332,6 +3461,8 @@ export namespace Prisma {
     password?: boolean
     created_at?: boolean
     updated_at?: boolean
+    reports?: boolean | users$reportsArgs<ExtArgs>
+    _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["users"]>
 
   export type usersSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3362,10 +3493,18 @@ export namespace Prisma {
   }
 
   export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "created_at" | "updated_at", ExtArgs["result"]["users"]>
+  export type usersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reports?: boolean | users$reportsArgs<ExtArgs>
+    _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type usersIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type usersIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $usersPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "users"
-    objects: {}
+    objects: {
+      reports: Prisma.$reportsPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
       name: string | null
@@ -3767,6 +3906,7 @@ export namespace Prisma {
    */
   export interface Prisma__usersClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    reports<T extends users$reportsArgs<ExtArgs> = {}>(args?: Subset<T, users$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$reportsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3819,6 +3959,10 @@ export namespace Prisma {
      */
     omit?: usersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
+    /**
      * Filter, which users to fetch.
      */
     where: usersWhereUniqueInput
@@ -3837,6 +3981,10 @@ export namespace Prisma {
      */
     omit?: usersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
+    /**
      * Filter, which users to fetch.
      */
     where: usersWhereUniqueInput
@@ -3854,6 +4002,10 @@ export namespace Prisma {
      * Omit specific fields from the users
      */
     omit?: usersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
     /**
      * Filter, which users to fetch.
      */
@@ -3903,6 +4055,10 @@ export namespace Prisma {
      */
     omit?: usersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
+    /**
      * Filter, which users to fetch.
      */
     where?: usersWhereInput
@@ -3951,6 +4107,10 @@ export namespace Prisma {
      */
     omit?: usersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
+    /**
      * Filter, which users to fetch.
      */
     where?: usersWhereInput
@@ -3993,6 +4153,10 @@ export namespace Prisma {
      * Omit specific fields from the users
      */
     omit?: usersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
     /**
      * The data needed to create a users.
      */
@@ -4041,6 +4205,10 @@ export namespace Prisma {
      * Omit specific fields from the users
      */
     omit?: usersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
     /**
      * The data needed to update a users.
      */
@@ -4108,6 +4276,10 @@ export namespace Prisma {
      */
     omit?: usersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
+    /**
      * The filter to search for the users to update in case it exists.
      */
     where: usersWhereUniqueInput
@@ -4134,6 +4306,10 @@ export namespace Prisma {
      */
     omit?: usersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
+    /**
      * Filter which users to delete.
      */
     where: usersWhereUniqueInput
@@ -4154,6 +4330,30 @@ export namespace Prisma {
   }
 
   /**
+   * users.reports
+   */
+  export type users$reportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the reports
+     */
+    select?: reportsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the reports
+     */
+    omit?: reportsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: reportsInclude<ExtArgs> | null
+    where?: reportsWhereInput
+    orderBy?: reportsOrderByWithRelationInput | reportsOrderByWithRelationInput[]
+    cursor?: reportsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReportsScalarFieldEnum | ReportsScalarFieldEnum[]
+  }
+
+  /**
    * users without action
    */
   export type usersDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4165,6 +4365,10 @@ export namespace Prisma {
      * Omit specific fields from the users
      */
     omit?: usersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: usersInclude<ExtArgs> | null
   }
 
 
@@ -4199,7 +4403,8 @@ export namespace Prisma {
     date: 'date',
     content: 'content',
     created_at: 'created_at',
-    updated_at: 'updated_at'
+    updated_at: 'updated_at',
+    user_id: 'user_id'
   };
 
   export type ReportsScalarFieldEnum = (typeof ReportsScalarFieldEnum)[keyof typeof ReportsScalarFieldEnum]
@@ -4408,6 +4613,8 @@ export namespace Prisma {
     content?: StringNullableFilter<"reports"> | string | null
     created_at?: DateTimeFilter<"reports"> | Date | string
     updated_at?: DateTimeFilter<"reports"> | Date | string
+    user_id?: BigIntNullableFilter<"reports"> | bigint | number | null
+    users?: XOR<UsersNullableScalarRelationFilter, usersWhereInput> | null
   }
 
   export type reportsOrderByWithRelationInput = {
@@ -4416,6 +4623,8 @@ export namespace Prisma {
     content?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    user_id?: SortOrderInput | SortOrder
+    users?: usersOrderByWithRelationInput
   }
 
   export type reportsWhereUniqueInput = Prisma.AtLeast<{
@@ -4427,6 +4636,8 @@ export namespace Prisma {
     content?: StringNullableFilter<"reports"> | string | null
     created_at?: DateTimeFilter<"reports"> | Date | string
     updated_at?: DateTimeFilter<"reports"> | Date | string
+    user_id?: BigIntNullableFilter<"reports"> | bigint | number | null
+    users?: XOR<UsersNullableScalarRelationFilter, usersWhereInput> | null
   }, "id" | "date">
 
   export type reportsOrderByWithAggregationInput = {
@@ -4435,6 +4646,7 @@ export namespace Prisma {
     content?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    user_id?: SortOrderInput | SortOrder
     _count?: reportsCountOrderByAggregateInput
     _avg?: reportsAvgOrderByAggregateInput
     _max?: reportsMaxOrderByAggregateInput
@@ -4451,6 +4663,7 @@ export namespace Prisma {
     content?: StringNullableWithAggregatesFilter<"reports"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"reports"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"reports"> | Date | string
+    user_id?: BigIntNullableWithAggregatesFilter<"reports"> | bigint | number | null
   }
 
   export type usersWhereInput = {
@@ -4463,6 +4676,7 @@ export namespace Prisma {
     password?: StringFilter<"users"> | string
     created_at?: DateTimeFilter<"users"> | Date | string
     updated_at?: DateTimeFilter<"users"> | Date | string
+    reports?: ReportsListRelationFilter
   }
 
   export type usersOrderByWithRelationInput = {
@@ -4472,19 +4686,21 @@ export namespace Prisma {
     password?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    reports?: reportsOrderByRelationAggregateInput
   }
 
   export type usersWhereUniqueInput = Prisma.AtLeast<{
     id?: bigint | number
     email?: string
-    password?: string
     AND?: usersWhereInput | usersWhereInput[]
     OR?: usersWhereInput[]
     NOT?: usersWhereInput | usersWhereInput[]
     name?: StringNullableFilter<"users"> | string | null
+    password?: StringFilter<"users"> | string
     created_at?: DateTimeFilter<"users"> | Date | string
     updated_at?: DateTimeFilter<"users"> | Date | string
-  }, "id" | "email" | "password">
+    reports?: ReportsListRelationFilter
+  }, "id" | "email">
 
   export type usersOrderByWithAggregationInput = {
     id?: SortOrder
@@ -4581,6 +4797,7 @@ export namespace Prisma {
     content?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    users?: usersCreateNestedOneWithoutReportsInput
   }
 
   export type reportsUncheckedCreateInput = {
@@ -4589,6 +4806,7 @@ export namespace Prisma {
     content?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    user_id?: bigint | number | null
   }
 
   export type reportsUpdateInput = {
@@ -4597,6 +4815,7 @@ export namespace Prisma {
     content?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: usersUpdateOneWithoutReportsNestedInput
   }
 
   export type reportsUncheckedUpdateInput = {
@@ -4605,6 +4824,7 @@ export namespace Prisma {
     content?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type reportsCreateManyInput = {
@@ -4613,6 +4833,7 @@ export namespace Prisma {
     content?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    user_id?: bigint | number | null
   }
 
   export type reportsUpdateManyMutationInput = {
@@ -4629,6 +4850,7 @@ export namespace Prisma {
     content?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type usersCreateInput = {
@@ -4638,6 +4860,7 @@ export namespace Prisma {
     password: string
     created_at?: Date | string
     updated_at?: Date | string
+    reports?: reportsCreateNestedManyWithoutUsersInput
   }
 
   export type usersUncheckedCreateInput = {
@@ -4647,6 +4870,7 @@ export namespace Prisma {
     password: string
     created_at?: Date | string
     updated_at?: Date | string
+    reports?: reportsUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type usersUpdateInput = {
@@ -4656,6 +4880,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    reports?: reportsUpdateManyWithoutUsersNestedInput
   }
 
   export type usersUncheckedUpdateInput = {
@@ -4665,6 +4890,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    reports?: reportsUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type usersCreateManyInput = {
@@ -4861,6 +5087,22 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type BigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
+  export type UsersNullableScalarRelationFilter = {
+    is?: usersWhereInput | null
+    isNot?: usersWhereInput | null
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -4872,10 +5114,12 @@ export namespace Prisma {
     content?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    user_id?: SortOrder
   }
 
   export type reportsAvgOrderByAggregateInput = {
     id?: SortOrder
+    user_id?: SortOrder
   }
 
   export type reportsMaxOrderByAggregateInput = {
@@ -4884,6 +5128,7 @@ export namespace Prisma {
     content?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    user_id?: SortOrder
   }
 
   export type reportsMinOrderByAggregateInput = {
@@ -4892,10 +5137,12 @@ export namespace Prisma {
     content?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    user_id?: SortOrder
   }
 
   export type reportsSumOrderByAggregateInput = {
     id?: SortOrder
+    user_id?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -4914,6 +5161,32 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
+  export type ReportsListRelationFilter = {
+    every?: reportsWhereInput
+    some?: reportsWhereInput
+    none?: reportsWhereInput
+  }
+
+  export type reportsOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type usersCountOrderByAggregateInput = {
@@ -4975,8 +5248,74 @@ export namespace Prisma {
     set?: Uint8Array
   }
 
+  export type usersCreateNestedOneWithoutReportsInput = {
+    create?: XOR<usersCreateWithoutReportsInput, usersUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: usersCreateOrConnectWithoutReportsInput
+    connect?: usersWhereUniqueInput
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type usersUpdateOneWithoutReportsNestedInput = {
+    create?: XOR<usersCreateWithoutReportsInput, usersUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: usersCreateOrConnectWithoutReportsInput
+    upsert?: usersUpsertWithoutReportsInput
+    disconnect?: usersWhereInput | boolean
+    delete?: usersWhereInput | boolean
+    connect?: usersWhereUniqueInput
+    update?: XOR<XOR<usersUpdateToOneWithWhereWithoutReportsInput, usersUpdateWithoutReportsInput>, usersUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type NullableBigIntFieldUpdateOperationsInput = {
+    set?: bigint | number | null
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
+  }
+
+  export type reportsCreateNestedManyWithoutUsersInput = {
+    create?: XOR<reportsCreateWithoutUsersInput, reportsUncheckedCreateWithoutUsersInput> | reportsCreateWithoutUsersInput[] | reportsUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: reportsCreateOrConnectWithoutUsersInput | reportsCreateOrConnectWithoutUsersInput[]
+    createMany?: reportsCreateManyUsersInputEnvelope
+    connect?: reportsWhereUniqueInput | reportsWhereUniqueInput[]
+  }
+
+  export type reportsUncheckedCreateNestedManyWithoutUsersInput = {
+    create?: XOR<reportsCreateWithoutUsersInput, reportsUncheckedCreateWithoutUsersInput> | reportsCreateWithoutUsersInput[] | reportsUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: reportsCreateOrConnectWithoutUsersInput | reportsCreateOrConnectWithoutUsersInput[]
+    createMany?: reportsCreateManyUsersInputEnvelope
+    connect?: reportsWhereUniqueInput | reportsWhereUniqueInput[]
+  }
+
+  export type reportsUpdateManyWithoutUsersNestedInput = {
+    create?: XOR<reportsCreateWithoutUsersInput, reportsUncheckedCreateWithoutUsersInput> | reportsCreateWithoutUsersInput[] | reportsUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: reportsCreateOrConnectWithoutUsersInput | reportsCreateOrConnectWithoutUsersInput[]
+    upsert?: reportsUpsertWithWhereUniqueWithoutUsersInput | reportsUpsertWithWhereUniqueWithoutUsersInput[]
+    createMany?: reportsCreateManyUsersInputEnvelope
+    set?: reportsWhereUniqueInput | reportsWhereUniqueInput[]
+    disconnect?: reportsWhereUniqueInput | reportsWhereUniqueInput[]
+    delete?: reportsWhereUniqueInput | reportsWhereUniqueInput[]
+    connect?: reportsWhereUniqueInput | reportsWhereUniqueInput[]
+    update?: reportsUpdateWithWhereUniqueWithoutUsersInput | reportsUpdateWithWhereUniqueWithoutUsersInput[]
+    updateMany?: reportsUpdateManyWithWhereWithoutUsersInput | reportsUpdateManyWithWhereWithoutUsersInput[]
+    deleteMany?: reportsScalarWhereInput | reportsScalarWhereInput[]
+  }
+
+  export type reportsUncheckedUpdateManyWithoutUsersNestedInput = {
+    create?: XOR<reportsCreateWithoutUsersInput, reportsUncheckedCreateWithoutUsersInput> | reportsCreateWithoutUsersInput[] | reportsUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: reportsCreateOrConnectWithoutUsersInput | reportsCreateOrConnectWithoutUsersInput[]
+    upsert?: reportsUpsertWithWhereUniqueWithoutUsersInput | reportsUpsertWithWhereUniqueWithoutUsersInput[]
+    createMany?: reportsCreateManyUsersInputEnvelope
+    set?: reportsWhereUniqueInput | reportsWhereUniqueInput[]
+    disconnect?: reportsWhereUniqueInput | reportsWhereUniqueInput[]
+    delete?: reportsWhereUniqueInput | reportsWhereUniqueInput[]
+    connect?: reportsWhereUniqueInput | reportsWhereUniqueInput[]
+    update?: reportsUpdateWithWhereUniqueWithoutUsersInput | reportsUpdateWithWhereUniqueWithoutUsersInput[]
+    updateMany?: reportsUpdateManyWithWhereWithoutUsersInput | reportsUpdateManyWithWhereWithoutUsersInput[]
+    deleteMany?: reportsScalarWhereInput | reportsScalarWhereInput[]
   }
 
   export type NestedBigIntFilter<$PrismaModel = never> = {
@@ -5128,6 +5467,17 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedBigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -5154,6 +5504,171 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type usersCreateWithoutReportsInput = {
+    id?: bigint | number
+    name?: string | null
+    email: string
+    password: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type usersUncheckedCreateWithoutReportsInput = {
+    id?: bigint | number
+    name?: string | null
+    email: string
+    password: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type usersCreateOrConnectWithoutReportsInput = {
+    where: usersWhereUniqueInput
+    create: XOR<usersCreateWithoutReportsInput, usersUncheckedCreateWithoutReportsInput>
+  }
+
+  export type usersUpsertWithoutReportsInput = {
+    update: XOR<usersUpdateWithoutReportsInput, usersUncheckedUpdateWithoutReportsInput>
+    create: XOR<usersCreateWithoutReportsInput, usersUncheckedCreateWithoutReportsInput>
+    where?: usersWhereInput
+  }
+
+  export type usersUpdateToOneWithWhereWithoutReportsInput = {
+    where?: usersWhereInput
+    data: XOR<usersUpdateWithoutReportsInput, usersUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type usersUpdateWithoutReportsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type usersUncheckedUpdateWithoutReportsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type reportsCreateWithoutUsersInput = {
+    id?: bigint | number
+    date: Date | string
+    content?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type reportsUncheckedCreateWithoutUsersInput = {
+    id?: bigint | number
+    date: Date | string
+    content?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type reportsCreateOrConnectWithoutUsersInput = {
+    where: reportsWhereUniqueInput
+    create: XOR<reportsCreateWithoutUsersInput, reportsUncheckedCreateWithoutUsersInput>
+  }
+
+  export type reportsCreateManyUsersInputEnvelope = {
+    data: reportsCreateManyUsersInput | reportsCreateManyUsersInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type reportsUpsertWithWhereUniqueWithoutUsersInput = {
+    where: reportsWhereUniqueInput
+    update: XOR<reportsUpdateWithoutUsersInput, reportsUncheckedUpdateWithoutUsersInput>
+    create: XOR<reportsCreateWithoutUsersInput, reportsUncheckedCreateWithoutUsersInput>
+  }
+
+  export type reportsUpdateWithWhereUniqueWithoutUsersInput = {
+    where: reportsWhereUniqueInput
+    data: XOR<reportsUpdateWithoutUsersInput, reportsUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type reportsUpdateManyWithWhereWithoutUsersInput = {
+    where: reportsScalarWhereInput
+    data: XOR<reportsUpdateManyMutationInput, reportsUncheckedUpdateManyWithoutUsersInput>
+  }
+
+  export type reportsScalarWhereInput = {
+    AND?: reportsScalarWhereInput | reportsScalarWhereInput[]
+    OR?: reportsScalarWhereInput[]
+    NOT?: reportsScalarWhereInput | reportsScalarWhereInput[]
+    id?: BigIntFilter<"reports"> | bigint | number
+    date?: DateTimeFilter<"reports"> | Date | string
+    content?: StringNullableFilter<"reports"> | string | null
+    created_at?: DateTimeFilter<"reports"> | Date | string
+    updated_at?: DateTimeFilter<"reports"> | Date | string
+    user_id?: BigIntNullableFilter<"reports"> | bigint | number | null
+  }
+
+  export type reportsCreateManyUsersInput = {
+    id?: bigint | number
+    date: Date | string
+    content?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type reportsUpdateWithoutUsersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type reportsUncheckedUpdateWithoutUsersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type reportsUncheckedUpdateManyWithoutUsersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
