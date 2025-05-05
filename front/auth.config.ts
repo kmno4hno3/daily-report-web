@@ -2,7 +2,7 @@ import { getUserByEmail } from "@/data/user"
 import axios from "axios"
 import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import github from "next-auth/providers/github"
+import GitHub from "next-auth/providers/github"
 import { z } from "zod"
 
 const credentialsSchema = z.object({
@@ -12,7 +12,7 @@ const credentialsSchema = z.object({
 
 export default {
 	providers: [
-		github,
+		GitHub,
 		Credentials({
 			async authorize(credentials) {
 				const result = credentialsSchema.safeParse(credentials)

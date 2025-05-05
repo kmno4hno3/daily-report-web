@@ -20,3 +20,7 @@ export const authenticateUser = async (email: string, password: string) => {
 		return error
 	}
 }
+
+export const authGithub = async () => {
+	await signIn("github")
+}

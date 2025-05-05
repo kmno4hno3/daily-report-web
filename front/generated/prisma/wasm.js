@@ -120,28 +120,51 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.Sqlx_migrationsScalarFieldEnum = {
   version: 'version',
   description: 'description',
-  installed_on: 'installed_on',
+  installedOn: 'installedOn',
   success: 'success',
   checksum: 'checksum',
-  execution_time: 'execution_time'
+  executionTime: 'executionTime'
 };
 
-exports.Prisma.ReportsScalarFieldEnum = {
+exports.Prisma.ReportScalarFieldEnum = {
   id: 'id',
   date: 'date',
   content: 'content',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
-  user_id: 'user_id'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId'
 };
 
-exports.Prisma.UsersScalarFieldEnum = {
+exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
   password: 'password',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  image: 'image',
+  emailVerified: 'emailVerified'
+};
+
+exports.Prisma.AccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  provider: 'provider',
+  providerAccountId: 'providerAccountId',
+  refreshToken: 'refreshToken',
+  access_token: 'access_token',
+  expires_at: 'expires_at',
+  token_type: 'token_type',
+  scope: 'scope',
+  id_token: 'id_token',
+  session_state: 'session_state'
+};
+
+exports.Prisma.VerificationTokenScalarFieldEnum = {
+  identifier: 'identifier',
+  token: 'token',
+  expires: 'expires'
 };
 
 exports.Prisma.SortOrder = {
@@ -162,8 +185,10 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   sqlx_migrations: 'sqlx_migrations',
-  reports: 'reports',
-  users: 'users'
+  Report: 'Report',
+  User: 'User',
+  Account: 'Account',
+  VerificationToken: 'VerificationToken'
 };
 
 /**
