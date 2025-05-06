@@ -57,7 +57,7 @@ impl ReportRepository for ReportRepositoryImpl {
         let created_report = sqlx::query_as::<_, Report>(
             "INSERT INTO reports (date, content, user_id, created_at, updated_at)
             VALUES ($1, $2, $3, $4, $5)
-            RETURNING id, date, content, created_at, updated_at",
+            RETURNING id, date, content, user_id, created_at, updated_at",
         )
         .bind(report.date)
         .bind(&report.content)
