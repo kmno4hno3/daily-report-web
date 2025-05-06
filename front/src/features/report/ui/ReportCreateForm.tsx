@@ -1,4 +1,5 @@
 "use client"
+
 import { cn } from "@/lib/utils"
 import { yearDatesAtom } from "@/src/entities/report/model"
 import type { Year } from "@/src/entities/report/type"
@@ -9,6 +10,7 @@ import { format } from "date-fns"
 import { useAtom } from "jotai"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { createReport } from "../api/createReport"
 
 import { Button } from "@/src/shared/ui/button"
 import { Calendar } from "@/src/shared/ui/calendar"
@@ -28,6 +30,8 @@ import { Textarea } from "@/src/shared/ui/textarea"
 import { CalendarIcon } from "lucide-react"
 
 export const ReportCreateForm = () => {
+	// const session = await auth()
+
 	const [yearDates, setYearDates] = useAtom<Year>(yearDatesAtom)
 	const [, setMessageDialog] = useAtom(messageDialogAtom)
 	const [, setErrorDialog] = useAtom(errorDialogAtom)
@@ -43,11 +47,10 @@ export const ReportCreateForm = () => {
 		},
 	})
 
-	const createReport = async (date: Date, content: string) => {
-		const formatDate = format(date, "yyyy-MM-dd")
-		const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/reports`
+	const onSubmit = async (data: z.infer<typeof formSchema>) => {
 		try {
-			await axios.post(url, { date: formatDate, content })
+			const formatDate = format(data.date, "yyyy-MM-dd")
+			await createReport(data.date, data.content)
 			setMessageDialog({
 				title: "レポート作成",
 				message: `${formatDate}のレポートを作成しました`,
@@ -56,8 +59,8 @@ export const ReportCreateForm = () => {
 			const filteredYearDates = {
 				...yearDates,
 				months: yearDates?.months.map((month) => {
-					if (month.month === date.getMonth() + 1) {
-						const tmpDays = [...month.days, date.getDate()]
+					if (month.month === data.date.getMonth() + 1) {
+						const tmpDays = [...month.days, data.date.getDate()]
 						return {
 							...month,
 							days: tmpDays.sort(),
@@ -82,10 +85,6 @@ export const ReportCreateForm = () => {
 				isOpen: true,
 			})
 		}
-	}
-
-	const onSubmit = async (data: z.infer<typeof formSchema>) => {
-		await createReport(data.date, data.content)
 	}
 
 	return (

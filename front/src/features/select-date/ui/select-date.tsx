@@ -10,11 +10,10 @@ export const SelectDate = () => {
 	const [currentDate, setCurrentDateAtom] = useAtom(currentDateAtom)
 	const [openMonths, setOpenMonths] = useState<number[]>([])
 	const [, setActiveIcon] = useState("reports")
-
 	const isInitialMount = useRef(true)
 
 	useEffect(() => {
-		if (isInitialMount.current && yearDates?.year) {
+		if (isInitialMount.current && yearDates?.year && !currentDate.year) {
 			isInitialMount.current = false
 			setCurrentDateAtom({
 				year: yearDates.year,
@@ -22,7 +21,7 @@ export const SelectDate = () => {
 				day: undefined,
 			})
 		}
-	}, [yearDates?.year, setCurrentDateAtom])
+	}, [yearDates?.year, currentDate.year, setCurrentDateAtom])
 
 	const toggleMonth = (month: number) => {
 		setOpenMonths((prev) =>

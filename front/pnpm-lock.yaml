@@ -92,6 +92,9 @@ importers:
       highlight.js:
         specifier: ^11.11.1
         version: 11.11.1
+      jose:
+        specifier: ^6.0.11
+        version: 6.0.11
       jotai:
         specifier: ^2.12.0
         version: 2.12.0(@types/react@19.0.8)(react@19.0.0)
@@ -2243,8 +2246,8 @@ packages:
   jose@5.10.0:
     resolution: {integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==}
 
-  jose@6.0.10:
-    resolution: {integrity: sha512-skIAxZqcMkOrSwjJvplIPYrlXGpxTPnro2/QWTDCxAdWQrSTV5/KqspMWmi5WAx5+ULswASJiZ0a+1B/Lxt9cw==}
+  jose@6.0.11:
+    resolution: {integrity: sha512-QxG7EaliDARm1O1S8BGakqncGT9s25bKL1WSf6/oa17Tkqwi8D2ZNglqCF+DsYF88/rV66Q/Q2mFAy697E1DUg==}
 
   jotai-devtools@0.10.1:
     resolution: {integrity: sha512-l5AwNTC1tgcT5Pbjwcajlm+WC3we1qEMoTTe9qnItVIcOB8UIUAdphUrHKDWEIkG7lPgOAfnRgLE1mkvf+Jy3w==}
@@ -3199,7 +3202,7 @@ snapshots:
   '@auth/core@0.38.0':
     dependencies:
       '@panva/hkdf': 1.2.1
-      jose: 6.0.10
+      jose: 6.0.11
       oauth4webapi: 3.4.1
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
@@ -5319,7 +5322,7 @@ snapshots:
 
   jose@5.10.0: {}
 
-  jose@6.0.10: {}
+  jose@6.0.11: {}
 
   jotai-devtools@0.10.1(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(redux@5.0.1):
     dependencies:

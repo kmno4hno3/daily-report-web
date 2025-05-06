@@ -11,6 +11,7 @@ import { all, createLowlight } from "lowlight"
 import markdownit from "markdown-it"
 import { useCallback, useEffect, useState } from "react"
 import TurndownService from "turndown"
+import { fetchReportAction } from "../api/fetchReportAction"
 
 import { useAtom } from "jotai"
 
@@ -28,12 +29,14 @@ export const ReportDetail = () => {
 	useEffect(() => {
 		const fetchFile = async () => {
 			try {
-				const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
-				await axios.get(url).then((res) => {
-					console.log(res)
-					const report: Report = res.data
+				if (currentDate.year && currentDate.month && currentDate.day) {
+					const report = await fetchReportAction(
+						currentDate.year,
+						currentDate.month,
+						currentDate.day,
+					)
 					if (report) setFile(report)
-				})
+				}
 			} catch (err) {
 				if (axios.isAxiosError(err) && err.response?.status === 404) {
 					console.log("日報が見つかりません")
