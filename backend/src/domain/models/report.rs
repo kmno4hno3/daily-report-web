@@ -7,6 +7,7 @@ pub struct Report {
     pub id: Option<i64>,
     pub date: NaiveDate,
     pub content: Option<String>,
+    pub user_id: i64,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -24,7 +25,7 @@ pub struct Month {
 }
 
 impl Report {
-    pub fn new(date: String, content: String) -> Self {
+    pub fn new(date: String, content: String, user_id: i64) -> Self {
         let jst = FixedOffset::east_opt(9 * 3600).unwrap();
         let now_jst = jst.from_utc_datetime(&Utc::now().naive_utc());
         let now_utc = now_jst.with_timezone(&Utc);
@@ -34,6 +35,7 @@ impl Report {
             id: None,
             date: date_parsed,
             content: Some(content),
+            user_id: user_id,
             created_at: now_utc,
             updated_at: now_utc,
         }

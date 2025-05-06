@@ -56,7 +56,6 @@ impl UserRepository for UserRepositoryImpl {
         .fetch_one(&self.pool)
         .await?;
 
-        println!("{:?}", created_user);
         Ok(created_user)
     }
     async fn update(&self, user: User) -> Result<User, sqlx::Error> {

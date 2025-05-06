@@ -10,6 +10,7 @@ pub trait ReportRepository {
         year: i64,
         month: i64,
         day: i64,
+        user_id: i64,
     ) -> Result<Option<Report>, sqlx::Error>;
     async fn find_available_dates_by_year(&self, year: i64) -> Result<Year, sqlx::Error>;
     async fn create(&self, report: Report) -> Result<Report, sqlx::Error>;

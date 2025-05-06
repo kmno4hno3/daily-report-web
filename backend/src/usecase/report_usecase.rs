@@ -22,16 +22,29 @@ pub trait ReportService {
         year: i64,
         month: i64,
         day: i64,
+        user_id: i64,
     ) -> Result<Option<Report>, sqlx::Error>;
-    async fn create_report(&self, date: String, content: String) -> Result<Report, sqlx::Error>;
+    async fn create_report(
+        &self,
+        date: String,
+        content: String,
+        user_id: i64,
+    ) -> Result<Report, sqlx::Error>;
     async fn update_report(
         &self,
         year: i64,
         month: i64,
         day: i64,
         content: String,
+        user_id: i64,
     ) -> Result<Report, sqlx::Error>;
-    async fn delete_report(&self, year: i64, month: i64, day: i64) -> Result<(), sqlx::Error>;
+    async fn delete_report(
+        &self,
+        year: i64,
+        month: i64,
+        day: i64,
+        user_id: i64,
+    ) -> Result<(), sqlx::Error>;
     async fn get_available_dates_by_year(&self, id: i64) -> Result<Year, sqlx::Error>;
 }
 
@@ -48,11 +61,21 @@ impl<T: ReportRepository + Send + Sync + Clone> ReportService for ReportUsecase<
         year: i64,
         month: i64,
         day: i64,
+        user_id: i64,
     ) -> Result<Option<Report>, sqlx::Error> {
-        self.repository.find_by_date(year, month, day).await
+        let result = self
+            .repository
+            .find_by_date(year, month, day, user_id)
+            .await;
+        return result;
     }
-    async fn create_report(&self, date: String, content: String) -> Result<Report, sqlx::Error> {
-        let new_report = Report::new(date, content);
+    async fn create_report(
+        &self,
+        date: String,
+        content: String,
+        user_id: i64,
+    ) -> Result<Report, sqlx::Error> {
+        let new_report = Report::new(date, content, user_id);
         self.repository.create(new_report).await
     }
     async fn update_report(
@@ -61,8 +84,12 @@ impl<T: ReportRepository + Send + Sync + Clone> ReportService for ReportUsecase<
         month: i64,
         day: i64,
         content: String,
+        user_id: i64,
     ) -> Result<Report, sqlx::Error> {
-        let existing_report = self.repository.find_by_date(year, month, day).await?;
+        let existing_report = self
+            .repository
+            .find_by_date(year, month, day, user_id)
+            .await?;
         if let Some(mut report) = existing_report {
             report.content = Some(content);
             return self.repository.update(report).await;
@@ -70,8 +97,17 @@ impl<T: ReportRepository + Send + Sync + Clone> ReportService for ReportUsecase<
 
         Err(sqlx::Error::RowNotFound)
     }
-    async fn delete_report(&self, year: i64, month: i64, day: i64) -> Result<(), sqlx::Error> {
-        let existing_report = self.repository.find_by_date(year, month, day).await?;
+    async fn delete_report(
+        &self,
+        year: i64,
+        month: i64,
+        day: i64,
+        user_id: i64,
+    ) -> Result<(), sqlx::Error> {
+        let existing_report = self
+            .repository
+            .find_by_date(year, month, day, user_id)
+            .await?;
         if let Some(report) = existing_report {
             self.repository.delete(report).await?;
             Ok(())

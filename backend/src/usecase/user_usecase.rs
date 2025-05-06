@@ -47,7 +47,6 @@ impl<T: UserRepository + Send + Sync + Clone> UserService for UserUsecase<T> {
         password: String,
     ) -> Result<User, sqlx::Error> {
         let new_user = User::new(name, email, password);
-        println!("{:?}", new_user);
         self.repository.create(new_user).await
     }
     async fn update_user(
