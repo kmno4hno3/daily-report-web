@@ -2,6 +2,7 @@ use crate::domain::models::report::{Month, Report, Year};
 use crate::domain::repositories::report_repository::ReportRepository;
 use crate::infrastructure::db::DbPool;
 use async_trait::async_trait;
+use sqlx::Row;
 use std::collections::HashMap;
 
 #[derive(Clone)]
@@ -87,25 +88,33 @@ impl ReportRepository for ReportRepositoryImpl {
             .await?;
         Ok(())
     }
-    async fn find_available_dates_by_year(&self, year: i64) -> Result<Year, sqlx::Error> {
-        let rows = sqlx::query!(
+    async fn find_available_dates_by_year(
+        &self,
+        year: i64,
+        user_id: i64,
+    ) -> Result<Year, sqlx::Error> {
+        let rows = sqlx::query(
             "SELECT DISTINCT 
                 CAST(EXTRACT(YEAR FROM date) AS INTEGER) AS year, 
                 CAST(EXTRACT(MONTH FROM date) AS INTEGER) AS month, 
                 CAST(EXTRACT(DAY FROM date) AS INTEGER) AS day 
             FROM reports 
-            WHERE EXTRACT(YEAR FROM date) = $1;",
-            year as i64
+            WHERE EXTRACT(YEAR FROM date) = $1 AND user_id = $2;",
         )
+        .bind(year)
+        .bind(user_id)
         .fetch_all(&self.pool)
         .await?;
 
         let mut month_map: HashMap<i64, Vec<i64>> = HashMap::new();
         for row in rows {
+            let month: Option<i32> = row.get("month");
+            let day: Option<i32> = row.get("day");
+
             month_map
-                .entry(row.month.unwrap() as i64)
+                .entry(month.unwrap() as i64)
                 .or_insert_with(Vec::new)
-                .push(row.day.unwrap() as i64);
+                .push(day.unwrap() as i64);
         }
 
         let months = month_map

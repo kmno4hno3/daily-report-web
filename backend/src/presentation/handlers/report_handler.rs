@@ -280,8 +280,30 @@ async fn delete_report<T: ReportService>(
 async fn get_available_dates_by_year<T: ReportService>(
     State(state): State<AppState<T>>,
     Path(year): Path<i64>,
+    headers: HeaderMap,
 ) -> impl IntoResponse {
-    match state.report_service.get_available_dates_by_year(year).await {
+    let user_id = match headers
+        .get("Authorization")
+        .and_then(|token| {
+            token.to_str().ok().and_then(|t| {
+                if let Some(token_str) = t.strip_prefix("Bearer ") {
+                    verify_token(token_str).ok()
+                } else {
+                    None
+                }
+            })
+        })
+        .and_then(|user| user.id.parse::<i64>().ok())
+    {
+        Some(id) => id,
+        None => return (StatusCode::UNAUTHORIZED).into_response(),
+    };
+
+    match state
+        .report_service
+        .get_available_dates_by_year(year, user_id)
+        .await
+    {
         Ok(dates) => Json(YearResponse::from(dates)).into_response(),
         Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch dates").into_response(),
     }

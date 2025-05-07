@@ -45,7 +45,11 @@ pub trait ReportService {
         day: i64,
         user_id: i64,
     ) -> Result<(), sqlx::Error>;
-    async fn get_available_dates_by_year(&self, id: i64) -> Result<Year, sqlx::Error>;
+    async fn get_available_dates_by_year(
+        &self,
+        year: i64,
+        user_id: i64,
+    ) -> Result<Year, sqlx::Error>;
 }
 
 #[async_trait]
@@ -115,7 +119,13 @@ impl<T: ReportRepository + Send + Sync + Clone> ReportService for ReportUsecase<
             Err(sqlx::Error::RowNotFound)
         }
     }
-    async fn get_available_dates_by_year(&self, year: i64) -> Result<Year, sqlx::Error> {
-        self.repository.find_available_dates_by_year(year).await
+    async fn get_available_dates_by_year(
+        &self,
+        year: i64,
+        user_id: i64,
+    ) -> Result<Year, sqlx::Error> {
+        self.repository
+            .find_available_dates_by_year(year, user_id)
+            .await
     }
 }
