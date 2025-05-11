@@ -1,6 +1,5 @@
 "use client"
 
-import { signIn } from "@/auth"
 import { cn } from "@/lib/utils"
 import { DEFAULT_LOGIN_REDIRECT } from "@/route"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -53,7 +52,7 @@ export function LoginForm({
 		)
 		if (result.success) {
 			if (result.data.isSuccess) {
-				router.push(DEFAULT_LOGIN_REDIRECT)
+				window.location.href = `/report/list/${new Date().getFullYear()}`
 			} else {
 				form.setError("email", {
 					type: "manual",

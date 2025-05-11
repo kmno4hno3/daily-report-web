@@ -1,14 +1,26 @@
-import { auth, signOut } from "@/auth"
+"use client"
+
+import { authSignOut } from "@/src/features/login/model/action"
+import { z } from "zod"
 
 import { Button } from "@/src/shared/ui/button"
 import type React from "react"
 
-export const Account: React.FC = async () => {
-	const session = await auth()
-	if (!session) return null
-	const onSubmit = async () => {
-		"use server"
-		await signOut({ redirectTo: "/auth/login" })
+export const Account: React.FC = () => {
+	const handleLogout = async () => {
+		const result = await authSignOut()
+
+		const ResultSchema = z.object({
+			isSuccess: z.boolean(),
+		})
+
+		const resultParsed = ResultSchema.safeParse(result)
+
+		if (resultParsed.success && resultParsed.data.isSuccess) {
+			window.location.href = "/auth/login"
+		} else {
+			console.log("ログアウト失敗:", result)
+		}
 	}
 
 	return (
@@ -16,11 +28,9 @@ export const Account: React.FC = async () => {
 			<h2 className="text-2xl font-bold mb-4">アカウント</h2>
 
 			<div className="space-y-4">
-				<form action={onSubmit}>
-					<Button type="submit" className="w-full" variant="secondary">
-						ログアウト
-					</Button>
-				</form>
+				<Button onClick={handleLogout} className="w-full" variant="secondary">
+					ログアウト
+				</Button>
 			</div>
 		</div>
 	)

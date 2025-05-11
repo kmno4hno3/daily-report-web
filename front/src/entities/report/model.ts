@@ -1,5 +1,5 @@
+import type { Date as ReportDate, Year } from "@/src/entities/report/type"
 import { atom } from "jotai"
-import type { Year, Date } from "@/src/entities/report/type"
 
 export const yearDatesAtom = atom<Year>({
 	year: new Date().getFullYear(),
@@ -7,7 +7,7 @@ export const yearDatesAtom = atom<Year>({
 })
 yearDatesAtom.debugLabel = "yearDatesAtom"
 
-export const currentDateAtom = atom<Date>({
+export const currentDateAtom = atom<ReportDate>({
 	year: new Date().getFullYear(),
 	month: undefined,
 	day: undefined,

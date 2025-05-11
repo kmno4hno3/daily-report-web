@@ -1,6 +1,6 @@
 "use server"
 
-import { signIn } from "@/auth"
+import { signIn, signOut } from "@/auth"
 import { AuthError } from "next-auth"
 
 export const authenticateUser = async (email: string, password: string) => {
@@ -23,4 +23,18 @@ export const authenticateUser = async (email: string, password: string) => {
 
 export const authGithub = async () => {
 	await signIn("github")
+}
+
+export const authSignOut = async () => {
+	try {
+		await signOut({ redirect: false })
+		return {
+			isSuccess: true,
+		}
+	} catch (error) {
+		if (error instanceof AuthError) {
+			return { isSuccess: false }
+		}
+		return error
+	}
 }
