@@ -7,7 +7,7 @@ export async function fetchReportAction(
 	month: number,
 	day: number,
 ) {
-	const url = `${process.env.API_URL || "http://localhost:8000"}/api/report/${year}/${month}/${day}`
+	const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/report/${year}/${month}/${day}`
 	const response = await getReportDetail(url)
 	return response.data
 }
