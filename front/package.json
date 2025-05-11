@@ -8,7 +8,9 @@
 		"start": "next start",
 		"format": "biome format --write .",
 		"lint:biome": "biome lint .",
-		"check": "biome check --apply ."
+		"check": "biome check --apply .",
+		"postinstall": "prisma generate",
+		"vercel-build": "prisma generate && prisma migrate deploy && next build"
 	},
 	"dependencies": {
 		"@auth/prisma-adapter": "^2.8.0",

@@ -173,7 +173,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/tatsuya/Workspace/個人開発/daily-report-web/front/generated/prisma",
+      "value": "/Users/tatsuya/Workspace/個人開発/daily-report-web/front/generated/client",
       "fromEnvVar": null
     },
     "config": {
@@ -191,14 +191,14 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/tatsuya/Workspace/個人開発/daily-report-web/front/prisma/schema.prisma",
+    "sourceFilePath": "/Users/tatsuya/Workspace/個人開発/daily-report-web/front/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
+    "rootEnvPath": "../../.env",
     "schemaEnvPath": "../../.env"
   },
-  "relativePath": "../../prisma",
+  "relativePath": "../..",
   "clientVersion": "6.6.0",
   "engineVersion": "f676762280b54cd07c770017ed3711ddde35f37a",
   "datasourceNames": [
@@ -214,8 +214,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../generated/prisma\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel sqlx_migrations {\n  version       BigInt   @id\n  description   String\n  installedOn   DateTime @default(now()) @map(\"installed_on\") @db.Timestamptz(6)\n  success       Boolean\n  checksum      Bytes\n  executionTime BigInt   @map(\"execution_time\")\n\n  @@map(\"_sqlx_migrations\")\n}\n\nmodel Report {\n  id        BigInt   @id @default(autoincrement())\n  date      DateTime @unique(map: \"idx_reports_date\") @db.Date\n  content   String?\n  createdAt DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @map(\"created_at\") @db.Timestamptz(6)\n  updatedAt DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @map(\"updated_at\") @db.Timestamptz(6)\n  userId    BigInt   @map(\"user_id\")\n  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)\n\n  @@map(\"reports\")\n}\n\nmodel User {\n  id            BigInt    @id @default(autoincrement())\n  name          String?   @db.VarChar(100)\n  email         String    @unique @db.VarChar(255)\n  password      String?   @db.VarChar(255)\n  createdAt     DateTime  @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @map(\"created_at\") @db.Timestamptz(6)\n  updatedAt     DateTime  @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @map(\"updated_at\") @db.Timestamptz(6)\n  image         String?\n  emailVerified DateTime? @map(\"email_verified\") @db.Timestamp(6)\n  accounts      Account[]\n  reports       Report[]\n\n  @@map(\"users\")\n}\n\nmodel Account {\n  id                BigInt  @id @default(autoincrement())\n  userId            BigInt  @map(\"user_id\")\n  type              String\n  provider          String\n  providerAccountId String  @map(\"provider_account_id\")\n  refreshToken      String? @map(\"refresh_token\")\n  access_token      String?\n  expires_at        Int?\n  token_type        String?\n  scope             String?\n  id_token          String?\n  session_state     String?\n  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)\n\n  @@unique([provider, providerAccountId])\n  @@map(\"accounts\")\n}\n\nmodel VerificationToken {\n  identifier String\n  token      String\n  expires    DateTime @db.Timestamp(6)\n\n  @@unique([identifier, token])\n  @@map(\"verification_tokens\")\n}\n",
-  "inlineSchemaHash": "4e0c2b1aea6615ff9c4a85c13f6bed6a869e876436164c69c2ea424097ebf5dd",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  output        = \"./generated/client\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel sqlx_migrations {\n  version       BigInt   @id\n  description   String\n  installedOn   DateTime @default(now()) @map(\"installed_on\") @db.Timestamptz(6)\n  success       Boolean\n  checksum      Bytes\n  executionTime BigInt   @map(\"execution_time\")\n\n  @@map(\"_sqlx_migrations\")\n}\n\nmodel Report {\n  id        BigInt   @id @default(autoincrement())\n  date      DateTime @unique(map: \"idx_reports_date\") @db.Date\n  content   String?\n  createdAt DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @map(\"created_at\") @db.Timestamptz(6)\n  updatedAt DateTime @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @map(\"updated_at\") @db.Timestamptz(6)\n  userId    BigInt   @map(\"user_id\")\n  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)\n\n  @@map(\"reports\")\n}\n\nmodel User {\n  id            BigInt    @id @default(autoincrement())\n  name          String?   @db.VarChar(100)\n  email         String    @unique @db.VarChar(255)\n  password      String?   @db.VarChar(255)\n  createdAt     DateTime  @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @map(\"created_at\") @db.Timestamptz(6)\n  updatedAt     DateTime  @default(dbgenerated(\"(now() AT TIME ZONE 'Asia/Tokyo'::text)\")) @map(\"updated_at\") @db.Timestamptz(6)\n  image         String?\n  emailVerified DateTime? @map(\"email_verified\") @db.Timestamp(6)\n  accounts      Account[]\n  reports       Report[]\n\n  @@map(\"users\")\n}\n\nmodel Account {\n  id                BigInt  @id @default(autoincrement())\n  userId            BigInt  @map(\"user_id\")\n  type              String\n  provider          String\n  providerAccountId String  @map(\"provider_account_id\")\n  refreshToken      String? @map(\"refresh_token\")\n  access_token      String?\n  expires_at        Int?\n  token_type        String?\n  scope             String?\n  id_token          String?\n  session_state     String?\n  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)\n\n  @@unique([provider, providerAccountId])\n  @@map(\"accounts\")\n}\n\nmodel VerificationToken {\n  identifier String\n  token      String\n  expires    DateTime @db.Timestamp(6)\n\n  @@unique([identifier, token])\n  @@map(\"verification_tokens\")\n}\n",
+  "inlineSchemaHash": "a7a1c21fa7883f570acfa2a49eb98e29000926f6bbd669ce62ed60d388b6f07e",
   "copyEngine": true
 }
 config.dirname = '/'
