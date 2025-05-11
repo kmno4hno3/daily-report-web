@@ -3,6 +3,7 @@
 import { currentDateAtom, yearDatesAtom } from "@/src/entities/report/model"
 import type { Report } from "@/src/entities/report/type"
 import type { Year } from "@/src/entities/report/type"
+import { updateReport } from "@/src/features/report/api/updateReport"
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
@@ -75,10 +76,10 @@ export const ReportDetail = () => {
 				preformattedCode: true,
 			})
 			try {
-				const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
-				await axios.put(url, {
-					content: turndownService.turndown(editor.getHTML()),
-				})
+				await updateReport(
+					currentDate,
+					turndownService.turndown(editor.getHTML()),
+				)
 			} catch (e) {
 				console.log(e)
 			}
