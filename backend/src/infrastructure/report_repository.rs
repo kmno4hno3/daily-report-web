@@ -72,11 +72,12 @@ impl ReportRepository for ReportRepositoryImpl {
     async fn update(&self, report: Report) -> Result<Report, sqlx::Error> {
         let updated_report = sqlx::query_as::<_, Report>(
             "UPDATE reports SET content = $1, updated_at = (NOW() AT TIME ZONE 'Asia/Tokyo')
-            where id = $2
-            RETURNING id, date, content, created_at, updated_at",
+            where id = $2 AND user_id = $3
+            RETURNING id, date, user_id, content, created_at, updated_at",
         )
         .bind(&report.content)
         .bind(report.id)
+        .bind(report.user_id)
         .fetch_one(&self.pool)
         .await?;
         Ok(updated_report)
