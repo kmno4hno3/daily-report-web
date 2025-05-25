@@ -20,3 +20,6 @@ chrono= {version="0.4", features=["serde"]}
 http="1.2"
 hyper="1.0"
 jsonwebtoken="9"
+utoipa = "5"
+utoipa-axum = "0.2"
+utoipa-swagger-ui = { version = "9", features = ["debug-embed","axum"] }

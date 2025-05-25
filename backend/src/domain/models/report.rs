@@ -1,24 +1,28 @@
 use chrono::{DateTime, FixedOffset, NaiveDate, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{Decode, FromRow, Type};
+use utoipa::ToSchema;
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, utoipa::ToSchema)]
 pub struct Report {
     pub id: Option<i64>,
+    #[schema(value_type = String)]
     pub date: NaiveDate,
     pub content: Option<String>,
     pub user_id: i64,
+    #[schema(value_type = String)]
     pub created_at: DateTime<Utc>,
+    #[schema(value_type = String)]
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow, Decode)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, Decode, utoipa::ToSchema)]
 pub struct Year {
     pub year: i64,
     pub months: Vec<Month>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow, Type)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, Type, utoipa::ToSchema)]
 pub struct Month {
     pub month: i64,
     pub days: Vec<i64>,

@@ -10,6 +10,7 @@ use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::sync::Arc;
+use utoipa::{OpenApi, ToSchema};
 
 use crate::domain::models::report::{Month, Report, Year};
 use crate::usecase::report_usecase::ReportService;
@@ -63,9 +64,10 @@ struct UpdateReportRequest {
     content: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 struct ReportResponse {
     id: Option<i64>,
+    #[schema(value_type = String)]
     date: NaiveDate,
     content: Option<String>,
 }
@@ -79,7 +81,7 @@ impl From<Report> for ReportResponse {
         }
     }
 }
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 struct YearResponse {
     year: i64,
     months: Vec<Month>,
@@ -277,6 +279,22 @@ async fn delete_report<T: ReportService>(
         Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed delete report").into_response(),
     }
 }
+
+#[utoipa::path(
+  get,
+  path = "/api/report/dates/{year}",
+  params(
+      ("year" = i64, Path, description = "Year to get available dates for")
+  ),
+  security(
+      ("bearer_auth" = [])
+  ),
+  responses(
+      (status = 200, description = "Year found successfully", body = YearResponse),
+      (status = 401, description = "Unauthorized"),
+      (status = 500, description = "Failed to fetch dates")
+  )
+)]
 async fn get_available_dates_by_year<T: ReportService>(
     State(state): State<AppState<T>>,
     Path(year): Path<i64>,
@@ -318,3 +336,13 @@ fn verify_token(token: &str) -> Result<Claims, jsonwebtoken::errors::Error> {
     let data = decode::<Claims>(token, &key, &validation)?;
     Ok(data.claims)
 }
+
+#[derive(OpenApi)]
+#[openapi(
+  paths(get_available_dates_by_year),
+  components(schemas(YearResponse, Month)),
+  security(
+      ("bearer_auth" = [])
+  )
+)]
+pub struct ApiDoc;

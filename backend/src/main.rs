@@ -7,6 +7,8 @@ use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 
 mod domain;
 mod infrastructure;
@@ -16,6 +18,7 @@ mod usecase;
 use crate::infrastructure::report_repository::ReportRepositoryImpl;
 use crate::infrastructure::user_repository::UserRepositoryImpl;
 use crate::presentation::handlers::report_handler::create_report_router;
+use crate::presentation::handlers::report_handler::ApiDoc;
 use crate::presentation::handlers::user_handler::create_user_router;
 use crate::usecase::report_usecase::ReportUsecase;
 use crate::usecase::user_usecase::UserUsecase;
@@ -54,6 +57,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/", get(|| async { "Hello, Axum!!!" }))
         .nest("/api", create_report_router(report_service))
         .nest("/api", create_user_router(user_service))
+        .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .layer(cors);
 
     let port = env::var("PORT")
