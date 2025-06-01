@@ -16,16 +16,16 @@ pub struct Report {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow, Decode, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct Year {
     pub year: i64,
     pub months: Vec<Month>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow, Type, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, utoipa::ToSchema)]
 pub struct Month {
     pub month: i64,
-    pub days: Vec<i64>,
+    pub days: Vec<(i64, i64)>,
 }
 
 impl Report {

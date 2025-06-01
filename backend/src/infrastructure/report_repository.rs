@@ -95,7 +95,8 @@ impl ReportRepository for ReportRepositoryImpl {
         user_id: i64,
     ) -> Result<Year, sqlx::Error> {
         let rows = sqlx::query(
-            "SELECT DISTINCT 
+            "SELECT DISTINCT
+                id,
                 CAST(EXTRACT(YEAR FROM date) AS INTEGER) AS year, 
                 CAST(EXTRACT(MONTH FROM date) AS INTEGER) AS month, 
                 CAST(EXTRACT(DAY FROM date) AS INTEGER) AS day 
@@ -107,15 +108,16 @@ impl ReportRepository for ReportRepositoryImpl {
         .fetch_all(&self.pool)
         .await?;
 
-        let mut month_map: HashMap<i64, Vec<i64>> = HashMap::new();
+        let mut month_map: HashMap<i64, Vec<(i64, i64)>> = HashMap::new();
         for row in rows {
             let month: Option<i32> = row.get("month");
             let day: Option<i32> = row.get("day");
+            let id: Option<i64> = row.get("id");
 
             month_map
                 .entry(month.unwrap() as i64)
                 .or_insert_with(Vec::new)
-                .push(day.unwrap() as i64);
+                .push((day.unwrap() as i64, id.unwrap() as i64));
         }
 
         let months = month_map
