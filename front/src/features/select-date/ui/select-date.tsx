@@ -47,44 +47,37 @@ export const SelectDate = () => {
 				yearDates?.months?.map((month) => (
 					// 月単位
 					<div key={month.month} className="mb-2">
-						<Link
-							href={`/report/list/${currentDate.year}/${month.month}`}
-							key={`${currentDate.year}-${month.month}`}
+						<button
+							type="button"
+							className="flex items-center w-full px-4 py-2 text-left font-semibold hover:bg-gray-200"
+							onClick={() => {
+								toggleMonth(month.month)
+								// handleSelectDate(currentDate.year, month.month)
+								setActiveIcon("reports")
+							}}
 						>
-							<button
-								type="button"
-								className="flex items-center w-full px-4 py-2 text-left font-semibold hover:bg-gray-200"
-								onClick={() => {
-									toggleMonth(month.month)
-									handleSelectDate(currentDate.year, month.month)
-									setActiveIcon("reports")
-								}}
-							>
-								{openMonths.includes(month.month) ? (
-									<ChevronDown className="mr-2" size={20} />
-								) : (
-									<ChevronRight className="mr-2" size={20} />
-								)}
-								{month.month}
-							</button>
-						</Link>
+							{openMonths.includes(month.month) ? (
+								<ChevronDown className="mr-2" size={20} />
+							) : (
+								<ChevronRight className="mr-2" size={20} />
+							)}
+							{month.month}
+						</button>
 						{openMonths.includes(month.month) && (
 							<div className="ml-6">
 								{month.days.map((day) => (
-									<Link
-										href={`/report/list/${currentDate.year}/${month.month}/${day}`}
-										key={`${day}`}
-									>
+									// TODO: idを渡す
+									<Link href={`/report/${day[0]}`} key={`${day[0]}-${day[0]}`}>
 										<button
 											type="button"
-											key={day}
+											key={day[0]}
 											className="w-full px-4 py-2 text-left text-sm hover:bg-gray-200"
 											onClick={() => {
-												handleSelectDate(currentDate.year, month.month, day)
+												// handleSelectDate(currentDate.year, month.month, day)
 												setActiveIcon("reports")
 											}}
 										>
-											{day}
+											{day[0]}
 										</button>
 									</Link>
 								))}

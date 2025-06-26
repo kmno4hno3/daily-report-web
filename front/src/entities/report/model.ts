@@ -10,6 +10,6 @@ yearDatesAtom.debugLabel = "yearDatesAtom"
 export const currentDateAtom = atom<ReportDate>({
 	year: new Date().getFullYear(),
 	month: undefined,
-	day: undefined,
+	day: [],
 })
 currentDateAtom.debugLabel = "currentDateAtom"

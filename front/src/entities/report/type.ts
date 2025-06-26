@@ -5,13 +5,13 @@ export interface Year {
 
 export interface Month {
 	month: number
-	days: number[]
+	days: [number, number][]
 }
 
 export interface Date {
 	year: number
 	month: number | undefined
-	day: number | undefined
+	day: number[] | undefined
 }
 
 export interface Report {

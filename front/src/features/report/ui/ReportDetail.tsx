@@ -30,12 +30,8 @@ export const ReportDetail = () => {
 	useEffect(() => {
 		const fetchFile = async () => {
 			try {
-				if (currentDate.year && currentDate.month && currentDate.day) {
-					const report = await fetchReportAction(
-						currentDate.year,
-						currentDate.month,
-						currentDate.day,
-					)
+				if (currentDate?.day?.[0]) {
+					const report = await fetchReportAction(currentDate.day[0])
 					if (report) setFile(report)
 				}
 			} catch (err) {
@@ -47,7 +43,7 @@ export const ReportDetail = () => {
 			}
 		}
 
-		if (currentDate?.day) {
+		if (currentDate?.day?.length) {
 			fetchFile()
 		}
 	}, [currentDate])

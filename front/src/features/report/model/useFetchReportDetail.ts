@@ -18,6 +18,7 @@ export const useFetchReportDetail = () => {
 			) {
 				prevYearRef.current = currentDate.year
 				const result = await getDates(currentDate.year)
+				console.log(result)
 				if (result) {
 					setYearDatesAtom(result)
 				}
