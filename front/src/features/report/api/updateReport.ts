@@ -5,14 +5,16 @@ import type { Date as ReportDate } from "@/src/entities/report/type"
 import axios from "axios"
 import { createSignedJwt } from "../model/createJwt"
 
-export const updateReport = async (
-	currentDate: ReportDate,
-	content: string,
-) => {
+interface Props {
+	id: number
+	content: string
+}
+
+export const updateReport = async ({ id, content }: Props) => {
 	const session = await auth()
 	const token = session?.user ? await createSignedJwt(session.user) : ""
 
-	const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
+	const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/report/${id}`
 	await axios.put(
 		url,
 		{ content },

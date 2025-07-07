@@ -21,18 +21,29 @@ import { messageDialogAtom } from "@/src/features/alert/model"
 import { Button, buttonVariants } from "@/src/shared/ui/button"
 import { Trash2 } from "lucide-react"
 
-export const ReportDetail = () => {
-	const [currentDate] = useAtom(currentDateAtom)
+interface Props {
+	id: number
+}
+
+export const ReportDetail = ({ id }: Props) => {
+	// const [currentDate, setCurrentDate] = useAtom(currentDateAtom)
 	const [, setMessageDialog] = useAtom(messageDialogAtom)
 	const [yearDates, setYearDates] = useAtom<Year>(yearDatesAtom)
 	const [report, setFile] = useState<Report>()
+  // const [currentDate, setCurrentDate] = useAtom(currentDateAtom)
+  const [currentDate, setCurrentDate] = useState<string|undefined>()
 
 	useEffect(() => {
 		const fetchFile = async () => {
 			try {
-				if (currentDate?.day?.[0]) {
-					const report = await fetchReportAction(currentDate.day[0])
-					if (report) setFile(report)
+				if (id) {
+					const report = await fetchReportAction(id)
+					if (report) {
+						setFile(report)
+            console.log("report~~~")
+            console.log(report)
+						setCurrentDate(report.date)
+					}
 				}
 			} catch (err) {
 				if (axios.isAxiosError(err) && err.response?.status === 404) {
@@ -43,10 +54,10 @@ export const ReportDetail = () => {
 			}
 		}
 
-		if (currentDate?.day?.length) {
+		if (id) {
 			fetchFile()
 		}
-	}, [currentDate])
+	}, [id])
 
 	const md = markdownit()
 	const lowlight = createLowlight(all)
@@ -72,15 +83,17 @@ export const ReportDetail = () => {
 				preformattedCode: true,
 			})
 			try {
-				await updateReport(
-					currentDate,
-					turndownService.turndown(editor.getHTML()),
-				)
+        // TODO: コンテンツ更新API実行
+				// await updateReport({
+				// 	id,
+				// 	content: turndownService.turndown(editor.getHTML()),
+				// })
 			} catch (e) {
 				console.log(e)
 			}
 		}
-	}, [editor, currentDate])
+	}, [editor, id])
+	// }, [editor, currentDate])
 	useEffect(() => {
 		if (editor) {
 			editor.on("blur", () => saveContent())
@@ -96,9 +109,11 @@ export const ReportDetail = () => {
 			await axios.delete(url).then(() => {
 				setMessageDialog({
 					title: "レポート削除",
-					message: `${currentDate.year}-${currentDate.month}-${currentDate.day}のレポートを削除しました`,
+					// message: `${currentDate.year}-${currentDate.month}-${currentDate.day}のレポートを削除しました`,
+					message: `${currentDate}のレポートを削除しました`,
 					isOpen: true,
 				})
+        // TODO: idでfilteringする
 				const filteredYearDates = {
 					...yearDates,
 					months: yearDates?.months.map((month) => {
@@ -136,7 +151,8 @@ export const ReportDetail = () => {
 			</Button>
 
 			<h2 className="text-2xl font-bold mb-4">
-				{currentDate.year}/{currentDate.month}/{currentDate.day}
+				{/* {currentDate.year}/{currentDate.month}/{currentDate.day} */}
+				{currentDate}
 			</h2>
 			{editor && <EditorContent editor={editor} />}
 		</div>

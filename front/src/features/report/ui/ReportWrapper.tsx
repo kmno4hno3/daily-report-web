@@ -6,34 +6,22 @@ import { usePathname } from "next/navigation"
 import type React from "react"
 import { useEffect, useState } from "react"
 import { ReportDetail } from "./ReportDetail"
-import { ReportList } from "./ReportList"
+// import { ReportList } from "./ReportList"
 
 export const ReportWrapper = () => {
-	const [yearDates] = useAtom(yearDatesAtom)
-	const [currentDate, setCurrentDate] = useAtom(currentDateAtom)
+	const [id, setId] = useState<number | null>(null)
 	const pathname = usePathname()
-	const selectedMonthDays = yearDates?.months.find((month) => {
-		return month.month === currentDate.month
-	})
 
 	useEffect(() => {
-		if (pathname?.startsWith("/report/list")) {
+		if (pathname?.startsWith("/report")) {
 			const paths = pathname?.split("/")
-			const [, , , year, month, day] = paths
-			setCurrentDate({
-				year: Number(year),
-				month: Number(month),
-				day: Number(day),
-			})
+			const [, , id] = paths
+			setId(Number(id))
 		}
 	}, [pathname])
 
 	const renderChildren = () => {
-		if (currentDate.day) {
-			return <ReportDetail />
-		} else if (yearDates?.months && selectedMonthDays) {
-			return <ReportList />
-		}
+		return id ? <ReportDetail id={id} /> : <div>日報が見つかりません</div>
 	}
 
 	return renderChildren()
