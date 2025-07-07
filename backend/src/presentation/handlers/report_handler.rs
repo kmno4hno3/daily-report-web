@@ -134,9 +134,18 @@ async fn get_report_by_id<T: ReportService>(
     Path(id): Path<i64>,
 ) -> impl IntoResponse {
     match state.report_service.get_report_by_id(id).await {
-        Ok(Some(report)) => Json(ReportResponse::from(report)).into_response(),
-        Ok(None) => (StatusCode::NOT_FOUND, "Report not found").into_response(),
-        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch report").into_response(),
+        Ok(Some(report)) => {
+            println!("report: {:?}", report);
+            Json(ReportResponse::from(report)).into_response()
+        }
+        Ok(None) => {
+            println!("report not found");
+            (StatusCode::NOT_FOUND, "Report not found").into_response()
+        }
+        Err(e) => {
+            println!("error: {:?}", e);
+            (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch report").into_response()
+        }
     }
 }
 async fn get_report_by_date<T: ReportService>(

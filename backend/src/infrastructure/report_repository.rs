@@ -20,7 +20,7 @@ impl ReportRepositoryImpl {
 impl ReportRepository for ReportRepositoryImpl {
     async fn find_all(&self) -> Result<Vec<Report>, sqlx::Error> {
         let reports = sqlx::query_as::<_, Report>(
-            "SELECT id, date, content, created_at, updated_at FROM reports",
+            "SELECT id, date, content, user_id, created_at, updated_at FROM reports",
         )
         .fetch_all(&self.pool)
         .await?;
@@ -28,7 +28,7 @@ impl ReportRepository for ReportRepositoryImpl {
     }
     async fn find_by_id(&self, id: i64) -> Result<Option<Report>, sqlx::Error> {
         let report = sqlx::query_as::<_, Report>(
-            "SELECT id, date, content, created_at, updated_at FROM reports where id = $1",
+            "SELECT id, date, content, user_id, created_at, updated_at FROM reports where id = $1",
         )
         .bind(id)
         .fetch_optional(&self.pool)
