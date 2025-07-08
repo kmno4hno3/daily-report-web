@@ -11,7 +11,7 @@ export interface Month {
 export interface Date {
 	year: number
 	month: number | undefined
-	day: number[] | undefined
+	day: number | undefined
 }
 
 export interface Report {

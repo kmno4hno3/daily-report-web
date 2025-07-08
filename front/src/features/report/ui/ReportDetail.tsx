@@ -10,9 +10,11 @@ import StarterKit from "@tiptap/starter-kit"
 import axios from "axios"
 import { all, createLowlight } from "lowlight"
 import markdownit from "markdown-it"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, useTransition } from "react"
 import TurndownService from "turndown"
 import { fetchReportAction } from "../api/fetchReportAction"
+import { deleteReportServer } from "../api/deleteReportServer"
+import { useRouter } from 'next/navigation'
 
 import { useAtom } from "jotai"
 
@@ -26,12 +28,12 @@ interface Props {
 }
 
 export const ReportDetail = ({ id }: Props) => {
-	// const [currentDate, setCurrentDate] = useAtom(currentDateAtom)
 	const [, setMessageDialog] = useAtom(messageDialogAtom)
 	const [yearDates, setYearDates] = useAtom<Year>(yearDatesAtom)
 	const [report, setFile] = useState<Report>()
-  // const [currentDate, setCurrentDate] = useAtom(currentDateAtom)
-  const [currentDate, setCurrentDate] = useState<string|undefined>()
+  const [currentDate, setCurrentDate] = useAtom(currentDateAtom)
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
 
 	useEffect(() => {
 		const fetchFile = async () => {
@@ -40,9 +42,12 @@ export const ReportDetail = ({ id }: Props) => {
 					const report = await fetchReportAction(id)
 					if (report) {
 						setFile(report)
-            console.log("report~~~")
-            console.log(report)
-						setCurrentDate(report.date)
+            const [year, month, day] = report.date.split("-")
+						setCurrentDate({
+              year: Number(year),
+              month: Number(month),
+              day: Number(day),
+            })
 					}
 				}
 			} catch (err) {
@@ -72,7 +77,7 @@ export const ReportDetail = ({ id }: Props) => {
 			content: report ? md.render(report.content) : "",
 			immediatelyRender: false,
 		},
-		[report],
+		[report, setCurrentDate],
 	)
 
 	const saveContent = useCallback(async () => {
@@ -93,7 +98,6 @@ export const ReportDetail = ({ id }: Props) => {
 			}
 		}
 	}, [editor, id])
-	// }, [editor, currentDate])
 	useEffect(() => {
 		if (editor) {
 			editor.on("blur", () => saveContent())
@@ -103,56 +107,74 @@ export const ReportDetail = ({ id }: Props) => {
 		}
 	}, [editor, saveContent])
 
-	const deleteReport = async () => {
-		try {
-			const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/report/${currentDate.year}/${currentDate.month}/${currentDate.day}`
-			await axios.delete(url).then(() => {
+	const handleDeleteReport = () => {
+		const formData = new FormData()
+		formData.append("id", id.toString())
+		
+		startTransition(async () => {
+			try {
+				// Update state first
 				setMessageDialog({
 					title: "レポート削除",
-					// message: `${currentDate.year}-${currentDate.month}-${currentDate.day}のレポートを削除しました`,
-					message: `${currentDate}のレポートを削除しました`,
+					message: `${currentDate.year}-${currentDate.month}-${currentDate.day}のレポートを削除しました`,
 					isOpen: true,
 				})
-        // TODO: idでfilteringする
 				const filteredYearDates = {
 					...yearDates,
 					months: yearDates?.months.map((month) => {
-						if (month.month === currentDate.month) {
-							return {
-								...month,
-								days: month.days.filter((day) => day !== currentDate.day),
-							}
+						return {
+							...month,
+							days: month.days.filter((day) => day[1] !== id),
 						}
-						return month
 					}),
 				}
 				setYearDates(filteredYearDates)
-			})
-		} catch (err) {
-			if (axios.isAxiosError(err) && err.response?.status === 404) {
-				// TODO: エラーハンドリング修正
-				console.log("日報が見つかりません")
-			} else {
+				
+				// Then call server action which will redirect
+				await deleteReportServer(id)
+			} catch (err) {
 				console.error("Error", err)
 			}
-		}
+		})
 	}
 
 	return (
 		<div className="flex-1 p-6 overflow-y-auto relative">
-			<Button
-				onClick={deleteReport}
-				className={cn(
-					buttonVariants({ variant: "outline" }),
-					"absolute right-5 top-5",
-				)}
-			>
-				<Trash2 className=" text-red-500" />
-			</Button>
+			<form action={async () => {
+				// Update state first
+				setMessageDialog({
+					title: "レポート削除",
+					message: `${currentDate.year}-${currentDate.month}-${currentDate.day}のレポートを削除しました`,
+					isOpen: true,
+				})
+				const filteredYearDates = {
+					...yearDates,
+					months: yearDates?.months.map((month) => {
+						return {
+							...month,
+							days: month.days.filter((day) => day[1] !== id),
+						}
+					}),
+				}
+				setYearDates(filteredYearDates)
+				
+				// Then call server action
+				await deleteReportServer(id)
+			}}>
+				<Button
+					type="submit"
+					disabled={isPending}
+					className={cn(
+						buttonVariants({ variant: "outline" }),
+						"absolute right-5 top-5",
+					)}
+				>
+					<Trash2 className=" text-red-500" />
+				</Button>
+			</form>
 
 			<h2 className="text-2xl font-bold mb-4">
-				{/* {currentDate.year}/{currentDate.month}/{currentDate.day} */}
-				{currentDate}
+				{currentDate.year}/{currentDate.month}/{currentDate.day}
 			</h2>
 			{editor && <EditorContent editor={editor} />}
 		</div>

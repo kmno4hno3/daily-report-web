@@ -28,18 +28,6 @@ export const SelectDate = () => {
 			prev.includes(month) ? prev.filter((m) => m !== month) : [...prev, month],
 		)
 	}
-	const handleSelectDate = (
-		year: number,
-		month: number | undefined = undefined,
-		day: number | undefined = undefined,
-	) => {
-		// setCurrentDateAtom({
-		// 	year: year,
-		// 	month: month,
-		// 	day: day,
-		// })
-		setActiveIcon("reports")
-	}
 
 	return (
 		<div className="flex-1 overflow-y-auto">
@@ -52,7 +40,6 @@ export const SelectDate = () => {
 							className="flex items-center w-full px-4 py-2 text-left font-semibold hover:bg-gray-200"
 							onClick={() => {
 								toggleMonth(monthItem.month)
-								// handleSelectDate(currentDate.year, month.month)
 								setActiveIcon("reports")
 							}}
 						>
@@ -66,13 +53,12 @@ export const SelectDate = () => {
 						{openMonths.includes(monthItem.month) && (
 							<div className="ml-6">
 								{monthItem.days.map((day) => (
-									<Link href={`/report/${day[0]}`} key={`${day[0]}-${day[0]}`}>
+									<Link href={`/report/${day[1]}`} key={`${day[0]}-${day[0]}`}>
 										<button
 											type="button"
 											key={day[0]}
 											className="w-full px-4 py-2 text-left text-sm hover:bg-gray-200"
 											onClick={() => {
-												// handleSelectDate(currentDate.year, month.month, day)
 												setActiveIcon("reports")
 											}}
 										>
