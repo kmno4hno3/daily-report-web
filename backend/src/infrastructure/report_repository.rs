@@ -26,11 +26,12 @@ impl ReportRepository for ReportRepositoryImpl {
         .await?;
         Ok(reports)
     }
-    async fn find_by_id(&self, id: i64) -> Result<Option<Report>, sqlx::Error> {
+    async fn find_by_id(&self, id: i64, user_id: i64) -> Result<Option<Report>, sqlx::Error> {
         let report = sqlx::query_as::<_, Report>(
-            "SELECT id, date, content, user_id, created_at, updated_at FROM reports where id = $1",
+            "SELECT id, date, content, user_id, created_at, updated_at FROM reports where id = $1 and user_id = $2",
         )
         .bind(id)
+        .bind(user_id)
         .fetch_optional(&self.pool)
         .await?;
         Ok(report)

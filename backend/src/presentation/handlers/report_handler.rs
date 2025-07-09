@@ -39,12 +39,15 @@ pub fn create_report_router<T: ReportService + Send + Sync + 'static + Clone>(
             "/reports",
             get(get_all_reports::<T>).post(create_report::<T>),
         )
-        .route("/report/{id}", get(get_report_by_id::<T>))
         .route(
-            "/report/{year}/{month}/{day}",
-            get(get_report_by_date::<T>)
+            "/report/{id}",
+            get(get_report_by_id::<T>)
                 .put(update_report::<T>)
                 .delete(delete_report::<T>),
+        )
+        .route(
+            "/report/{year}/{month}/{day}",
+            get(get_report_by_date::<T>).put(update_report::<T>),
         )
         .route(
             "/report/dates/{year}",
@@ -132,8 +135,25 @@ async fn get_all_reports<T: ReportService>(State(state): State<AppState<T>>) -> 
 async fn get_report_by_id<T: ReportService>(
     State(state): State<AppState<T>>,
     Path(id): Path<i64>,
+    headers: HeaderMap,
 ) -> impl IntoResponse {
-    match state.report_service.get_report_by_id(id).await {
+    let user_id = match headers
+        .get("Authorization")
+        .and_then(|token| {
+            token.to_str().ok().and_then(|t| {
+                if let Some(token_str) = t.strip_prefix("Bearer ") {
+                    verify_token(token_str).ok()
+                } else {
+                    None
+                }
+            })
+        })
+        .and_then(|user| user.id.parse::<i64>().ok())
+    {
+        Some(id) => id,
+        None => return (StatusCode::UNAUTHORIZED).into_response(),
+    };
+    match state.report_service.get_report_by_id(id, user_id).await {
         Ok(Some(report)) => {
             println!("report: {:?}", report);
             Json(ReportResponse::from(report)).into_response()
@@ -221,7 +241,8 @@ async fn create_report<T: ReportService>(
 }
 async fn update_report<T: ReportService>(
     State(state): State<AppState<T>>,
-    Path((year, month, day)): Path<(i64, i64, i64)>,
+    // Path((year, month, day)): Path<(i64, i64, i64)>,
+    Path(id): Path<i64>,
     headers: HeaderMap,
     Json(payload): Json<UpdateReportRequest>,
 ) -> impl IntoResponse {
@@ -244,7 +265,7 @@ async fn update_report<T: ReportService>(
 
     let result = state
         .report_service
-        .update_report(year, month, day, payload.content, user_id)
+        .update_report(id, payload.content, user_id)
         .await;
     match result {
         Ok(report) => Json(ReportResponse::from(report)).into_response(),
@@ -256,7 +277,7 @@ async fn update_report<T: ReportService>(
 }
 async fn delete_report<T: ReportService>(
     State(state): State<AppState<T>>,
-    Path((year, month, day)): Path<(i64, i64, i64)>,
+    Path(id): Path<i64>,
     headers: HeaderMap,
 ) -> impl IntoResponse {
     let user_id = match headers
@@ -276,11 +297,7 @@ async fn delete_report<T: ReportService>(
         None => return (StatusCode::UNAUTHORIZED).into_response(),
     };
 
-    match state
-        .report_service
-        .delete_report(year, month, day, user_id)
-        .await
-    {
+    match state.report_service.delete_report(id, user_id).await {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(sqlx::Error::RowNotFound) => {
             (StatusCode::INTERNAL_SERVER_ERROR, "Report not found").into_response()

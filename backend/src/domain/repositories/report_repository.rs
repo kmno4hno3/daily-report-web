@@ -4,7 +4,7 @@ use async_trait::async_trait;
 #[async_trait]
 pub trait ReportRepository {
     async fn find_all(&self) -> Result<Vec<Report>, sqlx::Error>;
-    async fn find_by_id(&self, id: i64) -> Result<Option<Report>, sqlx::Error>;
+    async fn find_by_id(&self, id: i64, user_id: i64) -> Result<Option<Report>, sqlx::Error>;
     async fn find_by_date(
         &self,
         year: i64,
