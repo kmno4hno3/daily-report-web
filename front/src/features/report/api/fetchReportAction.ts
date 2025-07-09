@@ -1,5 +1,5 @@
 "use server"
-import { auth } from "@/auth"
+
 import { getReportDetail } from "./getReportDetail"
 
 export async function fetchReportAction(id: number) {

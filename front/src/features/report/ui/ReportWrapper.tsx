@@ -1,12 +1,9 @@
 "use client"
 
-import { currentDateAtom, yearDatesAtom } from "@/src/entities/report/model"
-import { useAtom } from "jotai"
 import { usePathname } from "next/navigation"
 import type React from "react"
 import { useEffect, useState } from "react"
 import { ReportDetail } from "./ReportDetail"
-// import { ReportList } from "./ReportList"
 
 export const ReportWrapper = () => {
 	const [id, setId] = useState<number | null>(null)
