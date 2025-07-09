@@ -88,11 +88,10 @@ export const ReportDetail = ({ id }: Props) => {
 				preformattedCode: true,
 			})
 			try {
-        // TODO: コンテンツ更新API実行
-				// await updateReport({
-				// 	id,
-				// 	content: turndownService.turndown(editor.getHTML()),
-				// })
+				await updateReport({
+					id,
+					content: turndownService.turndown(editor.getHTML()),
+				})
 			} catch (e) {
 				console.log(e)
 			}
