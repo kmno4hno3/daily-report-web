@@ -5,7 +5,7 @@ import { getDates } from "@/src/features/report/api/getDates"
 import { useAtom } from "jotai"
 import { useEffect, useRef } from "react"
 
-export const useFetchReportDetail = () => {
+export const useFetchReportDates = () => {
 	const [, setYearDatesAtom] = useAtom(yearDatesAtom)
 	const [currentDate] = useAtom(currentDateAtom)
 	const prevYearRef = useRef<number | null>(null)
