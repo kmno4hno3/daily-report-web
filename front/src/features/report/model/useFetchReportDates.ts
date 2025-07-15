@@ -2,28 +2,41 @@
 
 import { currentDateAtom, yearDatesAtom } from "@/src/entities/report/model"
 import { getDates } from "@/src/features/report/api/getDates"
+import { useQuery } from "@tanstack/react-query"
 import { useAtom } from "jotai"
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 
 export const useFetchReportDates = () => {
 	const [, setYearDatesAtom] = useAtom(yearDatesAtom)
 	const [currentDate] = useAtom(currentDateAtom)
-	const prevYearRef = useRef<number | null>(null)
+
+	const { data, isPending, isError, error, refetch, isFetching } = useQuery({
+		queryKey: ["reportDates", currentDate.year],
+		queryFn: () => {
+			if (!currentDate.year) {
+				throw new Error("Year is required")
+			}
+			return getDates(currentDate.year)
+		},
+		enabled: !!currentDate.year,
+		staleTime: 5 * 60 * 1000, // 5 minutes
+		gcTime: 10 * 60 * 1000, // 10 minutes
+		retry: 3,
+		retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+	})
 
 	useEffect(() => {
-		const fetchReport = async () => {
-			if (
-				currentDate.year &&
-				(!prevYearRef.current || currentDate.year !== prevYearRef.current)
-			) {
-				prevYearRef.current = currentDate.year
-				const result = await getDates(currentDate.year)
-				console.log(result)
-				if (result) {
-					setYearDatesAtom(result)
-				}
-			}
+		if (data) {
+			setYearDatesAtom(data)
 		}
-		fetchReport()
-	}, [currentDate.year, setYearDatesAtom])
+	}, [data, setYearDatesAtom])
+
+	return {
+		data: data,
+		isPending: isPending,
+		isError: isError,
+		error: error,
+		refetch: refetch,
+		isFetching: isFetching,
+	}
 }
