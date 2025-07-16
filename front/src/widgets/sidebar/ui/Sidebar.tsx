@@ -1,6 +1,6 @@
 "use client"
 
-import { useFetchReportDates } from "@/src/features/report/model/useFetchReportDates"
+import { useFetchReportDates } from "@/src/features/report/hooks/useFetchReportDates"
 import { SelectDate, SelectYear } from "@/src/features/select-date"
 import type React from "react"
 

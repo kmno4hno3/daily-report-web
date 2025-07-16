@@ -1,38 +1,29 @@
 import { currentDateAtom } from "@/src/entities/report/model"
+import { useQuery } from "@tanstack/react-query"
 import { useAtom } from "jotai"
-import { useEffect, useState } from "react"
-import { fetchReportAction } from "../api/fetchReportAction"
-import type { Report } from "../types"
+import { useEffect } from "react"
+import { getReportDetail } from "../api/getReportDetail"
 
 export const useFetchReport = (id: number) => {
-	const [report, setReport] = useState<Report | undefined>(undefined)
-	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState<string | undefined>(undefined)
 	const [, setCurrentDate] = useAtom(currentDateAtom)
 
+	const { data, isPending, isError, error, refetch, isFetching } = useQuery({
+		queryKey: ["report", id],
+		queryFn: () => getReportDetail(id),
+	})
+
 	useEffect(() => {
-		const fetchReport = async () => {
-			try {
-				setLoading(true)
-				setError(undefined)
-				const data = await fetchReportAction(id)
-
-				if (data) {
-					console.log(data)
-					setReport(data)
-					const [year, month, day] = data.date.split("-").map(Number)
-					setCurrentDate({ year, month, day })
-				}
-			} catch (err) {
-				console.error("Failed to fetch report:", err)
-				setError("レポートの取得に失敗しました")
-			} finally {
-				setLoading(false)
-			}
+		if (data) {
+			setCurrentDate(data)
 		}
+	}, [data, setCurrentDate])
 
-		fetchReport()
-	}, [id, setCurrentDate])
-
-	return { report, loading, error }
+	return {
+		report: data,
+		isPending,
+		isError,
+		error,
+		refetch,
+		isFetching,
+	}
 }

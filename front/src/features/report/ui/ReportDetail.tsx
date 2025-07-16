@@ -10,10 +10,10 @@ interface Props {
 }
 
 export const ReportDetail = ({ id }: Props) => {
-	const { report, loading, error } = useFetchReport(id)
-	const { mutate, isPending } = useDeleteReport(id)
+	const { report, isPending, isError, error } = useFetchReport(id)
+	const { mutate, isPending: isDeleting } = useDeleteReport(id)
 
-	if (loading) {
+	if (isPending) {
 		return (
 			<div className="flex-1 p-6 flex items-center justify-center">
 				<div className="text-gray-500">読み込み中...</div>
@@ -21,10 +21,12 @@ export const ReportDetail = ({ id }: Props) => {
 		)
 	}
 
-	if (error || !report) {
+	if (isError || !report) {
 		return (
 			<div className="flex-1 p-6 flex items-center justify-center">
-				<div className="text-red-500">{error || "日報が見つかりません"}</div>
+				<div className="text-red-500">
+					{error?.message || "日報が見つかりません"}
+				</div>
 			</div>
 		)
 	}
@@ -34,7 +36,7 @@ export const ReportDetail = ({ id }: Props) => {
 			<ReportHeader
 				date={report.date}
 				onDelete={mutate}
-				isDeleting={isPending}
+				isDeleting={isDeleting}
 			/>
 			<ReportEditor report={report} />
 		</div>
