@@ -11,7 +11,7 @@ interface Props {
 
 export const ReportDetail = ({ id }: Props) => {
 	const { report, loading, error } = useFetchReport(id)
-	const { handleDeleteReport, isDeleting } = useDeleteReport(id)
+	const { mutate, isPending } = useDeleteReport(id)
 
 	if (loading) {
 		return (
@@ -33,8 +33,8 @@ export const ReportDetail = ({ id }: Props) => {
 		<div className="flex-1 p-6 overflow-y-auto relative">
 			<ReportHeader
 				date={report.date}
-				onDelete={handleDeleteReport}
-				isDeleting={isDeleting}
+				onDelete={mutate}
+				isDeleting={isPending}
 			/>
 			<ReportEditor report={report} />
 		</div>
