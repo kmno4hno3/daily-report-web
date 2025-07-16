@@ -33,7 +33,6 @@ export const SelectDate = () => {
 		<div className="flex-1 overflow-y-auto">
 			{currentDate &&
 				yearDates?.months?.map((monthItem) => (
-					// 月単位
 					<div key={monthItem.month} className="mb-2">
 						<button
 							type="button"
@@ -48,7 +47,7 @@ export const SelectDate = () => {
 							) : (
 								<ChevronRight className="mr-2" size={20} />
 							)}
-							{monthItem.month}
+							{monthItem.month} 月
 						</button>
 						{openMonths.includes(monthItem.month) && (
 							<div className="ml-6">
@@ -62,7 +61,7 @@ export const SelectDate = () => {
 												setActiveIcon("reports")
 											}}
 										>
-											{day[0]}
+											{day[0]} 日
 										</button>
 									</Link>
 								))}
