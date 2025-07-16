@@ -1,16 +1,11 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { yearDatesAtom } from "@/src/entities/report/model"
-import type { Year } from "@/src/entities/report/type"
-import { errorDialogAtom, messageDialogAtom } from "@/src/features/alert/model"
 import { zodResolver } from "@hookform/resolvers/zod"
-import axios from "axios"
 import { format } from "date-fns"
-import { useAtom } from "jotai"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { createReport } from "../api/createReport"
+import { useCreateReport } from "../hooks/useCreateReport"
 
 import { Button } from "@/src/shared/ui/button"
 import { Calendar } from "@/src/shared/ui/calendar"
@@ -30,11 +25,7 @@ import { Textarea } from "@/src/shared/ui/textarea"
 import { CalendarIcon } from "lucide-react"
 
 export const ReportCreateForm = () => {
-	// const session = await auth()
-
-	const [yearDates, setYearDates] = useAtom<Year>(yearDatesAtom)
-	const [, setMessageDialog] = useAtom(messageDialogAtom)
-	const [, setErrorDialog] = useAtom(errorDialogAtom)
+	const { mutate, data: response } = useCreateReport()
 	const formSchema = z.object({
 		date: z.date(),
 		content: z.string(),
@@ -48,43 +39,10 @@ export const ReportCreateForm = () => {
 	})
 
 	const onSubmit = async (data: z.infer<typeof formSchema>) => {
-		try {
-			const formatDate = format(data.date, "yyyy-MM-dd")
-			await createReport(data.date, data.content)
-			setMessageDialog({
-				title: "レポート作成",
-				message: `${formatDate}のレポートを作成しました`,
-				isOpen: true,
-			})
-			const filteredYearDates = {
-				...yearDates,
-				months: yearDates?.months.map((month) => {
-					if (month.month === data.date.getMonth() + 1) {
-						const tmpDays = [...month.days, data.date.getDate()]
-						return {
-							...month,
-							days: tmpDays.sort(),
-						}
-					}
-					return month
-				}),
-			}
-			setYearDates(filteredYearDates)
-		} catch (error: unknown) {
-			let errorMessage = "不明なエラーが発生しました"
-			if (
-				axios.isAxiosError(error) &&
-				error.response &&
-				error.response.status !== 500
-			) {
-				errorMessage = error.response.data.message
-			}
-			setErrorDialog({
-				title: "レポート作成",
-				message: errorMessage,
-				isOpen: true,
-			})
-		}
+		mutate({
+			date: data.date,
+			content: data.content,
+		})
 	}
 
 	return (
