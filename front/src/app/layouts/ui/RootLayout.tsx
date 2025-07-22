@@ -3,8 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import "@/src/app/globals.css"
 import { Devtools } from "@/src/app/layouts/Devtools"
 import { Provider } from "@/src/app/provider"
-import { Navbar } from "@/src/widgets/navbar"
-import { MessageDialog, ErrorDialog } from "@/src/features/alert"
+import { ErrorDialog, MessageDialog } from "@/src/features/alert"
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -39,10 +38,7 @@ export const RootLayout = ({
 			>
 				<Provider>
 					<Devtools />
-					<div className="flex h-screen">
-						<Navbar />
-						{children}
-					</div>
+					<div className="flex h-screen">{children}</div>
 				</Provider>
 
 				<MessageDialog />

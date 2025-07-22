@@ -43,7 +43,7 @@ export const Navbar: React.FC = async () => {
 
 	return (
 		<TooltipProvider>
-			<nav className="w-16 bg-gray-800 flex flex-col items-center py-4">
+			<nav className="w-16 bg-gray-800 flex flex-col items-center py-4 flex-shrink-0 z-50 relative">
 				{icons.map(({ name, Icon, label, src }) => (
 					<Tooltip key={name}>
 						<TooltipTrigger asChild>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import "@/src/app/globals.css"
-import { Sidebar } from "@/src/widgets/sidebar"
+import { Navbar } from "@/src/widgets/navbar"
+import { SidebarLayout } from "@/src/widgets/sidebar-layout"
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -13,9 +14,11 @@ export const ReportLayout = ({
 	children: React.ReactNode
 }>) => {
 	return (
-		<>
-			<Sidebar />
-			{children}
-		</>
+		<div className="flex h-screen">
+			<Navbar />
+			<div className="flex-1 flex">
+				<SidebarLayout>{children}</SidebarLayout>
+			</div>
+		</div>
 	)
 }
