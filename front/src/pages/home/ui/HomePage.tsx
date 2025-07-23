@@ -1,5 +1,5 @@
-"use client"
+import { Dashboard } from "@/src/features/dashboard"
 
 export const HomePage = () => {
-	return <div className="flex h-screen">home</div>
+	return <Dashboard />
 }
