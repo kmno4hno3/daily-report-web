@@ -17,18 +17,18 @@ export const AppSidebar: React.FC = () => {
 
 	return (
 		<Sidebar collapsible="icon">
-			<SidebarHeader />
+			<SidebarHeader>
+				<Link href="/" className="flex items-center gap-2 p-4">
+					<StickyNote className="w-6 h-6" />
+					<p className="text-lg font-bold">日報管理ツール</p>
+				</Link>
+			</SidebarHeader>
 			<SidebarContent>
-				<div className="w-full h-full bg-gray-100 overflow-y-auto flex flex-col">
-					<Link href="/" className="flex items-center gap-2 p-4">
-						<StickyNote className="w-6 h-6" />
-						<p className="text-lg font-bold">日報管理ツール</p>
-					</Link>
+				<div className="w-full h-full bg-gray-100">
 					<SelectYear />
 					<SelectDate />
 				</div>
 			</SidebarContent>
-			<SidebarFooter />
 		</Sidebar>
 	)
 }

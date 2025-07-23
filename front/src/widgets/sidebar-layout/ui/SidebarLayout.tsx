@@ -8,11 +8,13 @@ export const SidebarLayout: React.FC<{
 	children: React.ReactNode
 }> = ({ children }) => {
 	return (
-		<SidebarProvider defaultOpen={true} className="flex-1">
+		<SidebarProvider className="flex-1 w-full">
 			<AppSidebar />
-			<main className="flex-1 relative">
+			<main className="flex-1 flex flex-col min-h-0">
 				<SidebarTrigger />
-				{children}
+				<div className="flex-1 overflow-auto p-4">
+					{children}
+				</div>
 			</main>
 		</SidebarProvider>
 	)
