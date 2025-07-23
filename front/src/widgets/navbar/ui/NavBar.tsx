@@ -48,7 +48,7 @@ export const Navbar: React.FC<{ className?: string }> = async ({
 		<TooltipProvider>
 			<nav
 				className={cn(
-					"w-16 bg-gray-800 flex flex-col items-center py-4 flex-shrink-0 z-50 relative",
+					"fixed left-0 top-0 h-full w-16 bg-gray-800 flex flex-col items-center py-4 z-50",
 					className,
 				)}
 			>

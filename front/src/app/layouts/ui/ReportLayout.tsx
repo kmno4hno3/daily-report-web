@@ -14,9 +14,11 @@ export const ReportLayout = ({
 	children: React.ReactNode
 }>) => {
 	return (
-		<div className="flex h-screen w-full">
-			<Navbar className="h-full" />
-			<SidebarLayout>{children}</SidebarLayout>
+		<div className="h-screen w-full">
+			<Navbar />
+			<div className="pl-16 h-full">
+				<SidebarLayout>{children}</SidebarLayout>
+			</div>
 		</div>
 	)
 }
