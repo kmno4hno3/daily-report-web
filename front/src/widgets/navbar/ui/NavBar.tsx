@@ -1,5 +1,6 @@
 import { auth } from "@/auth"
 
+import { cn } from "@/src/shared/lib/util"
 import { Button, buttonVariants } from "@/src/shared/ui/button"
 import {
 	Tooltip,
@@ -17,7 +18,9 @@ import {
 import Link from "next/link"
 import type React from "react"
 
-export const Navbar: React.FC = async () => {
+export const Navbar: React.FC<{ className?: string }> = async ({
+	className,
+}) => {
 	const session = await auth()
 	const icons = [
 		// { name: "reports", Icon: FileText, label: "日報", src: "/report/list" },
@@ -43,7 +46,12 @@ export const Navbar: React.FC = async () => {
 
 	return (
 		<TooltipProvider>
-			<nav className="w-16 bg-gray-800 flex flex-col items-center py-4 flex-shrink-0 z-50 relative">
+			<nav
+				className={cn(
+					"w-16 bg-gray-800 flex flex-col items-center py-4 flex-shrink-0 z-50 relative",
+					className,
+				)}
+			>
 				{icons.map(({ name, Icon, label, src }) => (
 					<Tooltip key={name}>
 						<TooltipTrigger asChild>

@@ -15,7 +15,7 @@ export const ReportLayout = ({
 }>) => {
 	return (
 		<div className="flex h-screen w-full">
-			<Navbar />
+			<Navbar className="h-full" />
 			<SidebarLayout>{children}</SidebarLayout>
 		</div>
 	)

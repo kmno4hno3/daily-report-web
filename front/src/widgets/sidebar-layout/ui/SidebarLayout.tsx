@@ -10,9 +10,9 @@ export const SidebarLayout: React.FC<{
 	return (
 		<SidebarProvider className="w-full">
 			<AppSidebar />
-			<main className="flex flex-1 flex-col min-h-0">
+			<main className="flex flex-1 flex-col min-h-0 overflow-hidden">
 				<SidebarTrigger />
-				<div className="p-4">{children}</div>
+				<div className="p-4 overflow-y-auto flex-1">{children}</div>
 			</main>
 		</SidebarProvider>
 	)

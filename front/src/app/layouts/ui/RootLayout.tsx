@@ -38,7 +38,7 @@ export const RootLayout = ({
 			>
 				<Provider>
 					<Devtools />
-					<div className="flex h-screen">{children}</div>
+					<div className="flex h-screen overflow-hidden">{children}</div>
 				</Provider>
 
 				<MessageDialog />
