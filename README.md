@@ -41,3 +41,5 @@
   * GCP (Cloud Build/Artifact Registry/CloudRun)
   * Supabase
   * Vercel
+- その他
+  * utopia: APIドキュメント自動生成
