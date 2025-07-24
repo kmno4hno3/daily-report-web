@@ -16,6 +16,7 @@ impl<T: ReportRepository + Clone> ReportUsecase<T> {
 #[async_trait]
 pub trait ReportService {
     async fn get_all_reports(&self) -> Result<Vec<Report>, sqlx::Error>;
+    async fn get_all_reports_by_user(&self, user_id: i64) -> Result<Vec<Report>, sqlx::Error>;
     async fn get_report_by_id(&self, id: i64, user_id: i64) -> Result<Option<Report>, sqlx::Error>;
     async fn get_report_by_date(
         &self,
@@ -48,6 +49,9 @@ pub trait ReportService {
 impl<T: ReportRepository + Send + Sync + Clone> ReportService for ReportUsecase<T> {
     async fn get_all_reports(&self) -> Result<Vec<Report>, sqlx::Error> {
         self.repository.find_all().await
+    }
+    async fn get_all_reports_by_user(&self, user_id: i64) -> Result<Vec<Report>, sqlx::Error> {
+        self.repository.find_all_by_user(user_id).await
     }
     async fn get_report_by_id(&self, id: i64, user_id: i64) -> Result<Option<Report>, sqlx::Error> {
         self.repository.find_by_id(id, user_id).await

@@ -56,13 +56,13 @@ pub fn create_report_router<T: ReportService + Send + Sync + 'static + Clone>(
         .with_state(state)
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 struct CreateReportRequest {
     date: String,
     content: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 struct UpdateReportRequest {
     content: String,
 }
@@ -102,7 +102,7 @@ impl From<Year> for YearResponse {
     }
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, ToSchema)]
 struct ErrorResponse {
     code: u16,
     message: String,
@@ -363,10 +363,126 @@ fn verify_token(token: &str) -> Result<Claims, jsonwebtoken::errors::Error> {
     Ok(data.claims)
 }
 
+// OpenAPI documentation functions
+#[utoipa::path(
+    get,
+    path = "/api/reports",
+    responses(
+        (status = 200, description = "List all reports successfully", body = [ReportResponse]),
+        (status = 500, description = "Failed to fetch reports")
+    )
+)]
+async fn get_all_reports_doc() {}
+
+#[utoipa::path(
+    get,
+    path = "/api/report/{id}",
+    params(
+        ("id" = i64, Path, description = "Report ID")
+    ),
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (status = 200, description = "Report found successfully", body = ReportResponse),
+        (status = 401, description = "Unauthorized"),
+        (status = 404, description = "Report not found"),
+        (status = 500, description = "Failed to fetch report")
+    )
+)]
+async fn get_report_by_id_doc() {}
+
+#[utoipa::path(
+    get,
+    path = "/api/report/{year}/{month}/{day}",
+    params(
+        ("year" = i64, Path, description = "Year"),
+        ("month" = i64, Path, description = "Month"),
+        ("day" = i64, Path, description = "Day")
+    ),
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (status = 200, description = "Report found successfully", body = ReportResponse),
+        (status = 401, description = "Unauthorized"),
+        (status = 404, description = "Report not found"),
+        (status = 500, description = "Failed to fetch report")
+    )
+)]
+async fn get_report_by_date_doc() {}
+
+#[utoipa::path(
+    post,
+    path = "/api/reports",
+    request_body = CreateReportRequest,
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (status = 201, description = "Report created successfully", body = ReportResponse),
+        (status = 401, description = "Unauthorized"),
+        (status = 409, description = "Duplicate error"),
+        (status = 500, description = "Server error")
+    )
+)]
+async fn create_report_doc() {}
+
+#[utoipa::path(
+    put,
+    path = "/api/report/{id}",
+    params(
+        ("id" = i64, Path, description = "Report ID")
+    ),
+    request_body = UpdateReportRequest,
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (status = 200, description = "Report updated successfully", body = ReportResponse),
+        (status = 401, description = "Unauthorized"),
+        (status = 404, description = "Report not found"),
+        (status = 500, description = "Failed update report")
+    )
+)]
+async fn update_report_doc() {}
+
+#[utoipa::path(
+    delete,
+    path = "/api/report/{id}",
+    params(
+        ("id" = i64, Path, description = "Report ID")
+    ),
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (status = 204, description = "Report deleted successfully"),
+        (status = 401, description = "Unauthorized"),
+        (status = 500, description = "Failed delete report")
+    )
+)]
+async fn delete_report_doc() {}
+
 #[derive(OpenApi)]
 #[openapi(
-  paths(get_available_dates_by_year),
-  components(schemas(YearResponse, Month)),
+  paths(
+      get_all_reports_doc,
+      get_report_by_id_doc,
+      get_report_by_date_doc,
+      create_report_doc,
+      update_report_doc,
+      delete_report_doc,
+      get_available_dates_by_year
+  ),
+  components(schemas(
+      ReportResponse,
+      CreateReportRequest,
+      UpdateReportRequest,
+      YearResponse,
+      Month,
+      ErrorResponse
+  )),
   security(
       ("bearer_auth" = [])
   )

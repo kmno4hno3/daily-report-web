@@ -17,8 +17,8 @@ mod usecase;
 
 use crate::infrastructure::report_repository::ReportRepositoryImpl;
 use crate::infrastructure::user_repository::UserRepositoryImpl;
-use crate::presentation::handlers::report_handler::create_report_router;
-use crate::presentation::handlers::report_handler::ApiDoc;
+use crate::presentation::handlers::dashboard_handler::{create_dashboard_router, DashboardApiDoc};
+use crate::presentation::handlers::report_handler::{create_report_router, ApiDoc};
 use crate::presentation::handlers::user_handler::create_user_router;
 use crate::usecase::report_usecase::ReportUsecase;
 use crate::usecase::user_usecase::UserUsecase;
@@ -51,13 +51,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             http::Method::PUT,
             http::Method::DELETE,
         ])
-        .allow_headers([http::header::CONTENT_TYPE]);
+        .allow_headers([http::header::CONTENT_TYPE, http::header::AUTHORIZATION]);
 
     let app = Router::new()
         .route("/", get(|| async { "Hello, Axum!!!" }))
-        .nest("/api", create_report_router(report_service))
+        .nest("/api", create_report_router(report_service.clone()))
+        .nest("/api", create_dashboard_router(report_service))
         .nest("/api", create_user_router(user_service))
-        .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
+        .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", {
+            let mut doc = ApiDoc::openapi();
+            doc.merge(DashboardApiDoc::openapi());
+            doc
+        }))
         .layer(cors);
 
     let port = env::var("PORT")

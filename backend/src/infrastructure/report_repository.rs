@@ -26,6 +26,15 @@ impl ReportRepository for ReportRepositoryImpl {
         .await?;
         Ok(reports)
     }
+    async fn find_all_by_user(&self, user_id: i64) -> Result<Vec<Report>, sqlx::Error> {
+        let reports = sqlx::query_as::<_, Report>(
+            "SELECT id, date, content, user_id, created_at, updated_at FROM reports WHERE user_id = $1 ORDER BY date DESC",
+        )
+        .bind(user_id)
+        .fetch_all(&self.pool)
+        .await?;
+        Ok(reports)
+    }
     async fn find_by_id(&self, id: i64, user_id: i64) -> Result<Option<Report>, sqlx::Error> {
         let report = sqlx::query_as::<_, Report>(
             "SELECT id, date, content, user_id, created_at, updated_at FROM reports where id = $1 and user_id = $2",
