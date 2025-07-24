@@ -2,8 +2,8 @@
 
 import { auth } from "@/auth"
 import type { Date as ReportDate } from "@/src/entities/report/type"
+import { createSignedJwt } from "@/src/shared/lib/createJwt"
 import axios from "axios"
-import { createSignedJwt } from "../model/createJwt"
 
 interface Props {
 	id: number

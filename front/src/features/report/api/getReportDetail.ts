@@ -1,8 +1,8 @@
 "use server"
 
 import { auth } from "@/auth"
+import { createSignedJwt } from "@/src/shared/lib/createJwt"
 import axios from "axios"
-import { createSignedJwt } from "../model/createJwt"
 
 export const getReportDetail = async (id: number) => {
 	const session = await auth()

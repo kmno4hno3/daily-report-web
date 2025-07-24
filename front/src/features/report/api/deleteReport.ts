@@ -1,9 +1,9 @@
 "use server"
 
 import { auth } from "@/auth"
+import { createSignedJwt } from "@/src/shared/lib/createJwt"
 import axios from "axios"
 import { revalidatePath } from "next/cache"
-import { createSignedJwt } from "../model/createJwt"
 
 export async function deleteReport(id: number) {
 	const session = await auth()
