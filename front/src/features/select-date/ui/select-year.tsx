@@ -1,14 +1,21 @@
 import { currentDateAtom } from "@/src/entities/report/model"
 import { useAtom } from "jotai"
 
+// TODO: featureなのでentitiesあたりに移行するなど検討
+import { useFetchDashboard } from "@/src/features/dashboard/hooks/useFetchDashboard"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/src/shared/ui/select"
 import { ChevronLeft, ChevronRightIcon } from "lucide-react"
 
 export const SelectYear = () => {
 	const [currentDate, setCurrentDateAtom] = useAtom(currentDateAtom)
-
-	const changeYear = (direction: "prev" | "next") => {
-		const year =
-			direction === "prev" ? currentDate.year - 1 : currentDate.year + 1
+	const changeYear = (year: number) => {
+		console.log(year)
 		setCurrentDateAtom({
 			year,
 			month: undefined,
@@ -16,25 +23,28 @@ export const SelectYear = () => {
 		})
 	}
 
+	const { data } = useFetchDashboard()
+	const yearlySummary = data?.yearly_summary
+	const years = yearlySummary?.map((summary) => summary.year)
+
 	return (
-		<div className="flex items-center justify-between p-4 bg-gray-200">
-			<button
-				type="button"
-				onClick={() => changeYear("prev")}
-				// disabled={selectedYearIndex === 0}
-				className="p-1 rounded hover:bg-gray-300 disabled:opacity-50"
-			>
-				<ChevronLeft size={20} />
-			</button>
-			<span className="font-bold">{currentDate.year}</span>
-			<button
-				type="button"
-				onClick={() => changeYear("next")}
-				// disabled={selectedYearIndex === yearDates.length - 1}
-				className="p-1 rounded hover:bg-gray-300 disabled:opacity-50"
-			>
-				<ChevronRightIcon size={20} />
-			</button>
+		<div className="flex items-center justify-between p-4">
+			<Select onValueChange={(value) => changeYear(Number(value))}>
+				<SelectTrigger className="w-[180px]">
+					<SelectValue placeholder="年" />
+				</SelectTrigger>
+				<SelectContent>
+					{years?.map((year) => (
+						<SelectItem
+							key={year}
+							value={year.toString()}
+							onClick={() => changeYear(year)}
+						>
+							{year}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
 		</div>
 	)
 }
