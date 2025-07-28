@@ -1,11 +1,10 @@
 "use client"
 
 import { useFetchReportDates } from "@/src/features/report/hooks/useFetchReportDates"
+import { Search } from "@/src/features/search"
 import { SelectDate, SelectYear } from "@/src/features/select-date"
-import { Input } from "@/src/shared/ui/input"
 import { Sidebar, SidebarContent, SidebarHeader } from "@/src/shared/ui/sidebar"
 import { StickyNote } from "lucide-react"
-import { Search } from "lucide-react"
 import Link from "next/link"
 import type React from "react"
 
@@ -22,7 +21,7 @@ export const AppSidebar: React.FC = () => {
 			</SidebarHeader>
 			<SidebarContent>
 				<div className="h-full bg-gray-100 p-2">
-					<Input icon={<Search className="text-[#737373]" />} />
+					<Search />
 					<SelectYear className="mt-2" />
 					<SelectDate className="mt-2" />
 				</div>
