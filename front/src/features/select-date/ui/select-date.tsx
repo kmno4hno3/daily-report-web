@@ -1,11 +1,11 @@
+import { cn } from "@/lib/utils"
 import { currentDateAtom, yearDatesAtom } from "@/src/entities/report/model"
 import { useAtom } from "jotai"
+import { ChevronDown, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 
-import { ChevronDown, ChevronRight } from "lucide-react"
-
-export const SelectDate = () => {
+export const SelectDate = ({ className }: { className?: string }) => {
 	const [yearDates] = useAtom(yearDatesAtom)
 	const [currentDate, setCurrentDateAtom] = useAtom(currentDateAtom)
 	const [openMonths, setOpenMonths] = useState<number[]>([])
@@ -30,7 +30,7 @@ export const SelectDate = () => {
 	}
 
 	return (
-		<div className="flex-1 overflow-y-auto">
+		<div className={cn("flex-1 overflow-y-auto", className)}>
 			{currentDate &&
 				yearDates?.months?.map((monthItem) => (
 					<div key={monthItem.month} className="mb-2">
