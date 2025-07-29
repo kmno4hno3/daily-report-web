@@ -137,4 +137,47 @@ impl ReportRepository for ReportRepositoryImpl {
 
         Ok(Year { year, months })
     }
+    
+    async fn find_available_dates_by_year_with_search(
+        &self,
+        year: i64,
+        user_id: i64,
+        query: &str,
+    ) -> Result<Year, sqlx::Error> {
+        let rows = sqlx::query(
+            "SELECT DISTINCT
+                id,
+                CAST(EXTRACT(YEAR FROM date) AS INTEGER) AS year, 
+                CAST(EXTRACT(MONTH FROM date) AS INTEGER) AS month, 
+                CAST(EXTRACT(DAY FROM date) AS INTEGER) AS day 
+            FROM reports 
+            WHERE EXTRACT(YEAR FROM date) = $1 
+                AND user_id = $2
+                AND content ILIKE $3;",
+        )
+        .bind(year)
+        .bind(user_id)
+        .bind(format!("%{}%", query))
+        .fetch_all(&self.pool)
+        .await?;
+
+        let mut month_map: HashMap<i64, Vec<(i64, i64)>> = HashMap::new();
+        for row in rows {
+            let month: Option<i32> = row.get("month");
+            let day: Option<i32> = row.get("day");
+            let id: Option<i64> = row.get("id");
+
+            month_map
+                .entry(month.unwrap() as i64)
+                .or_insert_with(Vec::new)
+                .push((day.unwrap() as i64, id.unwrap() as i64));
+        }
+
+        let months = month_map
+            .into_iter()
+            .map(|(month, days)| Month { month, days })
+            .collect();
+
+        Ok(Year { year, months })
+    }
 }

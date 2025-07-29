@@ -1,5 +1,5 @@
 use axum::{
-    extract::{Path, State},
+    extract::{Path, Query, State},
     response::{IntoResponse, Json},
     routing::get,
     Router,
@@ -65,6 +65,11 @@ struct CreateReportRequest {
 #[derive(Deserialize, ToSchema)]
 struct UpdateReportRequest {
     content: String,
+}
+
+#[derive(Deserialize)]
+struct SearchQuery {
+    q: Option<String>,
 }
 
 #[derive(Serialize, ToSchema)]
@@ -310,7 +315,8 @@ async fn delete_report<T: ReportService>(
   get,
   path = "/api/report/dates/{year}",
   params(
-      ("year" = i64, Path, description = "Year to get available dates for")
+      ("year" = i64, Path, description = "Year to get available dates for"),
+      ("q" = Option<String>, Query, description = "Optional search query to filter reports")
   ),
   security(
       ("bearer_auth" = [])
@@ -324,6 +330,7 @@ async fn delete_report<T: ReportService>(
 async fn get_available_dates_by_year<T: ReportService>(
     State(state): State<AppState<T>>,
     Path(year): Path<i64>,
+    Query(query): Query<SearchQuery>,
     headers: HeaderMap,
 ) -> impl IntoResponse {
     let user_id = match headers
@@ -345,7 +352,7 @@ async fn get_available_dates_by_year<T: ReportService>(
 
     match state
         .report_service
-        .get_available_dates_by_year(year, user_id)
+        .get_available_dates_by_year_with_search(year, user_id, query.q.as_deref())
         .await
     {
         Ok(dates) => Json(YearResponse::from(dates)).into_response(),

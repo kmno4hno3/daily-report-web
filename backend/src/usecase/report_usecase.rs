@@ -43,6 +43,12 @@ pub trait ReportService {
         year: i64,
         user_id: i64,
     ) -> Result<Year, sqlx::Error>;
+    async fn get_available_dates_by_year_with_search(
+        &self,
+        year: i64,
+        user_id: i64,
+        query: Option<&str>,
+    ) -> Result<Year, sqlx::Error>;
 }
 
 #[async_trait]
@@ -109,5 +115,25 @@ impl<T: ReportRepository + Send + Sync + Clone> ReportService for ReportUsecase<
         self.repository
             .find_available_dates_by_year(year, user_id)
             .await
+    }
+    
+    async fn get_available_dates_by_year_with_search(
+        &self,
+        year: i64,
+        user_id: i64,
+        query: Option<&str>,
+    ) -> Result<Year, sqlx::Error> {
+        match query {
+            Some(q) if !q.is_empty() => {
+                self.repository
+                    .find_available_dates_by_year_with_search(year, user_id, q)
+                    .await
+            }
+            _ => {
+                self.repository
+                    .find_available_dates_by_year(year, user_id)
+                    .await
+            }
+        }
     }
 }
