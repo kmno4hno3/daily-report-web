@@ -58,11 +58,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .nest("/api", create_report_router(report_service.clone()))
         .nest("/api", create_dashboard_router(report_service))
         .nest("/api", create_user_router(user_service))
-        .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", {
-            let mut doc = ApiDoc::openapi();
-            doc.merge(DashboardApiDoc::openapi());
-            doc
-        }))
+        .merge(
+            SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", {
+                let mut doc = ApiDoc::openapi();
+                doc.merge(DashboardApiDoc::openapi());
+                doc
+            }),
+        )
         .layer(cors);
 
     let port = env::var("PORT")
