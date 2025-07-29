@@ -100,6 +100,11 @@ impl From<Year> for YearResponse {
         let mut months = year_data.months;
         months.sort_by_key(|m| m.month);
 
+        // Sort days within each month in ascending order
+        for month in &mut months {
+            month.days.sort_by_key(|&(day, _)| day);
+        }
+
         Self {
             year: year_data.year,
             months: months,

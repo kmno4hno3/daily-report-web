@@ -84,7 +84,7 @@ async fn get_dashboard_data<T: ReportService>(
             let now = Local::now().naive_local().date();
             let current_year = now.year();
             let current_month = now.month();
-            
+
             let last_month_date = if current_month == 1 {
                 NaiveDate::from_ymd_opt(current_year - 1, 12, 1).unwrap()
             } else {
@@ -108,7 +108,8 @@ async fn get_dashboard_data<T: ReportService>(
                     this_month_reports += 1;
                 }
 
-                if report_year == last_month_date.year() && report_month == last_month_date.month() {
+                if report_year == last_month_date.year() && report_month == last_month_date.month()
+                {
                     last_month_reports += 1;
                 }
             }
@@ -136,7 +137,11 @@ async fn get_dashboard_data<T: ReportService>(
 
             Json(response).into_response()
         }
-        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch dashboard data").into_response(),
+        Err(_) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Failed to fetch dashboard data",
+        )
+            .into_response(),
     }
 }
 

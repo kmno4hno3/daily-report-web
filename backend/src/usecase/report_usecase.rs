@@ -116,7 +116,7 @@ impl<T: ReportRepository + Send + Sync + Clone> ReportService for ReportUsecase<
             .find_available_dates_by_year(year, user_id)
             .await
     }
-    
+
     async fn get_available_dates_by_year_with_search(
         &self,
         year: i64,

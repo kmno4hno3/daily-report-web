@@ -137,7 +137,7 @@ impl ReportRepository for ReportRepositoryImpl {
 
         Ok(Year { year, months })
     }
-    
+
     async fn find_available_dates_by_year_with_search(
         &self,
         year: i64,
