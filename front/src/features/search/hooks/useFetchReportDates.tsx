@@ -6,33 +6,34 @@ import { useQuery } from "@tanstack/react-query"
 import { useAtom } from "jotai"
 import { useEffect } from "react"
 
-export const useFetchReportDates = () => {
+export const useFetchReportDates = (query: string) => {
 	const [, setYearDatesAtom] = useAtom(yearDatesAtom)
 	const [currentDate] = useAtom(currentDateAtom)
 
 	const { data, isPending, isError, error, refetch, isFetching } = useQuery({
-		queryKey: ["reportDates", currentDate.year],
+		queryKey: ["reportDates", currentDate.year, query],
 		queryFn: () => {
 			if (!currentDate.year) {
 				throw new Error("Year is required")
 			}
-			return getDates(currentDate.year)
+			return getDates(currentDate.year, query)
 		},
 		enabled: !!currentDate.year,
 	})
 
 	useEffect(() => {
 		if (data) {
+			console.log(data)
 			setYearDatesAtom(data)
 		}
 	}, [data, setYearDatesAtom])
 
 	return {
-		data: data,
-		isPending: isPending,
-		isError: isError,
-		error: error,
-		refetch: refetch,
-		isFetching: isFetching,
+		data,
+		isPending,
+		isError,
+		error,
+		refetch,
+		isFetching,
 	}
 }
