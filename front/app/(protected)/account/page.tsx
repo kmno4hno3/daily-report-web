@@ -1,7 +1,3 @@
-import { Account as AccountComponent } from "@/src/app/page"
+import { AccountPage } from "@/src/pages/account"
 
-const Account = () => {
-	return <AccountComponent />
-}
-
-export default Account
+export default AccountPage

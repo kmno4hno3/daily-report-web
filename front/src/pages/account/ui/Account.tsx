@@ -6,7 +6,7 @@ import { z } from "zod"
 import { Button } from "@/src/shared/ui/button"
 import type React from "react"
 
-export const Account: React.FC = () => {
+export const AccountPage: React.FC = () => {
 	const handleLogout = async () => {
 		const result = await authSignOut()
 
