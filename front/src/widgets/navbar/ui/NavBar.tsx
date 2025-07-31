@@ -33,6 +33,12 @@ export const Navbar: React.FC<{ className?: string }> = async ({
 						src: "/report/create",
 					},
 					{
+						name: "profile",
+						Icon: CircleUser,
+						label: "プロフィール",
+						src: "/profile",
+					},
+					{
 						name: "settings",
 						Icon: Settings,
 						label: "設定",
@@ -41,7 +47,6 @@ export const Navbar: React.FC<{ className?: string }> = async ({
 				]
 			: []),
 		// { name: "help", Icon: HelpCircle, label: "ヘルプ", src: "/help" },
-		{ name: "account", Icon: CircleUser, label: "アカウント", src: "/account" },
 	]
 
 	return (

@@ -26,7 +26,10 @@ import {
 } from "@/src/shared/ui/form"
 import { Input } from "@/src/shared/ui/input"
 
-const ErrorSchema = z.object({ isSuccess: z.boolean().optional() })
+const ErrorSchema = z.object({ 
+	isSuccess: z.boolean().optional(),
+	error: z.string().optional()
+})
 
 export function LoginForm({
 	className,

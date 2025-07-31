@@ -1,3 +1,3 @@
-import { Settings } from "@/src/widgets/content-area"
+import { SettingsPage } from "@/src/pages/settings"
 
-export default Settings
+export default SettingsPage

@@ -6,12 +6,13 @@ import { z } from "zod"
 import { Button } from "@/src/shared/ui/button"
 import type React from "react"
 
-export const AccountPage: React.FC = () => {
+export const ProfilePage: React.FC = () => {
 	const handleLogout = async () => {
 		const result = await authSignOut()
 
 		const ResultSchema = z.object({
 			isSuccess: z.boolean(),
+			error: z.string().optional(),
 		})
 
 		const resultParsed = ResultSchema.safeParse(result)
