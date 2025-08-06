@@ -17,6 +17,7 @@ impl<T: UserRepository + Clone> UserUsecase<T> {
 pub trait UserService {
     async fn get_all_users(&self) -> Result<Vec<User>, sqlx::Error>;
     async fn get_user_by_email(&self, email: String) -> Result<Option<User>, sqlx::Error>;
+    async fn get_user_by_id(&self, id: i64) -> Result<Option<User>, sqlx::Error>;
     async fn create_user(
         &self,
         name: String,
@@ -29,6 +30,7 @@ pub trait UserService {
         email: String,
         password: String,
     ) -> Result<User, sqlx::Error>;
+    async fn update_user_profile(&self, id: i64, name: Option<String>) -> Result<User, sqlx::Error>;
     async fn delete_user(&self, id: i64) -> Result<(), sqlx::Error>;
 }
 
@@ -39,6 +41,9 @@ impl<T: UserRepository + Send + Sync + Clone> UserService for UserUsecase<T> {
     }
     async fn get_user_by_email(&self, email: String) -> Result<Option<User>, sqlx::Error> {
         self.repository.find_by_email(&email).await
+    }
+    async fn get_user_by_id(&self, id: i64) -> Result<Option<User>, sqlx::Error> {
+        self.repository.find_by_id(id).await
     }
     async fn create_user(
         &self,
@@ -60,7 +65,16 @@ impl<T: UserRepository + Send + Sync + Clone> UserService for UserUsecase<T> {
         if let Some(mut user) = existing_user {
             user.name = Some(name);
             user.email = email;
-            user.password = password;
+            user.password = Some(password);
+            return self.repository.update(user).await;
+        }
+
+        Err(sqlx::Error::RowNotFound)
+    }
+    async fn update_user_profile(&self, id: i64, name: Option<String>) -> Result<User, sqlx::Error> {
+        let existing_user = self.repository.find_by_id(id).await?;
+        if let Some(mut user) = existing_user {
+            user.name = name;
             return self.repository.update(user).await;
         }
 

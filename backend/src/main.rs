@@ -16,11 +16,13 @@ mod presentation;
 mod usecase;
 
 use crate::infrastructure::report_repository::ReportRepositoryImpl;
+use crate::infrastructure::skill_repository::SkillRepositoryImpl;
 use crate::infrastructure::user_repository::UserRepositoryImpl;
 use crate::presentation::handlers::dashboard_handler::{create_dashboard_router, DashboardApiDoc};
 use crate::presentation::handlers::report_handler::{create_report_router, ApiDoc};
-use crate::presentation::handlers::user_handler::create_user_router;
+use crate::presentation::handlers::user_handler::{create_user_router, ProfileApiDoc};
 use crate::usecase::report_usecase::ReportUsecase;
+use crate::usecase::skill_usecase::SkillUsecase;
 use crate::usecase::user_usecase::UserUsecase;
 
 #[tokio::main]
@@ -39,6 +41,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let report_service = ReportUsecase::new(report_repository);
     let user_repository = UserRepositoryImpl::new(pool.clone());
     let user_service = UserUsecase::new(user_repository);
+    let skill_repository = SkillRepositoryImpl::new(pool.clone());
+    let skill_service = SkillUsecase::new(skill_repository);
 
     let cors = CorsLayer::new()
         .allow_origin([env::var("FRONT_URL")
@@ -57,11 +61,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/", get(|| async { "Hello, Axum!!!" }))
         .nest("/api", create_report_router(report_service.clone()))
         .nest("/api", create_dashboard_router(report_service))
-        .nest("/api", create_user_router(user_service))
+        .nest("/api", create_user_router(user_service, skill_service))
         .merge(
             SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", {
                 let mut doc = ApiDoc::openapi();
                 doc.merge(DashboardApiDoc::openapi());
+                doc.merge(ProfileApiDoc::openapi());
                 doc
             }),
         )

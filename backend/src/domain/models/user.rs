@@ -7,7 +7,7 @@ pub struct User {
     pub id: Option<i64>,
     pub name: Option<String>,
     pub email: String,
-    pub password: String,
+    pub password: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -21,7 +21,7 @@ impl User {
             id: None,
             name: Some(name),
             email: email,
-            password: password,
+            password: Some(password),
             created_at: now_utc,
             updated_at: now_utc,
         }

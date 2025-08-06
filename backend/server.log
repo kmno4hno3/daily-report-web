@@ -1,0 +1,190 @@
+   Compiling daily-report v0.1.0 (/Users/tatsuya/Workspace/個人開発/daily-report-web/backend)
+warning: unused imports: `Decode` and `Type`
+ --> src/domain/models/report.rs:3:12
+  |
+3 | use sqlx::{Decode, FromRow, Type};
+  |            ^^^^^^           ^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `utoipa::ToSchema`
+ --> src/domain/models/report.rs:4:5
+  |
+4 | use utoipa::ToSchema;
+  |     ^^^^^^^^^^^^^^^^
+
+warning: unused imports: `SkillLevel` and `Skill`
+  --> src/presentation/handlers/user_handler.rs:13:36
+   |
+13 | use crate::domain::models::skill::{Skill, SkillLevel};
+   |                                    ^^^^^  ^^^^^^^^^^
+
+warning: fields `email` and `name` are never read
+  --> src/presentation/handlers/dashboard_handler.rs:26:5
+   |
+24 | struct Claims {
+   |        ------ fields in this struct
+25 |     id: String,
+26 |     email: Option<String>,
+   |     ^^^^^
+27 |     name: Option<String>,
+   |     ^^^^
+   |
+   = note: `Claims` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` on by default
+
+warning: function `get_dashboard_data_doc` is never used
+   --> src/presentation/handlers/dashboard_handler.rs:171:10
+    |
+171 | async fn get_dashboard_data_doc() {}
+    |          ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: fields `email` and `name` are never read
+  --> src/presentation/handlers/report_handler.rs:26:5
+   |
+24 | struct Claims {
+   |        ------ fields in this struct
+25 |     id: String,
+26 |     email: Option<String>,
+   |     ^^^^^
+27 |     name: Option<String>,
+   |     ^^^^
+   |
+   = note: `Claims` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: function `get_all_reports_doc` is never used
+   --> src/presentation/handlers/report_handler.rs:387:10
+    |
+387 | async fn get_all_reports_doc() {}
+    |          ^^^^^^^^^^^^^^^^^^^
+
+warning: function `get_report_by_id_doc` is never used
+   --> src/presentation/handlers/report_handler.rs:405:10
+    |
+405 | async fn get_report_by_id_doc() {}
+    |          ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `get_report_by_date_doc` is never used
+   --> src/presentation/handlers/report_handler.rs:425:10
+    |
+425 | async fn get_report_by_date_doc() {}
+    |          ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `create_report_doc` is never used
+   --> src/presentation/handlers/report_handler.rs:441:10
+    |
+441 | async fn create_report_doc() {}
+    |          ^^^^^^^^^^^^^^^^^
+
+warning: function `update_report_doc` is never used
+   --> src/presentation/handlers/report_handler.rs:460:10
+    |
+460 | async fn update_report_doc() {}
+    |          ^^^^^^^^^^^^^^^^^
+
+warning: function `delete_report_doc` is never used
+   --> src/presentation/handlers/report_handler.rs:477:10
+    |
+477 | async fn delete_report_doc() {}
+    |          ^^^^^^^^^^^^^^^^^
+
+warning: field `skill_service` is never read
+  --> src/presentation/handlers/user_handler.rs:21:9
+   |
+19 | pub struct AppState<T: UserService, S: SkillService> {
+   |            -------- field in this struct
+20 |     pub user_service: Arc<T>,
+21 |     pub skill_service: Arc<S>,
+   |         ^^^^^^^^^^^^^
+   |
+   = note: `AppState` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+
+warning: field `skills` is never read
+  --> src/presentation/handlers/user_handler.rs:85:5
+   |
+83 | struct UpdateProfileRequest {
+   |        -------------------- field in this struct
+84 |     name: Option<String>,
+85 |     skills: Option<Vec<UpdateSkillRequest>>,
+   |     ^^^^^^
+
+warning: fields `id`, `name`, `level`, `category`, and `description` are never read
+  --> src/presentation/handlers/user_handler.rs:90:5
+   |
+89 | struct UpdateSkillRequest {
+   |        ------------------ fields in this struct
+90 |     id: Option<i64>,
+   |     ^^
+91 |     name: String,
+   |     ^^^^
+92 |     level: String,
+   |     ^^^^^
+93 |     category: Option<String>,
+   |     ^^^^^^^^
+94 |     description: Option<String>,
+   |     ^^^^^^^^^^^
+
+warning: fields `email` and `name` are never read
+   --> src/presentation/handlers/user_handler.rs:100:5
+    |
+98  | struct Claims {
+    |        ------ fields in this struct
+99  |     id: String,
+100 |     email: Option<String>,
+    |     ^^^^^
+101 |     name: Option<String>,
+    |     ^^^^
+    |
+    = note: `Claims` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: function `get_profile_doc` is never used
+   --> src/presentation/handlers/user_handler.rs:311:10
+    |
+311 | async fn get_profile_doc() {}
+    |          ^^^^^^^^^^^^^^^
+
+warning: function `update_profile_doc` is never used
+   --> src/presentation/handlers/user_handler.rs:327:10
+    |
+327 | async fn update_profile_doc() {}
+    |          ^^^^^^^^^^^^^^^^^^
+
+warning: method `get_available_dates_by_year` is never used
+  --> src/usecase/report_usecase.rs:41:14
+   |
+17 | pub trait ReportService {
+   |           ------------- method in this trait
+...
+41 |     async fn get_available_dates_by_year(
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `get_skills_by_user_id`, `get_skill_by_id`, `create_skill`, `update_skill`, and `delete_skill` are never used
+  --> src/usecase/skill_usecase.rs:18:14
+   |
+17 | pub trait SkillService {
+   |           ------------ methods in this trait
+18 |     async fn get_skills_by_user_id(&self, user_id: i64) -> Result<Vec<Skill>, sqlx::Error>;
+   |              ^^^^^^^^^^^^^^^^^^^^^
+19 |     async fn get_skill_by_id(&self, id: i64) -> Result<Option<Skill>, sqlx::Error>;
+   |              ^^^^^^^^^^^^^^^
+20 |     async fn create_skill(
+   |              ^^^^^^^^^^^^
+...
+28 |     async fn update_skill(&self, skill: Skill) -> Result<Skill, sqlx::Error>;
+   |              ^^^^^^^^^^^^
+29 |     async fn delete_skill(&self, id: i64) -> Result<(), sqlx::Error>;
+   |              ^^^^^^^^^^^^
+
+warning: method `delete_user` is never used
+  --> src/usecase/user_usecase.rs:34:14
+   |
+17 | pub trait UserService {
+   |           ----------- method in this trait
+...
+34 |     async fn delete_user(&self, id: i64) -> Result<(), sqlx::Error>;
+   |              ^^^^^^^^^^^
+
+warning: `daily-report` (bin "daily-report") generated 21 warnings (run `cargo fix --bin "daily-report"` to apply 3 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.56s
+     Running `target/debug/daily-report dev`
+[2m2025-08-06T22:58:06.992755Z[0m [32m INFO[0m [2mdaily_report[0m[2m:[0m 🚀 Server running at http://0.0.0.0:8000
