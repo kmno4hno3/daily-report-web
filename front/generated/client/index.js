@@ -174,7 +174,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/tatsuya/Workspace/個人開発/daily-report-web/front/generated/client",
+      "value": "/Users/tatsuya/Workspace/App/daily-report-web/front/generated/client",
       "fromEnvVar": null
     },
     "config": {
@@ -192,7 +192,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/tatsuya/Workspace/個人開発/daily-report-web/front/schema.prisma",
+    "sourceFilePath": "/Users/tatsuya/Workspace/App/daily-report-web/front/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
