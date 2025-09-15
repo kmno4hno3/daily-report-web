@@ -14,6 +14,7 @@ export const getDates = async (
 		throw new Error("認証が必要です")
 	}
 	const token = await createSignedJwt(session.user)
+	console.log("token: ", token)
 
 	try {
 		const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/report/dates/${currentYear}${query ? `?q=${query}` : ""}`
@@ -26,7 +27,7 @@ export const getDates = async (
 		// エラー時でも空のデータを返してReact Queryのエラーを防ぐ
 		return {
 			year: currentYear,
-			months: []
+			months: [],
 		} as Year
 	}
 }

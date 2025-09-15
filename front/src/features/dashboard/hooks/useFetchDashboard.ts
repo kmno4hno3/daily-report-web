@@ -7,16 +7,19 @@ import { useEffect } from "react"
 import { getDashboard } from "../api/getDashboard"
 
 export const useFetchDashboard = () => {
-	const [dashboard, setDashboard] = useAtom(dashboardAtom)
+	const [, setDashboard] = useAtom(dashboardAtom)
 
 	const { data, isPending, isError, error, refetch, isFetching } = useQuery({
 		queryKey: ["dashboard"],
-		queryFn: () => {
-			if (!dashboard) {
-				throw new Error("dashboard is required")
+		queryFn: async () => {
+			const result = await getDashboard()
+			if (!result) {
+				throw new Error("ダッシュボードデータの取得に失敗しました")
 			}
-			return getDashboard()
+			return result
 		},
+		retry: 2,
+		staleTime: 5 * 60 * 1000, // 5分間キャッシュ
 	})
 
 	useEffect(() => {
