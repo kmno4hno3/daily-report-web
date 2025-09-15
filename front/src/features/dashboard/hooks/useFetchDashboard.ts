@@ -7,11 +7,16 @@ import { useEffect } from "react"
 import { getDashboard } from "../api/getDashboard"
 
 export const useFetchDashboard = () => {
-	const [, setDashboard] = useAtom(dashboardAtom)
+	const [dashboard, setDashboard] = useAtom(dashboardAtom)
 
 	const { data, isPending, isError, error, refetch, isFetching } = useQuery({
 		queryKey: ["dashboard"],
-		queryFn: () => getDashboard(),
+		queryFn: () => {
+			if (!dashboard) {
+				throw new Error("dashboard is required")
+			}
+			return getDashboard()
+		},
 	})
 
 	useEffect(() => {
