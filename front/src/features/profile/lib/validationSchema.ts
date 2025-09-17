@@ -16,7 +16,23 @@ export const profileSchema = z.object({
 		.max(255, "メールアドレスは255文字以内で入力してください"),
 })
 
+// 画像アップロード用のスキーマ
+export const imageUploadSchema = z.object({
+	imageData: z
+		.string()
+		.min(1, "画像データが必要です")
+		.startsWith("data:image/", "有効な画像データではありません"),
+	filename: z.string().optional(),
+})
+
+// 画像を含むプロフィール更新スキーマ
+export const profileWithImageSchema = profileSchema.extend({
+	image: z.string().nullable().optional(),
+})
+
 export type ProfileFormData = z.infer<typeof profileSchema>
+export type ImageUploadData = z.infer<typeof imageUploadSchema>
+export type ProfileWithImageData = z.infer<typeof profileWithImageSchema>
 
 export interface UserProfile {
 	id: string
