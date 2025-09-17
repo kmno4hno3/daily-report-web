@@ -1,8 +1,8 @@
 "use client"
 
-import { messageDialogAtom } from "../model"
 import { useAtom } from "jotai"
 import { Check } from "lucide-react"
+import { messageDialogAtom } from "../model"
 
 import {
 	AlertDialog,

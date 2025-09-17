@@ -1,10 +1,10 @@
-import type React from "react"
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "@/src/shared/ui/accordion"
+import type React from "react"
 
 export const Help: React.FC = () => {
 	return (
