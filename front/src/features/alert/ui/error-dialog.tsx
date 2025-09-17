@@ -1,7 +1,7 @@
 "use client"
 
-import { errorDialogAtom } from "../model"
 import { useAtom } from "jotai"
+import { errorDialogAtom } from "../model"
 
 import {
 	AlertDialog,

@@ -1,9 +1,9 @@
-import type React from "react"
-import { useState } from "react"
 import { Button } from "@/src/shared/ui/button"
 import { Input } from "@/src/shared/ui/input"
-import { Textarea } from "@/src/shared/ui/textarea"
 import { Label } from "@/src/shared/ui/label"
+import { Textarea } from "@/src/shared/ui/textarea"
+import type React from "react"
+import { useState } from "react"
 
 interface NewReportFormProps {
 	onSubmit: (report: { date: string; title: string; content: string }) => void

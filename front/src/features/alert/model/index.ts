@@ -1,5 +1,5 @@
-import { atom } from "jotai"
 import type { AlertDialog, ErrorDialog } from "@/src/entities/report/type"
+import { atom } from "jotai"
 
 export const messageDialogAtom = atom<AlertDialog>({
 	title: "",
