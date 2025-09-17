@@ -41,6 +41,28 @@ export interface UserProfile {
 	image: string | null
 }
 
+// パスワード変更用のスキーマ
+export const passwordChangeSchema = z
+	.object({
+		currentPassword: z.string().min(1, "現在のパスワードを入力してください"),
+		newPassword: z
+			.string()
+			.min(8, "パスワードは8文字以上である必要があります")
+			.max(128, "パスワードは128文字以下である必要があります"),
+		confirmPassword: z.string().min(1, "確認用パスワードを入力してください"),
+	})
+	.refine((data) => data.newPassword === data.confirmPassword, {
+		message: "新しいパスワードと確認用パスワードが一致しません",
+		path: ["confirmPassword"],
+	})
+
+export type PasswordChangeFormData = z.infer<typeof passwordChangeSchema>
+
+export interface PasswordChangeResponse {
+	success: boolean
+	message?: string
+}
+
 export interface UpdateProfileResponse {
 	success: boolean
 	message?: string
