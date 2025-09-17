@@ -1,5 +1,7 @@
 import type {
 	ImageUploadData,
+	PasswordChangeFormData,
+	PasswordChangeResponse,
 	ProfileFormData,
 	ProfileWithImageData,
 	UpdateProfileResponse,
@@ -125,6 +127,49 @@ export async function deleteProfileImage(): Promise<{
 		return {
 			success: false,
 			message: "画像の削除に失敗しました",
+		}
+	}
+}
+
+/**
+ * パスワードを変更する（モック実装）
+ * 実際のバックエンドAPI実装後に差し替え予定
+ */
+export async function changePassword(
+	passwordData: PasswordChangeFormData,
+): Promise<PasswordChangeResponse> {
+	try {
+		// パスワード変更処理をシミュレート
+		await new Promise((resolve) => setTimeout(resolve, 1000))
+
+		// モック実装：現在のパスワードが "password123" でない場合はエラー
+		if (passwordData.currentPassword !== "password123") {
+			return {
+				success: false,
+				message: "現在のパスワードが正しくありません",
+			}
+		}
+
+		// 新しいパスワードの基本チェック（実際の実装では backend で行う）
+		if (passwordData.newPassword.length < 8) {
+			return {
+				success: false,
+				message: "パスワードは8文字以上である必要があります",
+			}
+		}
+
+		// モック実装：ローカルストレージに保存（実際の実装では不要）
+		localStorage.setItem("user_password", passwordData.newPassword)
+
+		return {
+			success: true,
+			message: "パスワードを変更しました",
+		}
+	} catch (error) {
+		console.error("Password change error:", error)
+		return {
+			success: false,
+			message: "パスワードの変更に失敗しました",
 		}
 	}
 }
