@@ -54,8 +54,10 @@ export function useProfile() {
 	}
 
 	// プロフィールを保存
-	const saveProfile = async (data: ProfileFormData) => {
-		await updateMutation.mutateAsync(data)
+	const saveProfile = async (data: ProfileFormData, imageData?: string) => {
+		// 画像データが提供された場合は、プロフィールデータに含める
+		const profileData = imageData ? { ...data, image: imageData } : data
+		await updateMutation.mutateAsync(profileData)
 	}
 
 	return {

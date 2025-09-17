@@ -1,7 +1,9 @@
 "use client"
 
+import { getInitials } from "@/src/features/profile/lib/imageUtils"
 import { useProfile } from "@/src/features/profile/model/useProfile"
 import { ProfileEditForm } from "@/src/features/profile/ui/ProfileEditForm"
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/shared/ui/avatar"
 import { Button } from "@/src/shared/ui/button"
 import { Card } from "@/src/shared/ui/card"
 import { useSession } from "next-auth/react"
@@ -69,31 +71,44 @@ export const ProfilePage: React.FC = () => {
 					/>
 				) : (
 					// 閲覧モード
-					<div className="space-y-4">
-						<div className="space-y-2">
-							<label className="text-sm font-medium text-gray-700">
-								ユーザー名
-							</label>
-							<p className="text-lg">{profile?.name || "未設定"}</p>
-						</div>
-
-						<div className="space-y-2">
-							<label className="text-sm font-medium text-gray-700">
-								メールアドレス
-							</label>
-							<p className="text-lg">{profile?.email || "未設定"}</p>
-						</div>
-
-						{profile?.image && (
-							<div className="space-y-2">
-								<label className="text-sm font-medium text-gray-700">
+					<div className="space-y-6">
+						{/* プロフィール画像 */}
+						<div className="flex flex-col items-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6">
+							<Avatar className="h-24 w-24 ring-2 ring-offset-4 ring-muted">
+								<AvatarImage
+									src={profile?.image || undefined}
+									alt="プロフィール画像"
+								/>
+								<AvatarFallback className="text-xl">
+									{getInitials(profile?.name)}
+								</AvatarFallback>
+							</Avatar>
+							<div className="text-center sm:text-left">
+								<h3 className="text-lg font-semibold">
+									{profile?.name || "未設定"}
+								</h3>
+								<p className="text-sm text-muted-foreground">
 									プロフィール画像
-								</label>
-								<p className="text-sm text-gray-500">
-									画像URL: {profile.image}
 								</p>
 							</div>
-						)}
+						</div>
+
+						{/* ユーザー情報 */}
+						<div className="grid gap-4 sm:grid-cols-2">
+							<div className="space-y-2">
+								<label className="text-sm font-medium text-gray-700">
+									ユーザー名
+								</label>
+								<p className="text-lg">{profile?.name || "未設定"}</p>
+							</div>
+
+							<div className="space-y-2">
+								<label className="text-sm font-medium text-gray-700">
+									メールアドレス
+								</label>
+								<p className="text-lg">{profile?.email || "未設定"}</p>
+							</div>
+						</div>
 					</div>
 				)}
 			</Card>
