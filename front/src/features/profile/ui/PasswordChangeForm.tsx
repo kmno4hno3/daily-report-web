@@ -1,16 +1,22 @@
 "use client"
 
+import type { FieldValidationState } from "@/src/shared/lib/validation/common"
 import { Button } from "@/src/shared/ui/button"
 import { Input } from "@/src/shared/ui/input"
 import { Label } from "@/src/shared/ui/label"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react"
 import type React from "react"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import type { PasswordChangeFormData } from "../lib/validationSchema"
-import { passwordChangeSchema } from "../lib/validationSchema"
+import type {
+	PasswordChangeFormData,
+	UserProfile,
+} from "../lib/validationSchema"
+import { createPasswordChangeSchema } from "../lib/validationSchemas"
+import { checkPasswordDictionaryResistance } from "../lib/validators"
 import { PasswordStrengthIndicator } from "./PasswordStrengthIndicator"
+import { FieldValidation, ValidationMessage } from "./ValidationMessage"
 
 interface PasswordChangeFormProps {
 	onSave: (data: PasswordChangeFormData) => Promise<void>
@@ -21,6 +27,7 @@ interface PasswordChangeFormProps {
 	successMessage?: string
 	onClearError?: () => void
 	onClearSuccess?: () => void
+	userProfile?: UserProfile
 }
 
 export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
@@ -32,28 +39,121 @@ export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
 	successMessage,
 	onClearError,
 	onClearSuccess,
+	userProfile,
 }) => {
 	const [showCurrentPassword, setShowCurrentPassword] = useState(false)
 	const [showNewPassword, setShowNewPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
+	// パスワードバリデーション状態
+	const [newPasswordValidation, setNewPasswordValidation] =
+		useState<FieldValidationState>({
+			isValidating: false,
+			isValid: false,
+			touched: false,
+			dirty: false,
+		})
+	const [confirmPasswordValidation, setConfirmPasswordValidation] =
+		useState<FieldValidationState>({
+			isValidating: false,
+			isValid: false,
+			touched: false,
+			dirty: false,
+		})
+
+	// ユーザー情報に基づくスキーマ
+	const passwordSchema = createPasswordChangeSchema(
+		userProfile
+			? {
+					name: userProfile.name,
+					email: userProfile.email,
+				}
+			: undefined,
+	)
+
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isDirty },
+		formState: { errors, isDirty, touchedFields, dirtyFields },
 		watch,
 		reset,
+		trigger,
 	} = useForm<PasswordChangeFormData>({
-		resolver: zodResolver(passwordChangeSchema),
+		resolver: zodResolver(passwordSchema),
 		defaultValues: {
 			currentPassword: "",
 			newPassword: "",
 			confirmPassword: "",
 		},
+		mode: "onBlur",
+		reValidateMode: "onChange",
 	})
 
 	// 新しいパスワードを監視してパスワード強度表示に使用
 	const newPassword = watch("newPassword")
+	const confirmPassword = watch("confirmPassword")
+
+	// パスワードのリアルタイムバリデーション
+	const handleNewPasswordValidation = useCallback(async () => {
+		setNewPasswordValidation((prev) => ({
+			...prev,
+			touched: true,
+			dirty: dirtyFields.newPassword || false,
+		}))
+
+		const isValid = await trigger("newPassword")
+		const error = errors.newPassword?.message
+		let warning: string | undefined
+
+		// 辞書攻撃耐性チェック
+		if (isValid && newPassword) {
+			const resistanceCheck = checkPasswordDictionaryResistance(newPassword)
+			if (!resistanceCheck.isResistant) {
+				warning = `警告: ${resistanceCheck.vulnerabilities.join(", ")}`
+			}
+		}
+
+		setNewPasswordValidation((prev) => ({
+			...prev,
+			isValid,
+			error,
+			warning,
+		}))
+	}, [trigger, errors.newPassword, dirtyFields.newPassword, newPassword])
+
+	const handleConfirmPasswordValidation = useCallback(async () => {
+		setConfirmPasswordValidation((prev) => ({
+			...prev,
+			touched: true,
+			dirty: dirtyFields.confirmPassword || false,
+		}))
+
+		const isValid = await trigger("confirmPassword")
+		const error = errors.confirmPassword?.message
+
+		setConfirmPasswordValidation((prev) => ({
+			...prev,
+			isValid,
+			error,
+		}))
+	}, [trigger, errors.confirmPassword, dirtyFields.confirmPassword])
+
+	// フィールド値の変化を監視してリアルタイムバリデーション
+	useEffect(() => {
+		if (touchedFields.newPassword) {
+			handleNewPasswordValidation()
+		}
+	}, [newPassword, touchedFields.newPassword, handleNewPasswordValidation])
+
+	useEffect(() => {
+		if (touchedFields.confirmPassword) {
+			handleConfirmPasswordValidation()
+		}
+	}, [
+		confirmPassword,
+		touchedFields.confirmPassword,
+		handleConfirmPasswordValidation,
+	])
 
 	const onSubmit = async (data: PasswordChangeFormData) => {
 		try {
@@ -158,8 +258,18 @@ export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
 							id="newPassword"
 							type={showNewPassword ? "text" : "password"}
 							placeholder="新しいパスワードを入力してください"
-							{...register("newPassword")}
-							className={errors.newPassword ? "border-red-500" : ""}
+							{...register("newPassword", {
+								onBlur: handleNewPasswordValidation,
+							})}
+							className={
+								newPasswordValidation.touched
+									? newPasswordValidation.error
+										? "border-red-500"
+										: newPasswordValidation.isValid
+											? "border-green-500"
+											: ""
+									: ""
+							}
 						/>
 						<Button
 							type="button"
@@ -175,9 +285,11 @@ export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
 							)}
 						</Button>
 					</div>
-					{errors.newPassword && (
-						<p className="text-sm text-red-600">{errors.newPassword.message}</p>
-					)}
+					<FieldValidation
+						state={newPasswordValidation}
+						fieldType="password"
+						compact
+					/>
 
 					{/* パスワード強度インジケーター */}
 					{newPassword && (
@@ -196,8 +308,18 @@ export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
 							id="confirmPassword"
 							type={showConfirmPassword ? "text" : "password"}
 							placeholder="新しいパスワードを再度入力してください"
-							{...register("confirmPassword")}
-							className={errors.confirmPassword ? "border-red-500" : ""}
+							{...register("confirmPassword", {
+								onBlur: handleConfirmPasswordValidation,
+							})}
+							className={
+								confirmPasswordValidation.touched
+									? confirmPasswordValidation.error
+										? "border-red-500"
+										: confirmPasswordValidation.isValid
+											? "border-green-500"
+											: ""
+									: ""
+							}
 						/>
 						<Button
 							type="button"
@@ -213,11 +335,11 @@ export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
 							)}
 						</Button>
 					</div>
-					{errors.confirmPassword && (
-						<p className="text-sm text-red-600">
-							{errors.confirmPassword.message}
-						</p>
-					)}
+					<FieldValidation
+						state={confirmPasswordValidation}
+						fieldType="password"
+						compact
+					/>
 				</div>
 			</div>
 

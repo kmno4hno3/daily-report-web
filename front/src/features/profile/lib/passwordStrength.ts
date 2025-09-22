@@ -1,4 +1,12 @@
+import {
+	checkPasswordCharacterTypes,
+	hasRepeatedCharacters,
+	hasSequentialCharacters,
+	isCommonWeakPassword,
+	isSimilarToUserInfo,
+} from "@/src/shared/lib/validation/common"
 import zxcvbn from "zxcvbn"
+import { checkPasswordDictionaryResistance } from "./validators"
 
 export interface PasswordStrengthResult {
 	score: number // 0-4 (0: 最弱, 4: 最強)
@@ -64,10 +72,11 @@ export function validatePasswordConfirmation(
 }
 
 /**
- * パスワード強度の詳細分析
+ * パスワード強度の詳細分析（拡張版）
  */
 export function analyzePasswordStrength(
 	password: string,
+	userInfo?: { name?: string | null; email?: string },
 ): PasswordStrengthResult {
 	if (!password) {
 		return {
@@ -90,16 +99,47 @@ export function analyzePasswordStrength(
 	}
 
 	// zxcvbnでパスワード強度を分析
-	const result = zxcvbn(password)
+	const zxcvbnResult = zxcvbn(password)
+	let adjustedScore = zxcvbnResult.score
 
-	// 文字種類の判定
+	// 文字種類の判定（拡張版）
+	const types = checkPasswordCharacterTypes(password)
 	const criteria = {
 		length: password.length >= 8,
-		uppercase: /[A-Z]/.test(password),
-		lowercase: /[a-z]/.test(password),
-		numbers: /[0-9]/.test(password),
-		symbols: /[^A-Za-z0-9]/.test(password),
+		uppercase: types.hasUpperCase,
+		lowercase: types.hasLowerCase,
+		numbers: types.hasNumber,
+		symbols: types.hasSymbol,
 	}
+
+	// 追加のセキュリティチェック
+	const securityChecks = {
+		isCommonWeak: isCommonWeakPassword(password),
+		isSimilarToUser: userInfo ? isSimilarToUserInfo(password, userInfo) : false,
+		hasSequential: hasSequentialCharacters(password, 4),
+		hasRepeated: hasRepeatedCharacters(password, 4),
+		dictionaryResistance: checkPasswordDictionaryResistance(password),
+	}
+
+	// スコアの調整
+	if (securityChecks.isCommonWeak)
+		adjustedScore = Math.max(0, adjustedScore - 2)
+	if (securityChecks.isSimilarToUser)
+		adjustedScore = Math.max(0, adjustedScore - 1)
+	if (securityChecks.hasSequential)
+		adjustedScore = Math.max(0, adjustedScore - 1)
+	if (securityChecks.hasRepeated) adjustedScore = Math.max(0, adjustedScore - 1)
+	if (!securityChecks.dictionaryResistance.isResistant) {
+		adjustedScore = Math.max(0, adjustedScore - 1)
+	}
+
+	// 長さボーナス
+	if (password.length >= 12) adjustedScore = Math.min(4, adjustedScore + 1)
+	if (password.length >= 16) adjustedScore = Math.min(4, adjustedScore + 1)
+
+	// 文字種類ボーナス
+	if (types.characterTypesCount === 4)
+		adjustedScore = Math.min(4, adjustedScore + 1)
 
 	// レベルテキストの決定
 	const levelMap = {
@@ -110,46 +150,85 @@ export function analyzePasswordStrength(
 		4: { level: "strong" as const, text: "強い" },
 	}
 
-	const levelInfo = levelMap[result.score as keyof typeof levelMap]
+	const levelInfo = levelMap[adjustedScore as keyof typeof levelMap]
 
 	// 推定クラック時間の日本語化
 	const crackTimeText = formatCrackTime(
-		String(result.crack_times_display.offline_slow_hashing_1e4_per_second),
+		String(
+			zxcvbnResult.crack_times_display.offline_slow_hashing_1e4_per_second,
+		),
 	)
 
-	// 改善提案の日本語化
-	const suggestions = (result.feedback.suggestions as string[]).map(translateSuggestion)
+	// 改善提案の日本語化と追加
+	const suggestions = (zxcvbnResult.feedback.suggestions as string[]).map(
+		translateSuggestion,
+	)
 
-	// 追加の改善提案
+	// セキュリティチェックに基づく追加提案
+	if (securityChecks.isCommonWeak) {
+		suggestions.push("よく使われるパスワードは避けてください")
+	}
+	if (securityChecks.isSimilarToUser) {
+		suggestions.push("個人情報に関連する内容は避けてください")
+	}
+	if (securityChecks.hasSequential) {
+		suggestions.push("連続する文字や数字は避けてください")
+	}
+	if (securityChecks.hasRepeated) {
+		suggestions.push("同じ文字の繰り返しは避けてください")
+	}
+	if (!securityChecks.dictionaryResistance.isResistant) {
+		suggestions.push(
+			...securityChecks.dictionaryResistance.vulnerabilities.map(
+				(v) => `改善: ${v}`,
+			),
+		)
+	}
+
+	// 基本的な改善提案
 	if (!criteria.length) {
 		suggestions.unshift("8文字以上にしてください")
 	}
 	if (!criteria.uppercase) {
-		suggestions.push("大文字を含めてください")
+		suggestions.push("大文字を含めてください（A-Z）")
 	}
 	if (!criteria.lowercase) {
-		suggestions.push("小文字を含めてください")
+		suggestions.push("小文字を含めてください（a-z）")
 	}
 	if (!criteria.numbers) {
-		suggestions.push("数字を含めてください")
+		suggestions.push("数字を含めてください（0-9）")
 	}
 	if (!criteria.symbols) {
-		suggestions.push("記号を含めてください")
+		suggestions.push("記号を含めてください（!@#$%など）")
+	}
+
+	// 長さ改善提案
+	if (password.length < 12) {
+		suggestions.push("12文字以上にするとより安全です")
 	}
 
 	// 基本バリデーションの結果も考慮
 	const validation = validatePassword(password)
-	const isValid = validation.isValid && result.score >= 2 // スコア2以上を有効とする
+	const isValid = validation.isValid && adjustedScore >= 2 // スコア2以上を有効とする
+
+	// 警告メッセージの生成
+	let warning = zxcvbnResult.feedback.warning
+		? translateWarning(zxcvbnResult.feedback.warning)
+		: undefined
+
+	if (securityChecks.isCommonWeak) {
+		warning = "このパスワードは一般的によく使われます"
+	} else if (securityChecks.isSimilarToUser) {
+		warning = "個人情報に似たパスワードです"
+	}
 
 	return {
-		score: result.score,
+		score: adjustedScore,
 		level: levelInfo.level,
 		levelText: levelInfo.text,
 		isValid,
 		feedback: {
-			warning: result.feedback.warning
-				? translateWarning(result.feedback.warning)
-				: undefined,
+			warning,
 			suggestions: [...new Set(suggestions)], // 重複除去
 		},
 		criteria,
